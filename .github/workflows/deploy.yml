@@ -21,4 +21,6 @@ jobs:
           pass: ${{secrets.PASSWORD}}
           connect_timeout: 10s
           local: "./NoBeiCi/dist/*"
-          romote: ""
+          romote: "/home/q9k/NoBC"
+          last_ssh: |
+            nginx -s reload
