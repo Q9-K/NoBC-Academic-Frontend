@@ -5,6 +5,7 @@
 -->
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import Beian from './components/Beian.vue'
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import HelloWorld from './components/HelloWorld.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
+  <Beian></Beian>
 </template>
 
 <style scoped lang="scss">
