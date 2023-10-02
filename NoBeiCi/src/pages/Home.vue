@@ -4,6 +4,7 @@ import NavigateBar from "../components/NavigateBar.vue";
 import { Search } from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
+import journalProfileUrl from '../assets/other/MOTO.jpg'
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
@@ -114,12 +115,68 @@ onMounted(() => {
       </div>
       <div class="display-card-outer" style="width: 60%">
         <el-card class="display-card">
-          期刊
+          <div class="display-card-title">
+            期刊会议
+          </div>
+          <div class="display-card-body">
+            <el-carousel :autoplay="false" type="card" height="35vh">
+              <el-carousel-item v-for="item in 10" :key="item">
+                <div class="journal-outer">
+                  <div class="journal-profile-outer">
+                    <img class="journal-profile" :src="journalProfileUrl" />
+                  </div>
+                  <div class="journal-title-outer">
+                    <p class="journal-title">
+                      自动化学报
+                    </p>
+                  </div>
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </div>
         </el-card>
       </div>
-      <div class="display-card-outer" style="width: 60%">
-        <el-card class="display-card">
-          最新文章
+      <div class="display-card-outer" style="width: 60%; height: fit-content">
+        <el-card class="display-card" style="height: fit-content">
+          <div class="display-card-title">
+            热门文章
+          </div>
+          <div class="display-card-body">
+            <div style="width: 100%; height: 2vh"></div>
+            <el-collapse>
+              <el-collapse-item title="基于水电工程的北航收费饮水机破解方法研究">
+                <div>
+                  破解收费饮水机
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="再议北航收费饮水机——是道德的沦丧还是人性的扭曲">
+                <div>
+                  可恶的收费饮水机
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="大运村视角下的北航收费饮水机">
+                <div>
+                  有水喝你就偷着乐吧
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="大运村的前途和未来：“村独”运动研究">
+                <div>
+                  自由大运村
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="大运村——北航关系研究：特殊的村与校关系">
+                <div>
+                  大运村本就独立的
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="大运城是奥地利、五号楼是维也纳——德语区与北航对比研究">
+                <div>
+                  德语区可以分为东德西德奥地利、北航也可以分为东航西航大运村。
+                  五号楼就是大运村的维也纳
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
         </el-card>
       </div>
       <div class="display-card-outer" style="width: 40%">
@@ -129,6 +186,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <div style="width: 100%; height: 20vh" ></div>
 </template>
 
 <style scoped lang="scss">
@@ -175,7 +233,7 @@ onMounted(() => {
       align-items: center;
       .search-area-slogan {
         color: #b2aeae;
-        font-family: KaiTi;
+        font-family: KaiTi,serif;
         font-size: large;
       }
     }
@@ -205,6 +263,34 @@ onMounted(() => {
         .display-card-body {
           width: 100%;
           height: 90%;
+          .journal-outer {
+            width: 30vw;
+            height: 100%;
+            padding-left: 1%;
+            padding-right: 1%;
+            display: flex;
+            flex-wrap: wrap;
+            .journal-profile-outer {
+              width: 100%;
+              height: 80%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              .journal-profile {
+                height: 90%;
+              }
+            }
+            .journal-title-outer {
+              width: 100%;
+              height: 20%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              .journal-title {
+                height: 60%;
+              }
+            }
+          }
         }
       }
     }
