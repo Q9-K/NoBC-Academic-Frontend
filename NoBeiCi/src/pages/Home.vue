@@ -1,4 +1,7 @@
 <script setup>
+/*
+2023-10-02 主页静态页面完成 tl
+ */
 import logoUrl from "../assets/logo/logo.png"
 import NavigateBar from "../components/NavigateBar.vue";
 import { Search } from '@element-plus/icons-vue'
