@@ -5,6 +5,7 @@ import { Search } from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
 import journalProfileUrl from '../assets/other/MOTO.jpg'
+import researchProfileUrl from '../assets/other/kawaiiFish.jpg'
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
@@ -179,9 +180,85 @@ onMounted(() => {
           </div>
         </el-card>
       </div>
-      <div class="display-card-outer" style="width: 40%">
-        <el-card class="display-card">
-          权威学者
+      <div class="display-card-outer" style="width: 40%; height: fit-content">
+        <el-card class="display-card" style="height: fit-content;">
+          <div class="display-card-title">
+            权威学者
+          </div>
+          <div class="display-card-body" style="height: fit-content">
+            <div class="researcher-list">
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村第一村民
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+              <div class="researcher-outer">
+                <div class="researcher-profile-outer">
+                  <img class="researcher-profile" :src="researchProfileUrl">
+                </div>
+                <div class="researcher-name-outer">
+                  <p class="researcher-name">
+                    大运村村士
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </el-card>
       </div>
     </div>
@@ -288,6 +365,42 @@ onMounted(() => {
               align-items: center;
               .journal-title {
                 height: 60%;
+              }
+            }
+          }
+          .researcher-list {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            flex-wrap: wrap;
+            padding-bottom: 2vh;
+            .researcher-outer {
+              width: 100%;
+              height: 10vh;
+              display: flex;
+              flex-wrap: nowrap;
+              margin-top: 1vh;
+              margin-bottom: 1vh;
+              .researcher-profile-outer {
+                height: 100%;
+                width: 30%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .researcher-profile {
+                  height: 80%;
+                  border-radius: 50%;
+                }
+              }
+              .researcher-name-outer {
+                height: 100%;
+                width: 70%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                .researcher-name {
+                  font-family: STFangsong,serif;
+                }
               }
             }
           }
