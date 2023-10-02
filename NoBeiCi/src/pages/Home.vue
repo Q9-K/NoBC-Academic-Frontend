@@ -35,7 +35,7 @@ onMounted(() => {
   setInterval(() => {
     const isSearchInputVisible = isInViewPort(document.querySelector(".search-area-input"))
     isTopSearchInputVisible.value = !isSearchInputVisible;
-  }, 1000)
+  }, 500)
 })
 
 
