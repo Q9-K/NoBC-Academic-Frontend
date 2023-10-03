@@ -1,13 +1,19 @@
 <script setup>
 import logoUrl from '../assets/logo/logo.png'
 import userProfileUrl from '../assets/other/kawaiiFish.jpg'
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {Search} from "@element-plus/icons-vue";
+import defaultUserProfile from '../assets/user/defaultUserProfile.png'
+import { User, Lock, Message } from "@element-plus/icons-vue";
 
 const props = defineProps(['whetherSearchInputVisible'])
+const isLogin = 1
+const isRegister = 2
 
 const isSearchInputVisible = ref(false)
 const searchInputValue = ref("");
+const isLoginRegisterModeOpen = ref(false)
+const isLoginOrRegister = ref(isLogin)
 
 watch(
   () => props.whetherSearchInputVisible,
@@ -21,7 +27,7 @@ watch(
 <template>
   <div class="navigate-bar-outer shadow-xl shadow-gray-300">
     <div class="logo-outer">
-      <img id="logoImage" class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
+      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="single-navigate-outer">
@@ -45,8 +51,60 @@ watch(
       </div>
     </div>
     <div class="user-set-outer">
-      <img class="user-profile" :src="userProfileUrl">
+      <el-popover trigger="click" popper-style="width: fit-content" placement="bottom-end">
+        <template #reference>
+          <img class="user-profile" :src="defaultUserProfile">
+        </template>
+        <template #default>
+          <div style="width: 15vw; display: flex; flex-wrap: wrap">
+            <div style="width: 100%; height: 6vh; display: flex; flex-wrap: nowrap">
+              <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
+                <img style="height: 80%" :src="defaultUserProfile" />
+              </div>
+              <div style="width: 65%; height: 100%; display: flex; justify-content: flex-start; align-items: center">
+                <p style="font-family: STSong,serif; cursor: pointer" @click="() => isLoginRegisterModeOpen = true">
+                  去登录
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-popover>
     </div>
+  </div>
+  <div>
+    <el-dialog
+      v-model="isLoginRegisterModeOpen"
+      style="width: 35vw; height: 73vh; border-radius: 20px"
+    >
+      <div class="login-register-mode-outer">
+        <div class="login-register-input-outer content-evenly">
+          <div class="login-register-input">
+            <el-input placeholder="请输入用户名" :prefix-icon="User" />
+          </div>
+          <div class="login-register-input">
+            <el-input placeholder="请输入用户密码" :prefix-icon="Lock" />
+          </div>
+          <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
+            <el-input placeholder="请再次确认密码" :prefix-icon="Lock" />
+          </div>
+          <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
+            <el-input placeholder="请输入邮箱" :prefix-icon="Message" />
+          </div>
+        </div>
+        <div class="login-register-button-outer">
+          <div style="width: 100%; height: 25%; display: flex; flex-wrap: nowrap">
+            <el-button v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 65%" type="primary">
+              登录
+            </el-button>
+            <div v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 10%"></div>
+            <el-button class="grow" style="height: 100%; width: 25%" type="default" @click="evt => isLoginOrRegister = isRegister">
+              注册
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,7 +117,7 @@ watch(
   top: 0;
   display: flex;
   flex-wrap: nowrap;
-  z-index: 9999;
+  z-index: 2000;
   background-color: white;
   .logo-outer {
     height: 100%;
@@ -113,4 +171,45 @@ watch(
   }
 }
 
+.login-register-mode-outer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  .login-register-input-outer {
+    width: 100%;
+    height: 65%;
+    display: flex;
+    flex-wrap: wrap;
+    .login-register-input {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center
+    }
+  }
+  .login-register-button-outer {
+    width: 100%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+  }
+}
+
+:deep(.el-popper) {
+  width: fit-content !important;
+}
+
+:deep(.el-dialog__header) {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops), var(--tw-gradient-to));
+  --tw-gradient-from: #3538a6 var(--tw-gradient-from-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);;
+  --tw-gradient-to: #498eef var(--tw-gradient-to-position);
+  width: 100% !important;
+  height: 10% !important;
+}
+:deep(.el-dialog__body) {
+  width: 100% !important;
+  height: 90% !important;
+}
 </style>
