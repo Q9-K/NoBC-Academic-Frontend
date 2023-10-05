@@ -3,8 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
     {
         path: '/',
-        name: 'index',
-        component: () => import('../App.vue')
+        name: 'thesisDetail',
+        component: () => import('../views/thesisDetail.vue')
     }
 ]
 const router = createRouter({
