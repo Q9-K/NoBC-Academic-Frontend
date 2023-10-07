@@ -1,11 +1,14 @@
 <script setup>
 
+
 </script>
 
 <template>
-  <router-view></router-view>
+  <div>
+    处理学术成果认领
+  </div>
+
 </template>
 
 <style scoped lang="scss">
-
 </style>
