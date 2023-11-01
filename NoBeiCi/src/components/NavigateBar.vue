@@ -125,26 +125,26 @@ const handleLanguageChange = (newLanguage) => {
       <div class="login-register-mode-outer">
         <div class="login-register-input-outer content-evenly">
           <div class="login-register-input">
-            <el-input placeholder="请输入用户名" :prefix-icon="User" />
+            <el-input :placeholder="i18n.t('loginMode.inputUsername')" :prefix-icon="User" />
           </div>
           <div class="login-register-input">
-            <el-input placeholder="请输入用户密码" :prefix-icon="Lock" />
+            <el-input :placeholder="i18n.t('loginMode.inputPassword')" :prefix-icon="Lock" />
           </div>
           <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input placeholder="请再次确认密码" :prefix-icon="Lock" />
+            <el-input :placeholder="i18n.t('loginMode.makeSurePassword')" :prefix-icon="Lock" />
           </div>
           <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input placeholder="请输入邮箱" :prefix-icon="Message" />
+            <el-input :placeholder="i18n.t('loginMode.inputEmail')" :prefix-icon="Message" />
           </div>
         </div>
         <div class="login-register-button-outer">
           <div style="width: 100%; height: 25%; display: flex; flex-wrap: nowrap">
             <el-button v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 65%" type="primary">
-              登录
+              {{ i18n.t('loginMode.loginButton') }}
             </el-button>
             <div v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 10%"></div>
             <el-button class="grow" style="height: 100%; width: 25%" type="default" @click="evt => isLoginOrRegister = isRegister">
-              注册
+              {{ i18n.t('loginMode.registerButton') }}
             </el-button>
           </div>
         </div>
