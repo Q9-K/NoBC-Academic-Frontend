@@ -9,6 +9,7 @@ import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
 import journalProfileUrl from '../assets/other/MOTO.jpg'
 import researchProfileUrl from '../assets/other/kawaiiFish.jpg'
+import i18n from "../locales/index.js";
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
@@ -91,7 +92,7 @@ onMounted(() => {
       <div class="search-area-input-outer">
         <el-input
           v-model="searchValue"
-          placeholder="搜索学者、论文、期刊"
+          :placeholder="i18n.t('homePage.search')"
           class="search-area-input"
         >
           <template #append>
@@ -101,7 +102,7 @@ onMounted(() => {
       </div>
       <div class="search-area-slogan-outer">
         <p class="search-area-slogan">
-          使用NoBC，学术生涯再无背刺！
+          {{ i18n.t('homePage.slogan') }}
         </p>
       </div>
     </div>
@@ -110,7 +111,7 @@ onMounted(() => {
       <div class="display-card-outer" style="width: 40%">
         <el-card class="display-card">
           <div class="display-card-title">
-            研究热点
+            {{ i18n.t('homePage.hotPoint') }}
           </div>
           <div class="display-card-body">
             <div id="hotspotWordCloud" style="width: 100%; height: 100%"></div>
@@ -120,7 +121,7 @@ onMounted(() => {
       <div class="display-card-outer" style="width: 60%">
         <el-card class="display-card">
           <div class="display-card-title">
-            期刊会议
+            {{ i18n.t('homePage.journal') }}
           </div>
           <div class="display-card-body">
             <el-carousel :autoplay="false" type="card" height="35vh">
@@ -143,7 +144,7 @@ onMounted(() => {
       <div class="display-card-outer" style="width: 60%; height: fit-content">
         <el-card class="display-card" style="height: fit-content">
           <div class="display-card-title">
-            热门文章
+            {{ i18n.t('homePage.popularPaper') }}
           </div>
           <div class="display-card-body">
             <div style="width: 100%; height: 2vh"></div>
@@ -186,7 +187,7 @@ onMounted(() => {
       <div class="display-card-outer" style="width: 40%; height: fit-content">
         <el-card class="display-card" style="height: fit-content;">
           <div class="display-card-title">
-            权威学者
+            {{ i18n.t('homePage.scholar') }}
           </div>
           <div class="display-card-body" style="height: fit-content">
             <div class="researcher-list">

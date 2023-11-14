@@ -13,6 +13,7 @@ import router from './router';
 import ElementPlus from 'element-plus'
 import * as Icons from '@element-plus/icons'
 import 'element-plus/dist/index.css'
+import i18n from "./locales/index.js";
 
 
 const app = createApp(App)
@@ -20,5 +21,5 @@ Object.keys(Icons).forEach(key => {
     app.component(key, Icons[key])
 })
 app.use(ElementPlus)
-app.use(router)
+app.use(i18n)
 app.mount('#app')

@@ -1,10 +1,14 @@
 <script setup>
 import logoUrl from '../assets/logo/logo.png'
 import userProfileUrl from '../assets/other/kawaiiFish.jpg'
+import i18nIcon from '../assets/i18n/i18n.svg'
 import {onMounted, ref, watch} from "vue";
 import {Search} from "@element-plus/icons-vue";
 import defaultUserProfile from '../assets/user/defaultUserProfile.png'
 import { User, Lock, Message } from "@element-plus/icons-vue";
+import English from '../assets/i18n/EN-UK.svg'
+import Chinese from '../assets/i18n/ZH-CH.svg'
+import i18n from "../locales/index.js";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -22,6 +26,10 @@ watch(
   }
 )
 
+const handleLanguageChange = (newLanguage) => {
+  i18n.setLocale(newLanguage);
+}
+
 </script>
 
 <template>
@@ -31,7 +39,7 @@ watch(
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="single-navigate-outer">
-        <span>主页</span>
+        {{ i18n.t("navigateBar.homePage") }}
       </div>
       <div class="single-navigate-outer">
         <span>页面二</span>
@@ -44,7 +52,7 @@ watch(
       <div class="animate__animated animate__zoomInDown" v-if="isSearchInputVisible">
         <el-input
           v-model="searchInputValue"
-          placeholder="搜索学者、论文、期刊"
+          :placeholder="i18n.t('navigateBar.search')"
           class="search-input"
         />
         <el-button class="search-input-button" :icon="Search" />
@@ -63,13 +71,50 @@ watch(
               </div>
               <div style="width: 65%; height: 100%; display: flex; justify-content: flex-start; align-items: center">
                 <p style="font-family: STSong,serif; cursor: pointer" @click="() => isLoginRegisterModeOpen = true">
-                  去登录
+                  {{ i18n.t('navigateBar.login') }}
                 </p>
               </div>
             </div>
           </div>
         </template>
       </el-popover>
+    </div>
+    <div class="i18n-config-outer">
+      <el-popover trigger="click" popper-style="width: fit-content" placement="bottom-end">
+        <template #reference>
+          <img style="height: 45%" :src="i18nIcon" />
+        </template>
+        <template #default>
+          <div style="width: 7vw;  display: flex; flex-wrap: wrap;">
+            <div
+              style="width: 100%; height: 4.5vh; display: flex; flex-wrap: nowrap; cursor: pointer"
+              @click="() => handleLanguageChange('cn')"
+            >
+              <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
+                <img style="height: 60%" :src="Chinese">
+              </div>
+              <div style="width: 65%; height: 100%; display: flex; justify-content: left; align-items: center">
+                汉语
+              </div>
+            </div>
+            <div style="width: 100%; height: 1vh"></div>
+            <div
+              style="width: 100%; height: 4.5vh; display: flex; flex-wrap: nowrap; cursor: pointer"
+              @click="() => handleLanguageChange('en')"
+            >
+              <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
+                <img style="height: 60%" :src="English">
+              </div>
+              <div style="width: 65%; height: 100%; display: flex; justify-content: left; align-items: center">
+                English
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-popover>
+    </div>
+    <div >
+
     </div>
   </div>
   <div>
@@ -80,26 +125,26 @@ watch(
       <div class="login-register-mode-outer">
         <div class="login-register-input-outer content-evenly">
           <div class="login-register-input">
-            <el-input placeholder="请输入用户名" :prefix-icon="User" />
+            <el-input :placeholder="i18n.t('loginMode.inputUsername')" :prefix-icon="User" />
           </div>
           <div class="login-register-input">
-            <el-input placeholder="请输入用户密码" :prefix-icon="Lock" />
+            <el-input :placeholder="i18n.t('loginMode.inputPassword')" :prefix-icon="Lock" />
           </div>
           <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input placeholder="请再次确认密码" :prefix-icon="Lock" />
+            <el-input :placeholder="i18n.t('loginMode.makeSurePassword')" :prefix-icon="Lock" />
           </div>
           <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input placeholder="请输入邮箱" :prefix-icon="Message" />
+            <el-input :placeholder="i18n.t('loginMode.inputEmail')" :prefix-icon="Message" />
           </div>
         </div>
         <div class="login-register-button-outer">
           <div style="width: 100%; height: 25%; display: flex; flex-wrap: nowrap">
             <el-button v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 65%" type="primary">
-              登录
+              {{ i18n.t('loginMode.loginButton') }}
             </el-button>
             <div v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 10%"></div>
             <el-button class="grow" style="height: 100%; width: 25%" type="default" @click="evt => isLoginOrRegister = isRegister">
-              注册
+              {{ i18n.t('loginMode.registerButton') }}
             </el-button>
           </div>
         </div>
@@ -132,8 +177,7 @@ watch(
   }
   .navigate-outer {
     height: 100%;
-    width: 50%;
-    display: flex;
+    width: 48%;
     .single-navigate-outer {
       color: #000;
       height: 100%;
@@ -162,7 +206,7 @@ watch(
   }
   .user-set-outer {
     height: 100%;
-    width: 12%;
+    width: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -170,6 +214,13 @@ watch(
       height: 60%;
       border-radius: 50%;
     }
+  }
+  .i18n-config-outer {
+    height: 100%;
+    width: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
