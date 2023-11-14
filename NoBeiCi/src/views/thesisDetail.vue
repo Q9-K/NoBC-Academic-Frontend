@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import axios from "axios";
 import { computed } from 'vue'
+import i18n from "../locales/index.js";
 // import jwt from 'jsonwebtoken';
 // sec_zUsE4WCLNOEUQxhWo6vzELTF0jRqZjKr
 
@@ -114,13 +115,13 @@ onMounted(() => {
                     <div class="tagLine">
                         <div class="miscLine">
                             <span class="citation">
-                                <span>引用</span>
+                                <span>{{i18n.t("thesisDetail.quote")}}</span>
                                 <strong>2</strong>
                             </span>
                             <span class="line-split">|</span>
                             <span class="views">
                                 <span>
-                                    <span>浏览</span>
+                                    <span>{{i18n.t("thesisDetail.browse")}}</span>
                                     <span>371</span>
                                 </span>
                             </span>
