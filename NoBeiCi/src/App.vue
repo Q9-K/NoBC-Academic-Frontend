@@ -12,7 +12,7 @@ import Beian from './components/Beian.vue'
   <div >
     
     <router-view></router-view>
-    <Beian></Beian>
+    <!-- <Beian></Beian> -->
   </div>
 </template>
 
