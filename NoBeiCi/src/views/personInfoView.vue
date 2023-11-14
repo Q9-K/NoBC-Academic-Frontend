@@ -1,6 +1,6 @@
 <template>
 
- 
+   <NavigateBar></NavigateBar>
   <div class="common-layout">
     <el-container >
 
@@ -200,6 +200,7 @@ import ScholarProfile from '../components/personInfoView/ScholarProfile.vue';
 import PersonalInfo from '../components/personInfoView/PersonInfo.vue';
 import RadarInfo from '../components/personInfoView/RadarInfo.vue';
 import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
+import NavigateBar from "../components/NavigateBar.vue";
 
 export default {
     data() {
@@ -266,6 +267,7 @@ export default {
     PersonalInfo,
     RadarInfo,
     CooperationInfo,
+    NavigateBar
   },
 }
 </script>
@@ -321,7 +323,7 @@ export default {
     background-color: #f0f1f4;
     width: 100%;
     /* height: 90vh; */
-    margin-top: 10vh;
+    margin-top: 11vh;
 }
 .menu-top{
     line-height: 1.33333333em;
