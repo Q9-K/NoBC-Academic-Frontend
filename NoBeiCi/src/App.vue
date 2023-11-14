@@ -8,10 +8,38 @@ import Beian from './components/Beian.vue'
 </script>
 
 <template>
-  <router-view />
+  
+  <div >
+    
+    <router-view></router-view>
+    <Beian></Beian>
+  </div>
 </template>
 
-<style scoped lang="scss">
+<style>
+
+
+html,
+body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  /* margin: 0 !important; */
+  /* padding: 0 !important; */
+  max-width: none;
+}
+</style>
+
+
+<style scoped >
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -27,3 +55,4 @@ import Beian from './components/Beian.vue'
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
+

@@ -8,19 +8,23 @@ import './style.css'
 import animate from "animate.css";
 import App from './App.vue'
 import axios from 'axios'
-import router from './router';
-// import router from 'vue-router'
+import router from './routes'
 import ElementPlus from 'element-plus'
 import * as Icons from '@element-plus/icons'
 import 'element-plus/dist/index.css'
 import i18n from "./locales/index.js";
-
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const app = createApp(App)
-Object.keys(Icons).forEach(key => {
-    app.component(key, Icons[key])
-})
+app.use(router)
 app.use(ElementPlus)
 app.use(router)
 app.use(i18n)
+
+
+
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 app.mount('#app')

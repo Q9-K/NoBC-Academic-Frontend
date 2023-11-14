@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PersonInfo from '../views/personinfoView.vue'
 
 const routes = [
     {

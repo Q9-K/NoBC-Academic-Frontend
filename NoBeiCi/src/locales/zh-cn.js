@@ -19,5 +19,12 @@ export default {
     journal: "期刊会议",
     popularPaper: "热门文章",
     scholar: "权威学者"
+  },
+  admin:{
+    reviewScholarCertification:"审核学者认证",
+    handleScholarGrievances:"处理学者申诉",
+    handleAchievementPublication:"处理学术成果发表",
+    handleAchievementCertification:"处理学术成果认证",
+    handleAchievementGrievances:"处理学术成果申诉",
   }
 }
