@@ -223,8 +223,7 @@ onMounted(() => {
 
 <style scoped>
 .main {
-    position: absolute;
-    top: 10vh;
+    margin-top: 10vh;
     display: flex;
     width: 100%;
     min-height: 90vh;
