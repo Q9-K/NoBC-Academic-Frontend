@@ -10,7 +10,7 @@ const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
 const isRegister = 2
 
-const isSearchInputVisible = ref(false)
+const isSearchInputVisible = ref(true)
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
@@ -31,13 +31,13 @@ watch(
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="single-navigate-outer">
-        主页
+        <span>主页</span>
       </div>
       <div class="single-navigate-outer">
-        页面二
+        <span>页面二</span>
       </div>
       <div class="single-navigate-outer">
-        页面三
+        <span>页面三</span>
       </div>
     </div>
     <div class="search-input-outer">
@@ -133,9 +133,11 @@ watch(
   .navigate-outer {
     height: 100%;
     width: 50%;
+    display: flex;
     .single-navigate-outer {
+      color: #000;
       height: 100%;
-      width: 10%;
+      width: 33.3%;
       display: flex;
       justify-content: center;
       align-items: center;

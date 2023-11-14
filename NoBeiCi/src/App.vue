@@ -12,10 +12,5 @@
 </template>
 
 <style scoped lang="scss">
-#app{
-  max-width: 100vw;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+
 </style>
