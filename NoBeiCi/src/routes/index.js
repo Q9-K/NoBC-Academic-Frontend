@@ -13,36 +13,46 @@ const router = createRouter({
       component: () => import('../views/personinfoView.vue'),
     },
     {
+      path: '/thesisDetail',
+      name: 'thesisDetail',
+      component: () => import('../views/thesisDetail.vue')
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: () => import('../views/chatPDF.vue')
+    },
+    {
       path: '/admin',
       name: "admin",
       component: () => import('../views/admin/Layout.vue'),
       redirect: '/admin/scholarCertify',
-      children:[
+      children: [
         {
-            path: 'scholarCertify',
-            name: "scholarCertify",
-            component: () => import('../views/admin/ScholarCertify.vue'),
+          path: 'scholarCertify',
+          name: "scholarCertify",
+          component: () => import('../views/admin/ScholarCertify.vue'),
         },
         {
-            path: 'achievementCertify',
-            name: "achievementCertify",
-            component: () => import('../views/admin/AchievementCertify.vue'),
+          path: 'achievementCertify',
+          name: "achievementCertify",
+          component: () => import('../views/admin/AchievementCertify.vue'),
         },
         {
-            path: 'achievementClaim',
-            name: "achievementClaim",
-            component: () => import('../views/admin/AchievementClaim.vue'),
+          path: 'achievementClaim',
+          name: "achievementClaim",
+          component: () => import('../views/admin/AchievementClaim.vue'),
         },
         {
-            path: 'achievementPublication',
-            name: "achievementPublication",
-            component: () => import('../views/admin/AchievementPublication.vue'),
-        },       
-         {
+          path: 'achievementPublication',
+          name: "achievementPublication",
+          component: () => import('../views/admin/AchievementPublication.vue'),
+        },
+        {
           path: 'scholarClaim',
           name: "scholarClaim",
           component: () => import('../views/admin/ScholarClaim.vue'),
-        },
+        }
       ]
     }
   ]

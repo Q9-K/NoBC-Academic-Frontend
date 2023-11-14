@@ -181,7 +181,7 @@ const handleLanguageChange = (newLanguage) => {
     .single-navigate-outer {
       color: #000;
       height: 100%;
-      width: 33.3%;
+      width: 10%;
       display: flex;
       justify-content: center;
       align-items: center;
