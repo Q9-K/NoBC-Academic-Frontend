@@ -1,11 +1,11 @@
 <script setup>
-
+import i18n from "../../locales/index.js";
 
 </script>
 
 <template>
   <div>
-    处理学术成果认领
+    {{i18n.t('admin.handleAchievementGrievances')}}
   </div>
 
 </template>

@@ -9,7 +9,7 @@ const scholarList = ref([
 
 <template>
   <div>
-    {{i18n.t('admin.reviewScholarCertification')}}
+    {{i18n.t('admin.handleScholarGrievances')}}
   </div>
   <div v-for="item in scholarList" class="scholar-list">
     <div class="scholar-item">{{ item.name }}</div>

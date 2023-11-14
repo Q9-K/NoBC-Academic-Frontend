@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: "layout",
-    //   component: () => import('@/views/Layout.vue'),
-    // },
+    {
+      path: '/',
+      name: "layout",
+      component: () => import('../pages/Home.vue'),
+    },
     {
       path: '/admin',
       name: "admin",
@@ -29,9 +29,14 @@ const router = createRouter({
             component: () => import('../views/admin/AchievementClaim.vue'),
         },
         {
-            path: 'achievementComplaint',
-            name: "achievementComplaint",
-            component: () => import('../views/admin/AchievementComplaint.vue'),
+            path: 'achievementPublication',
+            name: "achievementPublication",
+            component: () => import('../views/admin/AchievementPublication.vue'),
+        },       
+         {
+          path: 'scholarClaim',
+          name: "scholarClaim",
+          component: () => import('../views/admin/ScholarClaim.vue'),
         },
       ]
     }

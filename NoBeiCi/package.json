@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@antv/data-set": "^0.11.8",
+    "@antv/g2": "^5.1.5",
+    "@antv/g2plot": "^2.4.31",
+    "@element-plus/icons-vue": "^2.1.0",
     "animate.css": "^4.1.1",
     "axios": "^1.5.0",
     "element-plus": "^2.3.12",
@@ -17,12 +21,16 @@
     "pinia": "^2.1.6",
     "qs": "^6.11.2",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "vue3-i18n": "^1.1.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.30",
     "sass": "^1.66.1",
     "sass-loader": "^13.3.2",
+    "tailwindcss": "^3.3.3",
     "vite": "^4.4.5"
   }
 }
