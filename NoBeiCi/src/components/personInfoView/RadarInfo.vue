@@ -132,6 +132,7 @@
   </script>
   
   <style scoped>
+
     .inherited-styles-for-exported-element {
   color: #414040;
   font-family: "PingFang SC", "Microsoft YaHei", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
