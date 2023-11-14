@@ -19,5 +19,13 @@ export default {
     journal: "Journal and Academic Conference",
     popularPaper: "Popular Papers",
     scholar: "Authority Scholar",
+  },
+  admin:{
+    reviewScholarCertification:"Review Scholar Certification",
+    handleScholarGrievances:"Handle Scholar Grievances",
+    handleAchievementPublication:"Handle Achievement Publication",
+    handleAchievementCertification:"Handle Achievement Certification",
+    handleAchievementGrievances:"Handle Achievement Grievances",
+
   }
 }
