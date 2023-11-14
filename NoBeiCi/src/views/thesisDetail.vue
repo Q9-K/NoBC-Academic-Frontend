@@ -55,6 +55,8 @@ onMounted(() => {
     console.log(ifShowMoreButton.value)
 });
 
+translate.setUseVersion2(); //设置使用v2.x 版本
+translate.execute(); //执行翻译初始化操作，显示出select语言选择
 </script>
 
 <template>
