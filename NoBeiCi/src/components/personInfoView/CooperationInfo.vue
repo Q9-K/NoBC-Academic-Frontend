@@ -1,7 +1,7 @@
 <template>
     <div class="collaborators">
       
-        <p class="inherited-styles-for-exported-element">合作学者</p>
+        <p class="inherited-styles-for-exported-element">{{ $t("personInfo.associateScholar")}}</p>
        
 
         <!-- 列表 -->

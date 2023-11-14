@@ -28,4 +28,27 @@ export default {
     handleAchievementGrievances:"Handle Achievement Grievances",
 
   }
+  ,
+  personInfo:{
+    homePageManage:"HomePage Manage",
+    academicHome:"Academic Home",
+    personalAccount:"Personal Account",
+    academicManage: "Academic Manage",
+    myInterest:"My Interest",
+    paperCollection:"Paper Collection",
+    browsingHistory: "Browsing History",
+
+    basicInformation:"Basic Information",
+    paperList:"Paper List",
+
+    workExperience: "Work Experience",
+    educationBackground: "Education Background",
+    personProfile: "Person Profile",
+
+    authorStatistics: "Author Statistics",
+    radar:"Radar",
+    list:"List",
+
+    associateScholar: "Associate Scholar"
+  }
 }

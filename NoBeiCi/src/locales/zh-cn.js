@@ -26,5 +26,29 @@ export default {
     handleAchievementPublication:"处理学术成果发表",
     handleAchievementCertification:"处理学术成果认证",
     handleAchievementGrievances:"处理学术成果申诉",
+  },
+
+  personInfo:{
+    homePageManage:"主页管理",
+    academicHome:"学术主页",
+    personalAccount:"个人账户",
+    academicManage:"学术管理",
+    myInterest:"我的关注",
+    paperCollection:"论文收藏",
+    browsingHistory:"浏览历史",
+
+    basicInformation:"基本信息",
+    paperList:"论文列表",
+
+    workExperience: "工作经历",
+    educationBackground: "教育背景",
+    personProfile: "个人简历",
+
+    authorStatistics: "作者统计",
+    radar:"雷达图",
+    list:"列表",
+
+    associateScholar: "合作学者"
+
   }
 }

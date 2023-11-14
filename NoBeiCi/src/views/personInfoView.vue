@@ -16,40 +16,49 @@
         active-text-color="#ffd04b"
       >
         <el-sub-menu index="1">
+            <!-- 主页管理 -->
           <template #title>
             <!-- <el-icon><location /></el-icon> -->
-            <p class="menu-top">主页管理</p>
+            <p class="menu-top">{{ i18n.t("personInfo.homePageManage") }}</p>
           </template>
 
+          <!-- 学术主页 -->
             <el-menu-item index="1-1" @click="changeContent(1)">
-            
                 <el-icon color="#409EFC"><House /></el-icon>
-                <p>学术主页</p>
+                <p>{{ i18n.t("personInfo.academicHome") }}</p>
             </el-menu-item>
+
+            <!-- 个人账户 -->
             <el-menu-item index="1-2" @click="changeContent(2)">
                 <el-icon><User /></el-icon>
-                <p>个人账户</p>
+                <p>{{ i18n.t("personInfo.personalAccount") }}</p>
             </el-menu-item>
 
          
         </el-sub-menu>
         <el-sub-menu index="2">
+            <!-- 学术管理 -->
           <template #title>
             <!-- <el-icon><location /></el-icon> -->
-            <p class="menu-top">学术管理</p>
+            <p class="menu-top">{{ i18n.t("personInfo.academicManage") }}</p>
           </template>
 
+          <!-- 我的关注 -->
             <el-menu-item index="2-1" @click="changeContent(3)">
                 <el-icon><Bell /></el-icon>
-                我的关注
+                {{ i18n.t("personInfo.myInterest") }}
             </el-menu-item>
+
+            <!--论文收藏  -->
             <el-menu-item index="2-2" @click="changeContent(4)">
                 <el-icon><Star /></el-icon>
-                论文收藏
+                {{ i18n.t("personInfo.paperCollection") }}
             </el-menu-item>
+
+            <!--浏览历史  -->
             <el-menu-item index="2-3" @click="changeContent(5)">
                 <el-icon><Clock /></el-icon>
-                浏览历史
+                {{ i18n.t("personInfo.browsingHistory") }}
             </el-menu-item>
         </el-sub-menu>
        
@@ -75,9 +84,11 @@
                         @select="handleSelect"
                         
                         active-text-color="#ffd04b"
-                    >
-                        <el-menu-item index="1" @click="changeInformContent(1)" >基本信息</el-menu-item>
-                        <el-menu-item index="2" @click="changeInformContent(2)">论文列表</el-menu-item>
+                    >   
+                        <!-- 基本信息 -->
+                        <el-menu-item index="1" @click="changeInformContent(1)" >{{ i18n.t("personInfo.basicInformation") }}</el-menu-item>
+                        <!-- 论文列表 -->
+                        <el-menu-item index="2" @click="changeInformContent(2)">{{ i18n.t("personInfo.paperList") }}</el-menu-item>
                         </el-menu>
 
                         <transition name="el-fade-in-linear">
@@ -195,12 +206,18 @@
 
 </template>
 
+<script setup>
+import i18n from "../locales/index.js";
+</script>
+
 <script>
 import ScholarProfile from '../components/personInfoView/ScholarProfile.vue';
 import PersonalInfo from '../components/personInfoView/PersonInfo.vue';
 import RadarInfo from '../components/personInfoView/RadarInfo.vue';
 import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
 import NavigateBar from "../components/NavigateBar.vue";
+
+
 
 export default {
     data() {
@@ -274,11 +291,8 @@ export default {
 
 
 
+
 <style scoped>
-
-
-
-
 
 .el-menu .el-menu-item.is-active, .el-menu .el-submenu.is-active {
     background-color: #6e83f7 !important;

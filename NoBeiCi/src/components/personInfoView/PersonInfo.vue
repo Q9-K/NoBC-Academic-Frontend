@@ -2,7 +2,8 @@
     <div class="personal-info">
       <div class="item">
         <div class="header">
-          <span class="title">·工作经历</span>
+          <!--工作经历  -->
+          <span class="title">·{{ i18n.t("personInfo.workExperience") }}</span>
           <el-button v-if="!editing.workExperience"  @click="editItem('workExperience')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
@@ -22,9 +23,10 @@
 
       <!-- <el-divider /> -->
 
+      <!-- 教育背景 -->
       <div class="item">
         <div class="header">
-          <span class="title">·教育背景</span>
+          <span class="title">·{{ i18n.t("personInfo.educationBackground") }}</span>
           
             <el-button v-if="!editing.educationBackground"  @click="editItem('educationBackground')" circle>
             <el-icon><EditPen /></el-icon>
@@ -46,9 +48,10 @@
 
       <!-- <el-divider /> -->
 
+      <!-- 个人简介 -->
       <div class="item" style="margin-bottom: 2vh;">
         <div class="header">
-          <span class="title">·个人简介</span>
+          <span class="title">·{{ i18n.t("personInfo.personProfile") }}</span>
             <el-button v-if="!editing.personalSummary" @click="editItem('personalSummary')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
@@ -68,6 +71,10 @@
       </div>
     </div>
   </template>
+
+<script setup>
+import i18n from "../../locales/index.js";
+</script>
   
   <script>
   export default {

@@ -4,7 +4,9 @@
         <!-- 上方栏 -->
         <div style="display: flex;">
             
-            <p class="inherited-styles-for-exported-element">作者统计</p>
+           <!-- 作者统计 -->
+           <!-- {{ t("personInfo.authorStatistics")}} -->
+            <p class="inherited-styles-for-exported-element">{{ $t("personInfo.authorStatistics")}}</p>
             <div style="margin-left: auto;">
                 <el-tooltip placement="bottom"  effect="light">
                 <template #content> 1.Citation（引用量）：该学者所有出版物的被引用次数。<br />
@@ -29,21 +31,22 @@
             </el-tooltip>
         </div>
         
+        <!-- 雷达图 列表 -->
         <el-button-group style="margin-right:1vw">
       <el-button 
         type="primary" color="#626aef"
         v-if="viewMode === 'chart'" 
-        >雷达图</el-button>
+        >{{ $t("personInfo.radar")}}</el-button>
       <el-button 
         v-else 
-        @click="switchToChart">雷达图</el-button>
+        @click="switchToChart">{{ $t("personInfo.radar")}}</el-button>
       <el-button 
         type="primary" color="#626aef"
         v-if="viewMode === 'list'" 
-        @click="viewMode = 'list'">列表</el-button>
+        @click="viewMode = 'list'">{{ $t("personInfo.list")}}</el-button>
       <el-button 
         v-else 
-        @click="viewMode = 'list'">列表</el-button>
+        @click="viewMode = 'list'">{{ $t("personInfo.list")}}</el-button>
     </el-button-group>
             
         </div>
@@ -58,11 +61,15 @@
       </el-table>
     </div>
   </template>
+
+
   
   <script>
   import { ref, onMounted } from 'vue';
   import { Radar } from '@antv/g2plot';
   import {  nextTick } from 'vue';
+
+  import i18n  from '../../locales/index.js'; 
   
   export default {
 
@@ -76,7 +83,7 @@
       },
     },
     setup(props) {
-
+        
         const buildRadarChart = () => {
         const radarPlot = new Radar(chart.value, {
             data: scholarData,
@@ -123,7 +130,8 @@
         chart,
         viewMode,
         switchToChart,
-        buildRadarChart
+        buildRadarChart,
+        
       };
     },
 
