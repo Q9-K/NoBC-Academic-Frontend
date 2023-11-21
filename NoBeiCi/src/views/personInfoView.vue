@@ -1,5 +1,6 @@
 <template>
 
+    <div>
    <NavigateBar></NavigateBar>
   <div class="common-layout">
     <el-container >
@@ -198,11 +199,21 @@
 
             </div>
         </transition>
+
+        <transition name="el-fade-in-linear">
+            <div v-if="chosenIndex == 3">
+
+            <FollowTopics></FollowTopics>
+
+            
+
+            </div>
+        </transition>
         
       </el-main>
     </el-container>
   </div>
-
+    </div>
 
 </template>
 
@@ -216,6 +227,7 @@ import PersonalInfo from '../components/personInfoView/PersonInfo.vue';
 import RadarInfo from '../components/personInfoView/RadarInfo.vue';
 import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
 import NavigateBar from "../components/NavigateBar.vue";
+import FollowTopics from "../components/personInfoView/FollowTopics.vue";
 
 
 
@@ -284,7 +296,8 @@ export default {
     PersonalInfo,
     RadarInfo,
     CooperationInfo,
-    NavigateBar
+    NavigateBar,
+    FollowTopics
   },
 }
 </script>
@@ -293,6 +306,9 @@ export default {
 
 
 <style scoped>
+
+
+
 
 .el-menu .el-menu-item.is-active, .el-menu .el-submenu.is-active {
     background-color: #6e83f7 !important;
@@ -347,8 +363,9 @@ export default {
 }
 
 .el-aside{
-    margin-left: 25vh;
-    margin-top: 4vh;
+    /* margin-left: 25vh; */
+    margin-left: 12%;
+    margin-top: 2.8vh;
 }
 </style>
 
