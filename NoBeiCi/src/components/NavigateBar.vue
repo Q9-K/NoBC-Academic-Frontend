@@ -33,7 +33,7 @@ const handleLanguageChange = (newLanguage) => {
 </script>
 
 <template>
-  <div class="navigate-bar-outer shadow-xl shadow-gray-300">
+  <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
       <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
     </div>
