@@ -1,6 +1,6 @@
 <template>
 
- 
+   <NavigateBar></NavigateBar>
   <div class="common-layout">
     <el-container >
 
@@ -200,6 +200,7 @@ import ScholarProfile from '../components/personInfoView/ScholarProfile.vue';
 import PersonalInfo from '../components/personInfoView/PersonInfo.vue';
 import RadarInfo from '../components/personInfoView/RadarInfo.vue';
 import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
+import NavigateBar from "../components/NavigateBar.vue";
 
 export default {
     data() {
@@ -266,13 +267,19 @@ export default {
     PersonalInfo,
     RadarInfo,
     CooperationInfo,
+    NavigateBar
   },
 }
 </script>
 
 
 
-<style>
+<style scoped>
+
+
+
+
+
 .el-menu .el-menu-item.is-active, .el-menu .el-submenu.is-active {
     background-color: #6e83f7 !important;
 }
@@ -316,7 +323,7 @@ export default {
     background-color: #f0f1f4;
     width: 100%;
     /* height: 90vh; */
-    margin-top: 10vh;
+    margin-top: 11vh;
 }
 .menu-top{
     line-height: 1.33333333em;
@@ -330,3 +337,27 @@ export default {
     margin-top: 4vh;
 }
 </style>
+
+
+<style >
+html,
+body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  /* margin: 0 !important; */
+  /* padding: 0 !important; */
+  max-width: none;
+}       
+
+
+</style>
+
+
+

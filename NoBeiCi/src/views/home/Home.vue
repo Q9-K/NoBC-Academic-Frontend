@@ -2,14 +2,15 @@
 /*
 2023-10-02 主页静态页面完成 tl
  */
-import logoUrl from "../assets/logo/logo.png"
-import NavigateBar from "../components/NavigateBar.vue";
+import logoUrl from "../../assets/logo/logo.png"
+import NavigateBar from "../../components/NavigateBar.vue";
 import { Search } from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
-import journalProfileUrl from '../assets/other/MOTO.jpg'
-import researchProfileUrl from '../assets/other/kawaiiFish.jpg'
-import i18n from "../locales/index.js";
+import journalProfileUrl from '../../assets/other/MOTO.jpg'
+import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
+import i18n from "../../locales/index.js";
+import {debounce} from "vue-debounce";
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
@@ -38,8 +39,6 @@ onMounted(() => {
     isTopSearchInputVisible.value = !isSearchInputVisible;
   }, 500)
 })
-
-
 
 onMounted(() => {
   const data = [{
@@ -79,6 +78,9 @@ onMounted(() => {
   wordCloud.render();
 })
 
+const handleSearchButtonClick = debounce(() => {
+  console.log("can u see us!")
+}, "300ms")
 
 </script>
 
@@ -94,9 +96,11 @@ onMounted(() => {
           v-model="searchValue"
           :placeholder="i18n.t('homePage.search')"
           class="search-area-input"
+          maxlength="100"
+          show-word-limit
         >
           <template #append>
-            <el-button :icon="Search" />
+            <el-button :icon="Search" @click="handleSearchButtonClick" />
           </template>
         </el-input>
       </div>

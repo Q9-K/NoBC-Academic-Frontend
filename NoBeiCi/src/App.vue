@@ -16,7 +16,7 @@ import Beian from './components/Beian.vue'
   </div>
 </template>
 
-<style>
+<style scoped lang="scss">
 
 
 html,
