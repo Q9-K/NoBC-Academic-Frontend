@@ -7,6 +7,10 @@
     import ArticleDispaly from '../components/search/ArticleDisplay.vue'
     import SearchResultStatics from '../components/search/SearchResultStatistics.vue'
     import AuthorDisplay from '../components/search/AuthorDisplay.vue'
+    import TimeRange from '../components/search/TimeRange.vue'
+    import Institution from '../components/search/Institution.vue'
+    import Journal from '../components/search/Journal.vue'
+    import Subject from '../components/search/Subject.vue'
     import i18n from '../locales'
     const input = ref('')
     const select = ref('')
@@ -71,69 +75,25 @@
         <el-aside class="left">
             <el-row class="classify">
                 <div>
-                <p>{{ i18n.t('search.searchTime') }}</p>
                 <!-- 选择日期 -->
-                <el-date-picker v-model="selectedDate" type="date" placeholder="某年之前"></el-date-picker>
+                <TimeRange />
                 </div>
             </el-row>
             <el-row class="classify">
                 <!-- 选择学科 -->
                 <div>
-                <p>{{ i18n.t('search.searchSubject') }}</p>
-                <el-select
-                    v-model="selectedSubject"
-                    multiple
-                    collapse-tags
-                    placeholder="{{ i18n.t('search.searchSelect') }}"
-                    style="width: 240px"
-                    >
-                    <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    />
-                </el-select>
+                    <Subject />
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
-                <p>{{ i18n.t('search.searchIssue') }}</p>
-                <!-- 选择期刊 -->
-                <el-select
-                    v-model="selectedJournal"
-                    multiple
-                    collapse-tags
-                    placeholder="Select"
-                    style="width: 240px"
-                    >
-                    <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    />
-                </el-select>
+                    <Journal />
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
-                <p>{{ i18n.t('search.searchObject') }}</p>
                 <!-- 选择机构 -->
-                <el-select
-                    v-model="selectedOrganization"
-                    multiple
-                    collapse-tags
-                    placeholder="{{ i18n.t('search.searchSelect') }}"
-                    style="width: 240px"
-                    >
-                    <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    />
-                </el-select>
+                    <Institution />
                 </div>
             </el-row>
         </el-aside>

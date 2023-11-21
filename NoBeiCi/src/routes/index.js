@@ -60,6 +60,11 @@ const router = createRouter({
       name: 'search',
       component: () => import('../views/SearchView.vue')
     },
+    {
+      path: '/conf',
+      name: 'conf',
+      component: () => import('../views/ConfView.vue')
+    },
   ]
 })
 
