@@ -11,6 +11,7 @@ import journalProfileUrl from '../../assets/other/MOTO.jpg'
 import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
 import i18n from "../../locales/index.js";
 import {debounce} from "vue-debounce";
+import pinyin from "pinyin";
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
@@ -79,7 +80,13 @@ onMounted(() => {
 })
 
 const handleSearchButtonClick = debounce(() => {
-  console.log("can u see us!")
+  console.log("-----------------")
+  console.log(pinyin(searchValue.value, {
+    mode: "SURNAME",
+    group: true,
+    style: "normal",
+  }))
+  console.log("-----------------")
 }, "300ms")
 
 </script>
