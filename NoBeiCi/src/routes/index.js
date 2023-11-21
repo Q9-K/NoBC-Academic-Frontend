@@ -54,7 +54,12 @@ const router = createRouter({
           component: () => import('../views/admin/ScholarClaim.vue'),
         }
       ]
-    }
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: () => import('../views/SearchView.vue')
+    },
   ]
 })
 

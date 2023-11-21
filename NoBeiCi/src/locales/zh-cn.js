@@ -26,5 +26,12 @@ export default {
     handleAchievementPublication:"处理学术成果发表",
     handleAchievementCertification:"处理学术成果认证",
     handleAchievementGrievances:"处理学术成果申诉",
+  },
+  search: {
+    searchTime: "时间",
+    searchSubject: "学科",
+    searchIssue: "期刊",
+    searchObject: "机构",
+    searchSelect: "选择",
   }
 }

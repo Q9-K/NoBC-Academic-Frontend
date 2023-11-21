@@ -28,6 +28,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.16",
+    "less": "^4.2.0",
     "postcss": "^8.4.30",
     "sass": "^1.66.1",
     "sass-loader": "^13.3.2",

@@ -27,5 +27,12 @@ export default {
     handleAchievementCertification:"Handle Achievement Certification",
     handleAchievementGrievances:"Handle Achievement Grievances",
 
-  }
+  },
+  search: {
+    searchTime: "Time",
+    searchSubject: "Subject",
+    searchIssue: "Issue",
+    searchObject: "Object",
+    searchSelect: "Select",
+  },
 }
