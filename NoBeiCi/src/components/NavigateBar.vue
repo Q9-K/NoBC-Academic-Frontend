@@ -14,7 +14,7 @@ const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
 const isRegister = 2
 
-const isSearchInputVisible = ref(true)
+const isSearchInputVisible = ref(false)
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
