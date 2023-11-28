@@ -12,42 +12,6 @@
     import Journal from '../components/search/Journal.vue'
     import Subject from '../components/search/Subject.vue'
     import i18n from '../locales'
-    const input = ref('')
-    const select = ref('')
-    const selectedSubject = ref('')
-    const selectedDate = ref('')
-    const selectedJournal = ref('')
-    const selectedOrganization = ref('')
-    const options = [
-    {
-        value: 'Math',
-        label: 'Math',
-    },
-    {
-        value: 'Chemistery',
-        label: 'Chemistery',
-    },
-    {
-        value: 'Physical',
-        label: 'Physical',
-    },
-    {
-        value: 'Biochology',
-        label: 'Biochology',
-    },
-    {
-        value: 'Option5',
-        label: 'Option5',
-    },
-    ]
-    const chartData = [
-        { year: '2017', value: 5 },
-        { year: '2018', value: 20 },
-        { year: '2019', value: 36 },
-        { year: '2020', value: 10 },
-        { year: '2021', value: 10 },
-        { year: '2022', value: 20 },
-      ]
 </script>
 
 <template>
@@ -128,7 +92,6 @@
                 <p style="text-align: center;">前1000条结果统计图</p>
                 <AuthorDisplay />
             </el-aside>
-            <!-- <el-main>Main</el-main> -->
         </el-container>
       </el-container>
       <el-footer>
