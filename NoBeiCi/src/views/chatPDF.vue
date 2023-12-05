@@ -74,10 +74,12 @@ function handleChildEvent(value){
     height: auto;
     display: flex;
     flex-direction: column;
+    justify-content: start;
+    text-align: start;
 }
 .navbar
 {
-    position: relative;
+    
 }
 .search{
     margin-top: 10vh;

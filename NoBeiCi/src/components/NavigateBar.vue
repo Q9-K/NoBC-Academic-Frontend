@@ -155,9 +155,10 @@ const handleLanguageChange = (newLanguage) => {
 
 <style scoped lang="scss">
 .navigate-bar-outer {
-  width: 100vw;
+  width: 97vw;
   height: 10vh;
   position: fixed;
+  left: 1.5vw;
   top: 0;
   display: flex;
   flex-wrap: nowrap;
