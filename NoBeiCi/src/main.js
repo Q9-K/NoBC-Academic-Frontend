@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-09-14 00:15:07
  * @Author: Q9K
- * @Description: 
+ * @Description:
  */
 import { createApp } from 'vue'
 import './style.css'
@@ -16,8 +16,10 @@ import i18n from "./locales/index.js";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import Antd from 'ant-design-vue';
 import { anyType } from 'ant-design-vue/es/_util/type.js';
+import {vue3Debounce} from "vue-debounce";
 
 const app = createApp(App)
+app.directive('debounce', vue3Debounce({ lock: true }))
 app.use(router)
 app.use(ElementPlus)
 app.use(router)

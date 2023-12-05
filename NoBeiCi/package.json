@@ -21,8 +21,10 @@
     "element-plus": "^2.3.14",
     "lodash": "^4.17.21",
     "pinia": "^2.1.6",
+    "pinyin": "^3.0.0-alpha.5",
     "qs": "^6.11.2",
     "vue": "^3.3.4",
+    "vue-debounce": "^4.0.0",
     "vue-router": "^4.2.4",
     "vue3-i18n": "^1.1.5"
   },
