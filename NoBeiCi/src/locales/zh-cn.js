@@ -26,5 +26,12 @@ export default {
     handleAchievementPublication:"处理学术成果发表",
     handleAchievementCertification:"处理学术成果认证",
     handleAchievementGrievances:"处理学术成果申诉",
+    detail:"详细信息",
+    applicantName:"申请者",
+    scholarName:"认证学者",
+    applicationTime:"申请时间",
+    sortLatest:"按时间最晚排序",
+    sortEarliest:"按时间最早排序",
+    backToList:"返回列表",
   }
 }
