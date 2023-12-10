@@ -31,5 +31,9 @@ export default {
     handleAchievementCertification:"Handle Achievement Certification",
     handleAchievementGrievances:"Handle Achievement Grievances",
 
+  },
+  thesisDetail:{
+    quote:"Quote",
+    browse:"Browse"
   }
 }

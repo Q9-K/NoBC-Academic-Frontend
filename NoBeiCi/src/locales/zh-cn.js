@@ -30,5 +30,9 @@ export default {
     handleAchievementPublication:"处理学术成果发表",
     handleAchievementCertification:"处理学术成果认证",
     handleAchievementGrievances:"处理学术成果申诉",
+  },
+  thesisDetail:{
+    quote:"引用",
+    browse:"浏览"
   }
 }

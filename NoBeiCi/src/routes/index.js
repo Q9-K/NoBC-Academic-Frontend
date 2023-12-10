@@ -19,7 +19,7 @@ const router = createRouter({
     },
     {
       path: '/chat',
-      name: 'chat',
+      name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
     },
     {
