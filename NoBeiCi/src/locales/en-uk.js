@@ -35,5 +35,8 @@ export default {
   thesisDetail:{
     quote:"Quote",
     browse:"Browse"
+  },
+  field: {
+    moreDetail: "More"
   }
 }

@@ -4,6 +4,12 @@ import * as echarts from 'echarts'
 import NavigateBar from "../../components/NavigateBar.vue";
 import DividerLine from "../../components/DividerLine.vue";
 import {onMounted} from "vue";
+import axios from "axios";
+import i18n from "../../locales/index.js";
+import {handleResponse} from "../../functions/handleResponse.js";
+import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
+import SearchBar from "../../components/SearchBar.vue";
+import {checkIsChinese} from "../../functions/checkIsChinese.js";
 
 onMounted(() => {
   const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
@@ -57,11 +63,40 @@ onMounted(() => {
   treemapOfBigField.hideLoading();
   treemapOfBigField.setOption(options)
 })
+
+const handleSearchField = (value) => {
+
+  let codeOfLanguage = 0
+  if (checkIsChinese(value)) {
+    codeOfLanguage = 1
+  }
+
+  return axios.get('http://100.92.185.118:8000' + '/concept/search_concept/', {
+    params: {
+      keyword: value,
+      language: codeOfLanguage
+    }
+  }).then((response) => {
+    handleResponse(response, false, (data) => {
+      const upperSearchBar = useUpperSearchBarStore()
+      if (codeOfLanguage === 0) {
+        for (let {id, display_name} of data) {
+          upperSearchBar.addIntoOptions(id, display_name)
+        }
+      }
+      else if (codeOfLanguage === 1) {
+        for (let {id, chinese_display_name} of data) {
+          upperSearchBar.addIntoOptions(id, chinese_display_name)
+        }
+      }
+    })
+  })
+}
 </script>
 
 <template>
   <NavigateBar ></NavigateBar>>
-  <div style="height: 20vh; width: 100vw; background-color: #8d3a3a; position: absolute; left: 0; top: 10vh"></div>
+  <SearchBar :info="hhh" :search-function="handleSearchField"></SearchBar>
   <div id="popularFieldOuter" class="popular-field-outer">
     <div class="big-field-outer">
       <el-menu
@@ -186,7 +221,7 @@ onMounted(() => {
               </div>
               <div class="link-to-page-button-outer grow">
                 <el-button color="#1e3a8a" class="link-to-page-button">
-                  更多
+                  {{ i18n.t('field.moreDetail') }}
                 </el-button>
               </div>
             </div>
@@ -208,14 +243,14 @@ onMounted(() => {
   height: fit-content;
   position: absolute;
   left: 0;
-  top: 30vh;
+  top: 40vh;
   display: flex;
   flex-wrap: nowrap;
   .big-field-outer {
     width: 20%;
     .big-field-menu {
       width: 100%;
-      max-height: 70vh;
+      max-height: 60vh;
       overflow: auto;
       background-color: #062a66;
       .big-field-item {
@@ -235,7 +270,7 @@ onMounted(() => {
   }
   .simple-information-of-big-field-outer {
     width: 80%;
-    height: 70vh;
+    height: 60vh;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -34,5 +34,8 @@ export default {
   thesisDetail:{
     quote:"引用",
     browse:"浏览"
+  },
+  field: {
+    moreDetail: "更多"
   }
 }
