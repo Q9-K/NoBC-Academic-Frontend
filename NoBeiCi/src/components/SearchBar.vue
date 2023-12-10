@@ -112,6 +112,9 @@ const handleSearch = debounce((value) => {
 </script>
 <style scoped>
 .searchBox {
+  position: absolute;
+  top: 10vh;
+  left: 0;
   width: 100vw;
   height: 30vh;
   display: flex;
