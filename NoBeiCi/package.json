@@ -19,6 +19,7 @@
     "ant-design-vue": "^4.0.7",
     "axios": "^1.5.0",
     "element-plus": "^2.3.14",
+    "langchain": "^0.0.203",
     "lodash": "^4.17.21",
     "pinia": "^2.1.6",
     "pinyin": "^3.0.0-alpha.5",
