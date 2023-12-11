@@ -2,7 +2,11 @@ export default {
   navigateBar: {
     homePage: "主页",
     search: "搜索学者、论文、期刊",
-    login: "去登录"
+    login: "去登录",
+    conferences: "期刊会议",
+    institution: "权威机构",
+    field: "流行领域",
+    researcher: "权威学者"
   },
   loginMode: {
     inputUsername: "请输入用户名",
@@ -27,28 +31,11 @@ export default {
     handleAchievementCertification:"处理学术成果认证",
     handleAchievementGrievances:"处理学术成果申诉",
   },
-
-  personInfo:{
-    homePageManage:"主页管理",
-    academicHome:"学术主页",
-    personalAccount:"个人账户",
-    academicManage:"学术管理",
-    myInterest:"我的关注",
-    paperCollection:"论文收藏",
-    browsingHistory:"浏览历史",
-
-    basicInformation:"基本信息",
-    paperList:"论文列表",
-
-    workExperience: "工作经历",
-    educationBackground: "教育背景",
-    personProfile: "个人简历",
-
-    authorStatistics: "作者统计",
-    radar:"雷达图",
-    list:"列表",
-
-    associateScholar: "合作学者"
-
+  thesisDetail:{
+    quote:"引用",
+    browse:"浏览"
+  },
+  field: {
+    moreDetail: "更多"
   }
 }

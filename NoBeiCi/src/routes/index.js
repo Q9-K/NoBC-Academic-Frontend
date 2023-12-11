@@ -5,7 +5,7 @@ const router = createRouter({
     {
       path: '/',
       name: "home",
-      component: () => import('../views/Home.vue'),
+      component: () => import('../views/home/Home.vue'),
     },
     {
       path: '/personinfo',
@@ -24,7 +24,7 @@ const router = createRouter({
     },
     {
       path: '/chat',
-      name: 'chat',
+      name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
     },
     {
@@ -59,6 +59,11 @@ const router = createRouter({
           component: () => import('../views/admin/ScholarClaim.vue'),
         }
       ]
+    },
+    {
+      path: '/field',
+      name: 'field',
+      component: () => import('../views/field/Field.vue')
     }
   ]
 })

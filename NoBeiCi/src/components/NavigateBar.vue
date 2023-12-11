@@ -14,7 +14,7 @@ const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
 const isRegister = 2
 
-const isSearchInputVisible = ref(true)
+const isSearchInputVisible = ref(false)
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
@@ -33,19 +33,27 @@ const handleLanguageChange = (newLanguage) => {
 </script>
 
 <template>
-  <div class="navigate-bar-outer shadow-xl shadow-gray-300">
+  <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
       <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
     </div>
     <div class="navigate-outer flex justify-start">
-      <div class="single-navigate-outer">
-        {{ i18n.t("navigateBar.homePage") }}
-      </div>
-      <div class="single-navigate-outer">
-        <span>页面二</span>
-      </div>
-      <div class="single-navigate-outer">
-        <span>页面三</span>
+      <div class="flex justify-around" style="height: 100%; width: 75%">
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.homePage") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.conferences") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.institution") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.field") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.researcher") }}
+        </div>
       </div>
     </div>
     <div class="search-input-outer">
@@ -155,10 +163,10 @@ const handleLanguageChange = (newLanguage) => {
 
 <style scoped lang="scss">
 .navigate-bar-outer {
-  width: 97vw;
+  width: 100vw;
   height: 10vh;
   position: fixed;
-  left: 1.5vw;
+  left: 0;
   top: 0;
   display: flex;
   flex-wrap: nowrap;
@@ -181,7 +189,7 @@ const handleLanguageChange = (newLanguage) => {
     .single-navigate-outer {
       color: #000;
       height: 100%;
-      width: 10%;
+      width: auto;
       display: flex;
       justify-content: center;
       align-items: center;

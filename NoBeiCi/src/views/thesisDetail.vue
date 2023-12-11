@@ -3,24 +3,8 @@ import { ref, onMounted } from 'vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import axios from "axios";
 import { computed } from 'vue'
-// import jwt from 'jsonwebtoken';
-// sec_zUsE4WCLNOEUQxhWo6vzELTF0jRqZjKr
+import i18n from "../locales/index.js";
 
-// async function generateToken() {
-//     const header = {
-//         alg: 'HS256',
-//         sign_type: 'SIGN'
-//     };
-
-//     const payload = {
-//         user_id: '64fb0d33078ed986b5d50ed7',
-//         exp: Math.floor(Date.now() / 1000) + 60 * 60,
-//         timestamp: Math.floor(Date.now() / 1000)
-//     };
-
-//     const secretKey = 'cW3g2txJh7ahdQ=='; // 用于签名的密钥，需要保密
-//     return jwt.sign(payload, secretKey, { header: header });
-// }
 const abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
 const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
@@ -54,6 +38,8 @@ onMounted(() => {
     console.log(ifShowMoreButton.value)
 });
 
+// translate.setUseVersion2(); //设置使用v2.x 版本
+// translate.execute(); //执行翻译初始化操作，显示出select语言选择
 </script>
 
 <template>
@@ -114,13 +100,13 @@ onMounted(() => {
                     <div class="tagLine">
                         <div class="miscLine">
                             <span class="citation">
-                                <span>引用</span>
+                                <span>{{i18n.t("thesisDetail.quote")}}</span>
                                 <strong>2</strong>
                             </span>
                             <span class="line-split">|</span>
                             <span class="views">
                                 <span>
-                                    <span>浏览</span>
+                                    <span>{{i18n.t("thesisDetail.browse")}}</span>
                                     <span>371</span>
                                 </span>
                             </span>
@@ -222,8 +208,7 @@ onMounted(() => {
 
 <style scoped>
 .main {
-    position: absolute;
-    top: 10vh;
+    margin-top: 10vh;
     display: flex;
     width: 100%;
     min-height: 90vh;

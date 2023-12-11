@@ -2,7 +2,11 @@ export default {
   navigateBar: {
     homePage: "Home",
     search: "Search",
-    login: "Login"
+    login: "Login",
+    conferences: "Conferences",
+    institution: "Institution",
+    field: "Field",
+    researcher: "Researcher"
   },
   loginMode: {
     inputUsername: "Please input Username",
@@ -27,6 +31,13 @@ export default {
     handleAchievementCertification:"Handle Achievement Certification",
     handleAchievementGrievances:"Handle Achievement Grievances",
 
+  },
+  thesisDetail:{
+    quote:"Quote",
+    browse:"Browse"
+  },
+  field: {
+    moreDetail: "More"
   }
   ,
   personInfo:{
