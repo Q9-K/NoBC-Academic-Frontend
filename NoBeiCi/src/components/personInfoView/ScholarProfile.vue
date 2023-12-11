@@ -109,7 +109,7 @@
                 avatar: 'https://img1.baidu.com/it/u=3096599450,2589974591&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
                 name: 'Doggy',
                 chineseName: '狗头人',
-                title: '',
+                title: '教授',
                 phone: '',
                 fax: '',
                 email: '',
@@ -125,19 +125,34 @@
                 gender: '',
                 language: ''
             },
+
+            links: [
+            { id: 1, url: 'https://example.com' },
+            { id: 2, url: 'https://example.com/research' },
+            { id: 3, url: 'https://example.com/papers' }
+            ],
         };
     },
 
     methods: {
       goToHomepage() {
-        // TODO: 跳转到学者个人主页的逻辑
-      },
-      sendEmail() {
-        // TODO: 打开学者个人邮箱的逻辑
-      },
-      goToTwitter() {
-        // TODO: 跳转到学者的Twitter页面的逻辑
-      },
+      const homepageUrl = this.links.find(link => link.id === 1)?.url;
+      if (homepageUrl) {
+        window.open(homepageUrl, '_blank');
+      }
+    },
+    goToEmail() {
+      const emailUrl = this.links.find(link => link.id === 2)?.url;
+      if (emailUrl) {
+        window.open(emailUrl, '_blank');
+      }
+    },
+    goToTwitter() {
+      const twitterUrl = this.links.find(link => link.id === 3)?.url;
+      if (twitterUrl) {
+        window.open(twitterUrl, '_blank');
+      }
+    },
       saveProfile() {
       // TODO: 提交修改后的学者信息的逻辑
       // 在这里可以将 this.editedProfile 中的数据发送至后端进行保存

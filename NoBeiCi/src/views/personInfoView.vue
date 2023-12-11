@@ -137,11 +137,11 @@
 
                     <el-form :model="person" label-width="80px">
                     <el-form-item label="名字">
-                        <el-input v-model="person.firstName"></el-input>
+                        <el-input v-model="person.realName"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓氏">
+                    <!-- <el-form-item label="姓氏">
                         <el-input v-model="person.lastName"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="昵称">
                         <el-input v-model="person.nickname"></el-input>
                     </el-form-item>
@@ -199,14 +199,76 @@
 
             </div>
         </transition>
-
+        
+        <!-- 我的关注 -->
         <transition name="el-fade-in-linear">
             <div v-if="chosenIndex == 3">
 
             <FollowTopics></FollowTopics>
 
-            
+            <div class="follow-list">
 
+                <div class="label">
+                    <p style="float: left;">我的关注</p>
+                </div>
+                <div style="margin-top: 2vh;">
+                            <el-menu
+                            :default-active="activeIndex"
+                            class="el-menu-demo"
+                            mode="horizontal"
+                            @select="handleSelect"
+                            
+                            active-text-color="#ffd04b"
+                        >   
+                            <!--  -->
+                            <el-menu-item index="1" @click="changeFollowContent(1)" >关注的学者</el-menu-item>
+                            <!---->
+                            <el-menu-item index="2" @click="changeFollowContent(2)">关注的期刊会议</el-menu-item>
+
+                            <el-menu-item index="3" @click="changeFollowContent(3)">关注的机构</el-menu-item>
+                            </el-menu>
+
+                            
+
+                            <transition name="el-fade-in-linear">
+                            <div v-if="followIndex == 1">  
+                                <FollowScholar></FollowScholar>
+                            </div>
+                            </transition>
+
+                            <transition name="el-fade-in-linear">
+                            <div v-if="followIndex == 2">  
+                                nmsl
+                            </div>
+                            </transition>
+
+                            <transition name="el-fade-in-linear">
+                            <div v-if="followIndex == 3">  
+                                nmsl
+                            </div>
+                            </transition>
+
+                </div>
+            </div >
+
+            </div>
+        </transition>
+
+        <!-- 论文收藏 -->
+        <transition name="el-fade-in-linear">
+            <div v-if="chosenIndex == 4">
+            
+            <PaperCollection></PaperCollection>
+            
+            </div>
+        </transition>
+
+        <!-- 浏览历史 -->
+        <transition name="el-fade-in-linear">
+            <div v-if="chosenIndex == 5">
+            
+            <BrowsingHistory></BrowsingHistory>
+            
             </div>
         </transition>
         
@@ -228,7 +290,9 @@ import RadarInfo from '../components/personInfoView/RadarInfo.vue';
 import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import FollowTopics from "../components/personInfoView/FollowTopics.vue";
-
+import FollowScholar from '../components/personInfoView/FollowScholar.vue';
+import PaperCollection from "../components/personInfoView/PaperCollection.vue";
+import BrowsingHistory from "../components/personInfoView/BrowsingHistory.vue";
 
 
 export default {
@@ -245,15 +309,15 @@ export default {
             },
 			chosenIndex: 1,
             person: {
-                firstName: '',
-                lastName: '',
-                nickname: '',
-                gender: '',
-                position: '',
+                realName: 'liu zhao feng',
+                nickname: 'morty',
+                gender: '男',
+                position: '教授',
                 subject: '',
                 organization: ''
             },
             informIndex: 1,
+            followIndex: 1,
 		};
 	},
     methods: {
@@ -285,6 +349,18 @@ export default {
 
       },
 
+    async changeFollowContent(index) {
+       this.followIndex = -1;
+          setTimeout(() => {
+          this.followIndex = index;
+        },200); // 这里设置一个延迟，
+       
+    console.log(`切换到follow${index}的内容`);
+    // localStorage.setItem('activeIndex:',this.activeIndex)
+
+      },
+
+
       saveForm() {
       // 在这里可以将表单数据保存到后端或执行其他操作
       console.log(this.form);
@@ -297,7 +373,10 @@ export default {
     RadarInfo,
     CooperationInfo,
     NavigateBar,
-    FollowTopics
+    FollowTopics,
+    FollowScholar,
+    PaperCollection,
+    BrowsingHistory
   },
 }
 </script>
@@ -308,6 +387,29 @@ export default {
 <style scoped>
 
 
+.follow-list{
+    margin-top: 3vh;
+    background-color: #fff;
+}
+.label{
+    font-size: 1.22222222em;
+    line-height: 1.09090909em;
+    color: #373737;
+    /* margin-bottom: 5vh; */
+    font-weight: 700;
+    /* float: left; */
+
+    height:1.5vh;
+    width: 100%;
+
+
+    padding-left: 1.4vw;
+    padding-top: 2vh;
+
+
+    background-color: #fff;
+    
+}
 
 
 .el-menu .el-menu-item.is-active, .el-menu .el-submenu.is-active {
