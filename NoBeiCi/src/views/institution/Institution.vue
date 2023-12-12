@@ -2,6 +2,7 @@
 import {ref,onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import NavigateBar from '../../components/NavigateBar.vue'
+import SearchBar from '../../components/SearchBar.vue'
 import i18n from "../../locales/index.js";
 const router = useRouter();
 const institutions = ref([
@@ -19,33 +20,44 @@ const institutions = ref([
 const goInstitution = (id) =>{
     router.push({ name: 'institutionDetail', params: { institutionId: id } });
 }
-
+const search = (value)=>{
+    console.log(value.value)
+}
 </script>
 
 <template>
+
+    <div class="header"><NavigateBar></NavigateBar></div>
     <el-scrollbar>
-  <div class="header"><NavigateBar></NavigateBar></div>
-  <div class="search"></div>
-  <div class="i-container">
-    <div v-for="item in institutions" class="card">
-        <div class="card-box" >
-            <div class="img-box">
-                <img
-                :src="item.img"
-                class="image"
-                />
-            </div>
-            <div style="padding: 14px">
-                <span>{{item.name}}</span>
-                <div class="bottom">
-                    <button text class="button" @click=goInstitution(item.id)>详细信息</button>
+        <div class="search">
+            <SearchBar 
+            @formDataChange="search"
+            ></SearchBar>
+        </div>
+        <div class="i-container">
+            
+            <div v-for="item in institutions" class="card">
+                <div class="card-box" >
+                    <div class="img-box">
+                        <img
+                        :src="item.img"
+                        class="image"
+                        />
+                    </div>
+                    <div style="padding: 14px">
+                        <span>{{item.name}}</span>
+                        <div class="bottom">
+                        <button text class="button" @click=goInstitution(item.id)>详细信息</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
         </div>
-    </div>
- 
-  </div>
-</el-scrollbar>
+    
+    </el-scrollbar>
+    <div class="page"><el-pagination background layout="total, prev, pager, next, jumper" :total="100" class="pagination" /></div>
+    
 </template>
 
 <style scoped lang="scss">
@@ -53,14 +65,13 @@ const goInstitution = (id) =>{
     height: 10vh;
 }
 .search{
-    margin-top: 5vh;
     height: 30vh;
 }
 .i-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    width: 90vw;
+    width: 100vw;
     height: 55vh;
     
     .card {
@@ -103,5 +114,10 @@ const goInstitution = (id) =>{
         box-shadow:  12px 12px 2px 1px  rgba(75, 72, 72, 0.907);
     }
     
+}
+.page{
+    height: 5vh;
+    display: flex;
+    justify-content: center;
 }
 </style>
