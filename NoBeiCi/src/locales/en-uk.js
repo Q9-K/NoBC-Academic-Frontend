@@ -33,5 +33,9 @@ export default {
     sortLatest:"Latest",
     sortEarliest:"Earliest",
     backToList:"Back",
+  },
+  thesisDetail:{
+    quote:"Quote",
+    browse:"Browse"
   }
 }

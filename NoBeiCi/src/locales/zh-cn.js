@@ -33,5 +33,9 @@ export default {
     sortLatest:"按时间最晚排序",
     sortEarliest:"按时间最早排序",
     backToList:"返回列表",
+  },
+  thesisDetail:{
+    quote:"引用",
+    browse:"浏览"
   }
 }
