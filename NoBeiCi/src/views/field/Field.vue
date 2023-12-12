@@ -95,8 +95,8 @@ const handleSearchField = (value) => {
 </script>
 
 <template>
-  <NavigateBar ></NavigateBar>>
-  <SearchBar :info="hhh" :search-function="handleSearchField"></SearchBar>
+  <NavigateBar ></NavigateBar>
+  <SearchBar style="position: absolute; top: 10vh;" :info="hhh" :search-function="handleSearchField"></SearchBar>
   <div id="popularFieldOuter" class="popular-field-outer">
     <div class="big-field-outer">
       <el-menu
