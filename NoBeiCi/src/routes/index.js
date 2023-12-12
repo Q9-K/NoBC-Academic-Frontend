@@ -64,6 +64,11 @@ const router = createRouter({
           component: () => import('../views/admin/ScholarClaim.vue'),
         }
       ]
+    },
+    {
+      path: '/field',
+      name: 'field',
+      component: () => import('../views/field/Field.vue')
     }
   ]
 })

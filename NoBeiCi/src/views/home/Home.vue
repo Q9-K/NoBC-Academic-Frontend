@@ -7,11 +7,12 @@ import NavigateBar from "../../components/NavigateBar.vue";
 import { Search } from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
-import journalProfileUrl from '../../assets/other/MOTO.jpg'
 import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
 import i18n from "../../locales/index.js";
 import {debounce} from "vue-debounce";
 import pinyin from "pinyin";
+
+const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
 
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)

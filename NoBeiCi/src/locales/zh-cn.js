@@ -2,7 +2,11 @@ export default {
   navigateBar: {
     homePage: "主页",
     search: "搜索学者、论文、期刊",
-    login: "去登录"
+    login: "去登录",
+    conferences: "期刊会议",
+    institution: "权威机构",
+    field: "流行领域",
+    researcher: "权威学者"
   },
   loginMode: {
     inputUsername: "请输入用户名",
@@ -37,5 +41,8 @@ export default {
   thesisDetail:{
     quote:"引用",
     browse:"浏览"
+  },
+  field: {
+    moreDetail: "更多"
   }
 }
