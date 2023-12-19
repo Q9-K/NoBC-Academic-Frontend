@@ -44,7 +44,7 @@ const search = (value)=>{
                         class="image"
                         />
                     </div>
-                    <div style="padding: 14px">
+                    <div>
                         <span>{{item.name}}</span>
                         <div class="bottom">
                         <button text class="button" @click=goInstitution(item.id)>详细信息</button>
@@ -66,6 +66,11 @@ const search = (value)=>{
 }
 .search{
     height: 30vh;
+}
+.image-viewer {
+  .el-image-viewer__mask {
+    opacity: 0.7;
+  }
 }
 .i-container {
     display: flex;
