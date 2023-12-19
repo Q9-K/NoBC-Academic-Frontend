@@ -1,10 +1,12 @@
 <script setup>
+import * as echarts from 'echarts'
 import { ref, onMounted } from 'vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import axios from "axios";
 import { computed } from 'vue'
 import i18n from "../locales/index.js";
-
+import chatInThesis from "../components/chatPDF/chatInThesis.vue"
+import { indexOf } from 'lodash';
 const abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
 const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
@@ -12,11 +14,39 @@ const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
 });
 const ifShowTranslate = ref(true)
-function showTranslate(){
+var works = ref([
+    { work_name: '1', authors: ["a", "b"], related: 3 },
+    { work_name: '1', authors: ["a", "b"], related: 3 },
+    { work_name: '1', authors: ["a", "b"], related: 3 }
+])
+var relavantWork = ref([{ work_name: '1', authors: ["a", "b"], related: 3 },
+{ work_name: '1', authors: ["a", "b"], related: 3 },
+{ work_name: '1', authors: ["a", "b"], related: 3 }
+])
+var relatedWork = ref([
+    { work_name: '1', authors: ["a", "b"], related: 3 },
+    { work_name: '1', authors: ["a", "b"], related: 3 },
+    { work_name: '1', authors: ["a", "b"], related: 3 }
+])
+var isHighlighted1 = ref(true)
+var isHighlighted2 = ref(false)
+function showTranslate() {
     ifShowTranslate.value = !ifShowTranslate.value;
 }
 function showAllAbstract() {
     ifShowMoreButton.value = !ifShowMoreButton.value;
+}
+function setRelated() {
+    works = relatedWork
+    isHighlighted1.value = true
+    isHighlighted2.value = false
+    console.log(isHighlighted2)
+}
+function setRelavant() {
+    works = relavantWork
+    isHighlighted1.value = false
+    isHighlighted2.value = true
+    console.log(isHighlighted2)
 }
 async function getThesisData() {
     try {
@@ -32,14 +62,73 @@ async function getThesisData() {
         console.error(error.response.data);
     }
 }
-
 onMounted(() => {
-    getThesisData();
-    console.log(ifShowMoreButton.value)
-});
+    // getThesisData();
+    const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
+    const data = {
+        name: "计算机科学",
+        children: [
+            {
+                name: "人工智能",
+                children: [
+                    {
+                        name: "计算机视觉",
+                    }, {
+                        name: "自然语言处理"
+                    }
+                ]
+            }, {
+                name: "软件工程",
+                children: [
+                    {
+                        name: "面向对象软件工程",
+                    }, {
+                        name: "智能化软件工程"
+                    }
+                ]
+            }
+        ]
+    }
+    const options = {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [
+            {
+                type: 'tree',
+                data: [data],
+                top: '1%',
+                left: '10%',
+                bottom: '1%',
+                right: '20%',
+                symbolSize: 7,
+                label: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right',
+                    fontSize: 12
+                },
+                leaves: {
+                    label: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                },
+                emphasis: {
+                    focus: 'descendant'
+                },
+                expandAndCollapse: true,
+                animationDuration: 550,
+                animationDurationUpdate: 750
+            }
+        ]
+    }
 
-// translate.setUseVersion2(); //设置使用v2.x 版本
-// translate.execute(); //执行翻译初始化操作，显示出select语言选择
+    treemapOfBigField.hideLoading();
+    treemapOfBigField.setOption(options)
+});
 </script>
 
 <template>
@@ -100,13 +189,13 @@ onMounted(() => {
                     <div class="tagLine">
                         <div class="miscLine">
                             <span class="citation">
-                                <span>{{i18n.t("thesisDetail.quote")}}</span>
+                                <span>{{ i18n.t("thesisDetail.quote") }}</span>
                                 <strong>2</strong>
                             </span>
                             <span class="line-split">|</span>
                             <span class="views">
                                 <span>
-                                    <span>{{i18n.t("thesisDetail.browse")}}</span>
+                                    <span>{{ i18n.t("thesisDetail.browse") }}</span>
                                     <span>371</span>
                                 </span>
                             </span>
@@ -126,7 +215,7 @@ onMounted(() => {
                                         <div class="abstract-reasonWrap">
                                             <div class="abstract-more" :style="allAbstractStyles">
                                                 <div style="text-align: left;font-size: 14px;font-weight: 400;">
-                                                   {{ abstract }} 
+                                                    {{ abstract }}
                                                 </div>
                                                 <span v-if="ifShowMoreButton" class="abstract-morebtn">
                                                     <span class="morebtn" @click="showAllAbstract">更多</span>
@@ -135,8 +224,10 @@ onMounted(() => {
                                                     <span class="morebtn" @click="showAllAbstract">收起</span>
                                                 </span>
                                             </div>
-                                            <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">查看译文</div>
-                                            <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">收起译文</div>
+                                            <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
+                                                查看译文</div>
+                                            <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">
+                                                收起译文</div>
                                             <div style="margin-top: 5px;line-height: 22px" v-if="!ifShowTranslate">
                                                 <p style="text-align: left;">{{ translate }}</p>
                                             </div>
@@ -194,12 +285,45 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
+                <div class="relation">
+                    <div class="relavant">相关论文</div>
+                    <div class="relavantDetail">
+                        <div class="relavantDetailHead">
+                            <div class="first" @click="setRelated" :class="{ highlighted: isHighlighted1 }">
+                                <el-icon style="margin-right: 5px;font-size:20px">
+                                    <Document />
+                                </el-icon>
+                                引用论文
+                            </div>
+                            <div class="second" @click="setRelavant" :class="{ highlighted: isHighlighted2 }">
+                                <el-icon style="margin-right: 5px;font-size:20px">
+                                    <Document />
+                                </el-icon>
+                                相关论文
+                            </div>
+                        </div>
+                        <div class="relavantDetailBody">
+                            <div v-for="work in works" class="relavantWork">
+                                <div class="work_name">{{ work.work_name }}</div>
+                                <div class="author_names">
+                                    <div v-for="name in work.authors" class="author_name">
+                                        <div> {{ name }} </div>
+                                    </div>
+                                </div>
+                                <div class="work_related">
+                                    {{ work.related }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="relationHead">引文网络</div>
+                    <div id="containerOfTreemap" class="map"></div>
+                </div>
             </div>
             <div class="chat">
                 <div>
-                    <div class="rightBar">
-                        hello
-                    </div>
+                    <chatInThesis class="rightBar"></chatInThesis>
                 </div>
             </div>
         </div>
@@ -212,7 +336,9 @@ onMounted(() => {
     display: flex;
     width: 100%;
     min-height: 90vh;
+    height: auto;
     background-color: #f2f4f7;
+    overflow-x: hidden;
 
     .indexArticle {
         width: 100%;
@@ -222,14 +348,13 @@ onMounted(() => {
         padding-right: 15px;
         margin: 0 auto;
         position: relative;
-        --width_video: 29%;
-        --gap: 5%;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         padding-top: 30px;
         background: #f2f4f7;
         max-width: 1440px;
+        overflow-x: hidden;
 
         .indexContent {
             width: 100%;
@@ -420,6 +545,7 @@ onMounted(() => {
                                                 right: 0;
                                                 z-index: 10;
                                             }
+
                                             .abstract-morebtn2 {
                                                 font-size: 12px;
                                                 margin-left: 2px;
@@ -636,6 +762,134 @@ onMounted(() => {
                     }
                 }
             }
+
+            .relation {
+                margin-top: 3vh;
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: start;
+                background-color: #fff;
+
+                .relavant {
+                    padding: 20px;
+                    font-weight: 700;
+                    font-size: large;
+                }
+
+                .relavantDetail {
+                    padding-left: 20px;
+                    width: 100%;
+                    border-color: #979797;
+                    display: flex;
+                    flex-direction: column;
+
+                    .relavantDetailHead {
+                        flex-direction: row;
+                        display: flex;
+                        align-items: center;
+                        justify-content: start;
+                        width: 100%;
+                        border: solid;
+                        border-left: hidden;
+                        border-right: hidden;
+                        border-top: hidden;
+                        border-width: 1px;
+                        
+
+                        .first {
+                            width: 114px;
+                            height: 40px;
+                            border: solid;
+                            border-color: #979797;
+                            border-width: 1px;
+                            margin-right: 1px;
+                            font-size: 13px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 600;
+                        }
+
+                        .second {
+                            width: 114px;
+                            height: 40px;
+                            border: solid;
+                            border-color: #979797;
+                            border-width: 1px;
+                            margin-right: 1px;
+                            font-size: 13px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 600;
+                        }
+
+                        .highlighted {
+                            color: #4759c5;
+                            background-color: #fafafa;
+                            border-bottom: hidden;
+                        }
+                    }
+
+                    .relavantDetailBody {
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: start;
+
+                        .relavantWork {
+                            padding-top: 10px;
+                            padding-bottom: 10px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            width: 100%;
+                            height: 10vh;
+
+                            .work_name {
+                                margin-left: 20px;
+                            }
+
+                            .author_names {
+                                margin-left: 20px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: start;
+                                flex-direction: row;
+
+                                .author_name {
+                                    width: auto;
+                                }
+                            }
+
+                            .work_related {
+                                margin-left: 20px;
+                            }
+                        }
+                    }
+
+                }
+
+                .relationHead {
+                    padding: 20px;
+                    font-weight: 700;
+                    font-size: large;
+                }
+
+
+                .map {
+                    align-self: center;
+                    margin-top: 20px;
+                    min-width: 70%;
+                    width: auto;
+                    min-height: 30vh;
+                    height: auto;
+                }
+            }
         }
 
         .chat {
@@ -645,6 +899,7 @@ onMounted(() => {
                 flex: 0 0 370px;
                 max-width: 370px;
                 min-width: 370px;
+                height: 70vh;
             }
         }
     }
@@ -653,5 +908,4 @@ onMounted(() => {
 .all {
     display: flex;
     flex-direction: column;
-}
-</style>
+}</style>

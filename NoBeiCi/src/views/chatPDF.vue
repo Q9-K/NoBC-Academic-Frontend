@@ -45,7 +45,8 @@ onMounted(() =>{
     <Search class="search" :info="inform" @formDataChange="handleChildEvent"></Search>
   </div>
 </template>
-<style scoped> .main {
+<style scoped> 
+.main {
    width: 100%;
    height: auto;
    display: flex;
@@ -57,6 +58,6 @@ onMounted(() =>{
  .navbar {}
 
  .search {
-   margin-top: 10vh;
+
  }
 </style>
