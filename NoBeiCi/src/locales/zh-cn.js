@@ -8,14 +8,6 @@ export default {
     field: "流行领域",
     researcher: "权威学者"
   },
-  loginMode: {
-    inputUsername: "请输入用户名",
-    inputPassword: "请输入密码",
-    makeSurePassword: "请再次确认密码",
-    inputEmail: "请输入邮箱",
-    loginButton: "登录",
-    registerButton: "注册",
-  },
   homePage: {
     search: "搜索学者、论文、期刊",
     slogan: "使用NoBC，学术生涯再无背刺！",
@@ -37,5 +29,31 @@ export default {
   },
   field: {
     moreDetail: "更多"
+  },
+  priorDialog: {
+    enter: "登录注册",
+    selectField: "选择关注领域",
+    success: "成功",
+    loginMode: {
+      inputEmail: "邮箱",
+      inputPassword: "密码",
+      loginButton: "登录",
+      registerButton: "去注册",
+    },
+    registerMode: {
+      inputUsername: "用户名",
+      inputPassword: "密码",
+      inputMakeSurePassword: "确认密码",
+      inputEmail: "邮箱",
+      inputCaptcha: "验证码",
+      registerButton: "注册",
+    },
+    selectFieldMode: {
+      select: "选择您的关注领域",
+      finishSelect: "选好了"
+    },
+    finishMode: {
+      finish: "注册成功！欢迎使用NoBC学术搜索！"
+    }
   }
 }

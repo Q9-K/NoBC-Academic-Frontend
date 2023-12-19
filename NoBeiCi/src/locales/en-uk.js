@@ -8,14 +8,6 @@ export default {
     field: "Field",
     researcher: "Researcher"
   },
-  loginMode: {
-    inputUsername: "Please input Username",
-    inputPassword: "Please input Password",
-    makeSurePassword: "Make sure your Password",
-    inputEmail: "Please input Email",
-    loginButton: "Sign in",
-    registerButton: "Register",
-  },
   homePage: {
     search: "Search for scholars, papers and journals",
     slogan: "Use NoBC, no more backstabbing in your academic career!",
@@ -38,5 +30,31 @@ export default {
   },
   field: {
     moreDetail: "More"
+  },
+  priorDialog: {
+    enter: "Enter",
+    selectField: "Select Interests",
+    success: "Success",
+    loginMode: {
+      inputEmail: "Email",
+      inputPassword: "Password",
+      loginButton: "Sign in",
+      registerButton: "Register",
+    },
+    registerMode: {
+      inputUsername: "Username",
+      inputPassword: "Password",
+      inputMakeSurePassword: "Repeat Password",
+      inputEmail: "Email",
+      inputCaptcha: "Verification Code",
+      registerButton: "Register",
+    },
+    selectFieldMode: {
+      select: "Select your Interests",
+      finishSelect: "I've selected"
+    },
+    finishMode: {
+      finish: "OK! Welcome to NoBC Academic!"
+    }
   }
 }
