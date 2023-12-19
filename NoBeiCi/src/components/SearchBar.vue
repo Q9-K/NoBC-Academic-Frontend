@@ -107,7 +107,7 @@ const handleSearch = debounce((value) => {
       console.log(upperSearchBar.getOptions)
     })
 
-}, "800ms")
+}, "10ms")
 
 </script>
 <style scoped>
