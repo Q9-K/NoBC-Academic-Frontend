@@ -11,6 +11,7 @@ import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
 import i18n from "../../locales/index.js";
 import {debounce} from "vue-debounce";
 import pinyin from "pinyin";
+import PreDialog from "./PriorDialog.vue";
 
 const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
 
@@ -93,6 +94,7 @@ const handleSearchButtonClick = debounce(() => {
 </script>
 
 <template>
+  <PreDialog />
   <NavigateBar :whether-search-input-visible="isTopSearchInputVisible" />
   <div class="home-page-outer">
     <div class="search-area-outer">
