@@ -14,10 +14,17 @@ const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
 const isRegister = 2
 
-const isSearchInputVisible = ref(false)
+let isSearchInputVisible
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
+
+if (props.whetherSearchInputVisible === undefined) {
+  isSearchInputVisible = ref(true)
+}
+else {
+  isSearchInputVisible = ref(false)
+}
 
 watch(
   () => props.whetherSearchInputVisible,

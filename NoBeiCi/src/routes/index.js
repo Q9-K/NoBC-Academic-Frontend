@@ -23,9 +23,14 @@ const router = createRouter({
       component: () => import('../views/chatPDF.vue')
     },
     {
-      path: '/scholar',
-      name: 'scholar',
-      component: () => import('../views/Scholar/AuthoritativeScholar.vue')
+      path: '/institution',
+      name: "institution",
+      component: () => import('../views/institution/Institution.vue'),
+    },
+    {
+      path: '/institution/:institutionId',
+      name: "institutionDetail",
+      component: () => import('../views/institution/InstitutionDetail.vue'),
     },
     {
       path: '/admin',

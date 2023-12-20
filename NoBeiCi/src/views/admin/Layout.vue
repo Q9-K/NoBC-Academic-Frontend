@@ -12,7 +12,7 @@ const menuClickHandler = (index)=>{
 
 <template>
   <div class="header"><NavigateBar></NavigateBar></div>
-  <div class="container">
+  <div class="admin-container">
     <div class="left-tool">
         <el-menu
         active-text-color="#ffd04b"
@@ -38,9 +38,13 @@ const menuClickHandler = (index)=>{
         </el-menu-item>
       </el-menu>
     </div>
+
     <div class="display">
+      <el-scrollbar>
         <router-view></router-view>
+      </el-scrollbar>
     </div>
+ 
   </div>
 
 </template>
@@ -49,8 +53,8 @@ const menuClickHandler = (index)=>{
 .header {
     height: 10vh;
 }
-.container {
-    width: 100vw;
+.admin-container {
+    width: 97vw;
     display: flex;
     margin-top: 5vh;
     height: 85vh;
@@ -68,10 +72,18 @@ const menuClickHandler = (index)=>{
         }
     }
     .display {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       background-color: #f0f1f4;
+        padding: 5px;
         width: 80%;
         overflow-y: scroll;
-
+        overflow-x:hidden;
+    }
+    .display::-webkit-scrollbar {
+      display: none; /* Chrome Safari */
     }
 }
+
+
 </style>
