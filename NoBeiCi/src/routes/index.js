@@ -54,11 +54,6 @@ const router = createRouter({
           component: () => import('../views/admin/AchievementClaim.vue'),
         },
         {
-          path: 'achievementPublication',
-          name: "achievementPublication",
-          component: () => import('../views/admin/AchievementPublication.vue'),
-        },
-        {
           path: 'scholarClaim',
           name: "scholarClaim",
           component: () => import('../views/admin/ScholarClaim.vue'),
