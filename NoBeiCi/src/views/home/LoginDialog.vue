@@ -27,11 +27,11 @@ const handleLogin = () => {
     .then((response) => {
       handleResponse(response, true, (data) => {
 
-        localStorage.setItem('userInformation', {
+        localStorage.setItem('userInformation', JSON.stringify({
           username: data.name,
           email: email.value,
           token: data.token,
-        })
+        }))
 
         stateOfPriorDialog.closeDialog()
       })

@@ -92,11 +92,11 @@ const handleRegister = () => {
     .then((response) => {
       handleResponse(response, false, (data) => {
 
-        localStorage.setItem('userInformation', {
+        localStorage.setItem('userInformation', JSON.stringify({
           username: userName.value,
           email: email.value,
           token: data,
-        })
+        }))
 
         stateOfPriorDialog.setView(SELECT_FIELD)
         stateOfPriorDialog.setStep(1)
