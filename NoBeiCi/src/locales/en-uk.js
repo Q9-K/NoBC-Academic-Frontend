@@ -27,10 +27,15 @@ export default {
   admin:{
     reviewScholarCertification:"Review Scholar Certification",
     handleScholarGrievances:"Handle Scholar Grievances",
-    handleAchievementPublication:"Handle Achievement Publication",
     handleAchievementCertification:"Handle Achievement Certification",
     handleAchievementGrievances:"Handle Achievement Grievances",
-
+    detail:"Detail",
+    applicantName:"Applicant",
+    scholarName:"Scholar's Name",
+    applicationTime:"Application time",
+    sortLatest:"Latest",
+    sortEarliest:"Earliest",
+    backToList:"Back",
   },
   thesisDetail:{
     quote:"Quote",

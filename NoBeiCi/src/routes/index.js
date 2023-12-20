@@ -28,6 +28,16 @@ const router = createRouter({
       component: () => import('../views/chatPDF.vue')
     },
     {
+      path: '/institution',
+      name: "institution",
+      component: () => import('../views/institution/Institution.vue'),
+    },
+    {
+      path: '/institution/:institutionId',
+      name: "institutionDetail",
+      component: () => import('../views/institution/InstitutionDetail.vue'),
+    },
+    {
       path: '/admin',
       name: "admin",
       component: () => import('../views/admin/Layout.vue'),
@@ -47,11 +57,6 @@ const router = createRouter({
           path: 'achievementClaim',
           name: "achievementClaim",
           component: () => import('../views/admin/AchievementClaim.vue'),
-        },
-        {
-          path: 'achievementPublication',
-          name: "achievementPublication",
-          component: () => import('../views/admin/AchievementPublication.vue'),
         },
         {
           path: 'scholarClaim',
