@@ -2,7 +2,8 @@ export default {
   navigateBar: {
     homePage: "Home",
     search: "Search",
-    login: "Login",
+    logout: "Logout",
+    toUserPage: "Personal Center",
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",
@@ -55,6 +56,26 @@ export default {
     },
     finishMode: {
       finish: "OK! Welcome to NoBC Academic!"
+    }
+  },
+  fieldDetail: {
+    starField: "Star this Field",
+    cancelStarField: "Cancel Star",
+    summaryIndex: "Cumulative Historical",
+    twoYearsIndex: "Recent 2-year",
+    citedByCount: "cited by count",
+    i10Index: "i10-index",
+    hIndex: "h-index",
+    oaPercent: "OA percent",
+    impactFactor: "impact factor",
+    worksCount: "works count",
+    trend: "Trend",
+    relation: "Relation",
+    paper: "Paper",
+    scholar: "Scholar",
+    trendTab: {
+      titleOfWorkLine: "Works and OA Works",
+      titleOfCitedLine: "Cited"
     }
   }
 }

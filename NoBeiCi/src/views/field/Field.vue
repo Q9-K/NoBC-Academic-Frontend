@@ -3,13 +3,14 @@
 import * as echarts from 'echarts'
 import NavigateBar from "../../components/NavigateBar.vue";
 import DividerLine from "../../components/DividerLine.vue";
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
 import axios from "axios";
 import i18n from "../../locales/index.js";
 import {handleResponse} from "../../functions/handleResponse.js";
 import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 import SearchBar from "../../components/SearchBar.vue";
 import {checkIsChinese} from "../../functions/checkIsChinese.js";
+import router from "../../routes/index.js";
 
 onMounted(() => {
   const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
@@ -92,11 +93,24 @@ const handleSearchField = (value) => {
     })
   })
 }
+
+const handleSelectField = (value) => {
+  let fullId = ''
+  fullId += value
+  const depart = fullId.split('/')
+  let id = depart.at(depart.length - 1)
+  router.push('/fieldDetail/' + id)
+}
 </script>
 
 <template>
   <NavigateBar ></NavigateBar>
-  <SearchBar style="position: absolute; top: 10vh;" :info="hhh" :search-function="handleSearchField"></SearchBar>
+  <SearchBar
+    style="position: absolute; top: 10vh;"
+    :info="'hhh'"
+    :search-function="handleSearchField"
+    :select-function="handleSelectField"
+  ></SearchBar>
   <div id="popularFieldOuter" class="popular-field-outer">
     <div class="big-field-outer">
       <el-menu
@@ -226,6 +240,13 @@ const handleSearchField = (value) => {
               </div>
             </div>
           </template>
+          <template #default>
+            <div class="simple-information-card-body">
+              <div class="information-description">
+                field of computer science and engineering practices for intelligence demonstrated by machines and intelligent agents
+              </div>
+            </div>
+          </template>
         </el-card>
       </div>
     </div>
@@ -315,6 +336,15 @@ const handleSearchField = (value) => {
               height: 50%;
               width: 60%;
             }
+          }
+        }
+        .simple-information-card-body {
+          height: fit-content;
+          width: 100%;
+          .information-description {
+            text-align: start;
+            font-family: "Fira Code Medium",serif;
+            font-size: large;
           }
         }
       }

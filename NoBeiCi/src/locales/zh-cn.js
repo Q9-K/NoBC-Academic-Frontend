@@ -2,7 +2,8 @@ export default {
   navigateBar: {
     homePage: "主页",
     search: "搜索学者、论文、期刊",
-    login: "去登录",
+    logout: "退出登录",
+    toUserPage: "个人中心",
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
@@ -54,6 +55,26 @@ export default {
     },
     finishMode: {
       finish: "注册成功！欢迎使用NoBC学术搜索！"
+    }
+  },
+  fieldDetail: {
+    starField: "关注此领域",
+    cancelStarField: "不再关注",
+    summaryIndex: "累计指标",
+    twoYearsIndex: "近2年指标",
+    citedByCount: "被引用量",
+    i10Index: "i10指数",
+    hIndex: "h指数",
+    oaPercent: "OA占比",
+    impactFactor: "影响因子",
+    worksCount: "作品总计",
+    trend: "趋势",
+    relation: "关系",
+    paper: "论文",
+    scholar: "学者",
+    trendTab: {
+      titleOfWorkLine: "作品数和OA作品数",
+      titleOfCitedLine: "引用量"
     }
   }
 }

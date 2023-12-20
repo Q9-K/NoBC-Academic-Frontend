@@ -12,6 +12,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @search="handleSearch"
+        @select="handleOptionSelect"
       ></a-select>
     </div>
     <div class="info">
@@ -81,10 +82,17 @@ const props = defineProps({
   info: String,
   searchFunction: {
     type: Function
+  },
+  selectFunction: {
+    type: Function
   }
 })
 const options = ref([]);
 const value = ref(undefined);
+
+const handleOptionSelect = (value) => {
+  props.selectFunction(value)
+}
 
 const handleBlur = () => {
   console.log('blur');

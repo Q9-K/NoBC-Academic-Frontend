@@ -7,6 +7,7 @@ import {ElMessage} from "element-plus";
  * @param handleData 处理数据的函数，注意，其参数直接就是data.data
  */
 export const handleResponse = (response, whetherShowSuccess, handleData) => {
+  console.log(response)
   const {status, data, statusText} = response
   if (status !== 200) {
     ElMessage({
@@ -17,7 +18,7 @@ export const handleResponse = (response, whetherShowSuccess, handleData) => {
   else {
     if (data.code !== 200) {
       ElMessage({
-        message: data.message,
+        message: data.msg,
         type: "warning"
       })
     }
