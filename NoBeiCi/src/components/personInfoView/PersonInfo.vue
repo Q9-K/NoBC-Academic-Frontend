@@ -74,11 +74,20 @@
 
 <script setup>
 import i18n from "../../locales/index.js";
+
 </script>
   
   <script>
+  import axios from 'axios';
   export default {
     name: 'PersonalInfo',
+
+    props: {
+      scholarId: {
+      type: Number,
+      required: true
+    }
+    },
     data() {
       return {
         profile: {
@@ -111,7 +120,27 @@ import i18n from "../../locales/index.js";
       },
       cancelEdit(item){
         this.editing[item] = false;
-      }
+      },
+
+      loadprofile(){
+        return axios.get('http://100.92.186.118:8000'+'/personInfo/get_scholar_basic_information',{
+          params:{
+            author_id: this.author_id
+          }
+        }).then((response)=>{
+          handleResponse(response,true,(data)=>{
+            console.log(data)
+            this.profile = data
+          })
+        })
+    },
+    },
+
+
+    mounted(){
+      console.log("ScholarId:",this.scholarId)
+      this.loadprofile();
+      
     }
   }
   </script>

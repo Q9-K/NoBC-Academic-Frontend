@@ -5,37 +5,79 @@
                 <!-- 左侧 -->
                 <div class="left-part">
                     <ScholarCardView :scholar="scholar"></ScholarCardView>
-                    <PersonalInfo></PersonalInfo>
+                    <PersonalInfo :scholar-id="this.author_id"></PersonalInfo>
                 </div>
 
                 <!-- 中间 -->
                 <div class="middle-part">
+                    <div class="middle-up">
+                        <ColumnPlot></ColumnPlot>
+                    </div>
 
+                    <div class="middle-down">
+                        <p class="inherited-styles-for-exported-element">论文列表</p>
+                    </div>
                 </div>
 
                 <!-- 右侧 -->
                 <div class="right-part">
                     <radar-info :data="scholarMetrics"></radar-info>
-                    <CooperationInfo></CooperationInfo>
+
+                    <el-menu
+                        :default-active="activeIndex"
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        @select="handleSelect"
+                        
+                        active-text-color="#6e83f7"
+
+                        style="height: 4vh;margin-top: 2vh;"
+                    >   
+                        <!-- 合作学者 -->
+                        <el-menu-item index="1" @click="changeCooperationContent(1)" >{{ i18n.t("personInfo.cooperationScholar") }}</el-menu-item>
+                        <!-- 合作机构 -->
+                        <el-menu-item index="2" @click="changeCooperationContent(2)">{{ i18n.t("personInfo.cooperationAgency") }}</el-menu-item>
+                        </el-menu>
+
+                        <transition name="el-fade-in-linear">
+                        <div v-if="cooperationIndex == 1">  
+                            <CooperationInfo :scholar-id="this.author_id"></CooperationInfo>
+                        </div>
+                        </transition>
+
+                        <transition name="el-fade-in-linear">
+                        <div v-if="cooperationIndex == 2">  
+                            <CooperationAgencyVue :scholar-id="this.author_id"></CooperationAgencyVue>
+                        </div>
+                        </transition>
+                    
                 </div>
             
             </div>
     </div>
     
 </template>
+<script setup>
+import i18n from "../locales/index.js";
+</script>
 
 <script>
 import PersonalInfo from '../components/personInfoView/PersonInfo.vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import RadarInfo from '../components/personInfoView/RadarInfo.vue';
-import CooperationInfo from '../components/personInfoView/CooperationInfo.vue';
+import CooperationInfo from '../components/personInfoView/CooperationScholar.vue';
 
 import ScholarCardView from '../components/authorhomeView/ScholarCardView.vue';
+import CooperationAgencyVue from "../components/personInfoView/CooperationAgency.vue";
+
+import ColumnPlot from "../components/authorhomeView/ColumnPlot.vue";
+
 
 export default {
     data(){
         return{
-            authorId: 1,
+            author_id: 1,
+            cooperationIndex:1,
             
             scholarMetrics: {
                 Papers: 100,
@@ -57,7 +99,21 @@ export default {
         };
     },
     methods:{
+        async changeCooperationContent(index) {
+       this.cooperationIndex = -1;
+          setTimeout(() => {
+          this.cooperationIndex = index;
+        },200); // 这里设置一个延迟，
+       
+    console.log(`切换到follow${index}的内容`);
+    // localStorage.setItem('activeIndex:',this.activeIndex)
 
+      },
+    },
+
+    mounted(){
+        this.author_id = 'https://openalex.org/'+this.$route.params.id;
+        console.log("id:",this.author_id)
     },
 
     components:{
@@ -65,17 +121,32 @@ export default {
         NavigateBar,
         RadarInfo,
         CooperationInfo,
-        ScholarCardView
+        ScholarCardView,
+        CooperationAgencyVue,
+        ColumnPlot,
     },
 }   
 </script>
 
 <style scoped>
 
+.inherited-styles-for-exported-element {
+  color: #414040;
+  font-family: "PingFang SC", "Microsoft YaHei", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight:600;
+  /* line-height: 16px; */
+  /* tab-size: 4; */
+
+  text-align: left;
+  margin-left: 3vw;
+  /* margin-top: 1vh; */
+  margin-bottom: 2vh;
+
+  word-break: break-word;
+
+}
     
-
-
-
 
 .background{
     background-color: #f0f1f4;
@@ -95,8 +166,20 @@ export default {
 }
 .middle-part{
     width: 47vw;
-    background-color: #3357c3;
+    /* background-color: #3357c3; */
 }
+
+.middle-up{
+    background-color: #fbfcff;
+    margin-bottom: 3vh;
+    /* height: 30vh; */
+}
+
+.middle-down{
+    background-color: #fbfcff;
+}
+
+
 .right-part{
     width: 20vw;
     margin-left: 2vw;

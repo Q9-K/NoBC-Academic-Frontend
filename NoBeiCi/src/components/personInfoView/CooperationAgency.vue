@@ -1,11 +1,11 @@
 <template>
     <div class="collaborators">
       
-        <p class="inherited-styles-for-exported-element">{{ $t("personInfo.associateScholar")}}</p>
+        <!-- <p class="inherited-styles-for-exported-element">{{ $t("personInfo.associateScholar")}}</p> -->
        
 
         <!-- 列表 -->
-        <div class="scholar-profile" v-for="(collaborator, index) in collaborators" :key="index" :span="8">
+        <div class="scholar-profile" v-for="(collaborator, index) in collaborators" :key="index" :span="8" @click="goToWebsite(collaborator)"  >
       
         
             <div class="left-panel">
@@ -17,11 +17,11 @@
             <div class="right-panel">
                 <div class="info">
                 <div style="display: flex;">
-                    <p class="name">{{ collaborator.name }}</p> 
-                    <span class="left-top">合作论文数</span>
+                    <p class="name">{{ collaborator.EnglishName }}</p> 
+                    <span class="left-top">{{ i18n.t("personInfo.cooperationArticle") }}</span>
                 </div>
                 <div style="display: flex;">
-                <p class="affiliation">{{ collaborator.organization }}</p>
+                <p class="affiliation">{{ collaborator.ChineseName }}</p>
                 <span class="left-bottom">{{ collaborator.paperCount }}</span>
                 </div>
                 </div>
@@ -33,34 +33,62 @@
       
     </div>
   </template>
+
+<script setup>
+import i18n from "../../locales/index.js";
+</script>
   
   <script>
+
   export default {
+
+    props: {
+      scholarId: {
+      type: Number,
+      required: true
+}
+    },
     data() {
       return {
         collaborators: [
           {
-            name: 'Person1',
-            organization: 'Beihang',
-            avatar: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202005%2F24%2F20200524220637_loonc.thumb.1000_0.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1699242184&t=f41c25580df306bdbac3cc339f5fb621',
-            paperCount: 10
+            EnglishName: 'Agency1',
+            ChineseName: '机构一',
+            avatar: 'https://lfs.aminer.cn/misc/aicityorg/Wuhan%20University.jpg',
+            paperCount: 10,
+            agencyId: 1,
           },
           {
-            name: 'Person2',
-            organization: 'Beihang',
-            avatar: 'https://img1.baidu.com/it/u=593704177,727860154&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-            paperCount: 5
+            EnglishName: 'Agency2',
+            ChineseName: '机构二',
+            avatar: 'https://lfs.aminer.cn/misc/aicityorg/Beihang%20University.jpg',
+            paperCount: 5,
+            agencyId: 2,
           },
           // 添加更多合作学者
         ]
       };
-    }
+    },
+
+    methods:{
+        goToWebsite(collaborator){
+            console.log("id:",collaborator.agencyId)
+            // const homepageUrl = 'www.wdwwada'+collaborator.agencyId
+            // if (homepageUrl) {
+            //     window.open(homepageUrl, '_blank');
+            // }
+        }
+    },
+
+    mounted(){
+        console.log("ScholarId:",this.scholarId)
+    },
   };
   </script>
   
   <style scoped>
   .collaborators {
-    margin-top: 2vh;
+    /* margin-top: 2vh; */
     background-color: rgb(255, 255, 255);
     padding-top: 0.5vh;
   }
@@ -105,6 +133,7 @@
   }
   
   .name {
+    margin-top: 1.5vh;
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 0vh;

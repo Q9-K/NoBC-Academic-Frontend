@@ -12,15 +12,43 @@
           <p class="affiliation">{{ this.scholarProfile.englishAffiliation }}</p>
         </div>
         <div class="buttons" v-if="!editing">
+          <!-- Homepage -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> HomePage:<br/>{{ scholarProfile.officialWebsite }} </template>
           <el-button type="primary" color="#626aef" @click="goToHomepage" circle>
             <el-icon><House /></el-icon>
             </el-button>
-          <el-button type="primary" color="#626aef" @click="sendEmail" circle>
+          </el-tooltip>
+
+          <!-- email -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> Email:<br/>{{ scholarProfile.email }} </template>
+          <el-button type="primary" color="#626aef" @click="goToEmail" circle>
             <el-icon><Message /></el-icon>
-        </el-button>
-          <el-button type="primary" color="#626aef" @click="goToTwitter" circle>
+          </el-button>
+          </el-tooltip>
+
+
+          <!-- google -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> Google:<br/>{{ scholarProfile.google }} </template>
+          <el-button type="primary" color="#626aef" @click="goToGoogle" circle>
             <el-icon><Message /></el-icon>
             </el-button>
+          </el-tooltip>
+
         </div>
         <div v-else>
         <el-form label-position="right"
@@ -89,14 +117,17 @@
   </template>
   
   <script>
+import axios from 'axios';
+import { handleResponse } from '../../functions/handleResponse.js'
+
   export default {
-    // name: 'ScholarProfile',
-    // props: {
-    //   scholar: {
-    //     type: Object,
-    //     required: true
-    //   }
-    // },
+    name: 'ScholarProfile',
+    props: {
+      scholarId: {
+      type: Number,
+      required: true
+}
+    },
     data(){
         return{
             // scholar: {
@@ -104,6 +135,7 @@
             //     name: 'Doggy (狗头人)',
             //     affiliation: 'Beihang University'
             // },
+            // author_id:1,
             editing: false,
             scholarProfile: {
                 avatar: 'https://img1.baidu.com/it/u=3096599450,2589974591&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
@@ -112,13 +144,13 @@
                 title: '教授',
                 phone: '',
                 fax: '',
-                email: '',
+                email: '3265092@qq.com',
                 englishAffiliation: 'Beihang University',
                 chineseAffiliation: '',
                 address: '',
                 personalWebsite: '',
-                officialWebsite: '',
-                google: '',
+                officialWebsite: 'https://www.baidu.com',
+                google: 'https://www.google.com',
                 twitter: '',
                 facebook: '',
                 youtube: '',
@@ -136,21 +168,27 @@
 
     methods: {
       goToHomepage() {
-      const homepageUrl = this.links.find(link => link.id === 1)?.url;
+      // const homepageUrl = this.links.find(link => link.id === 1)?.url;
+      const homepageUrl = this.scholarProfile.officialWebsite
+      console.log("goto:",homepageUrl)
       if (homepageUrl) {
         window.open(homepageUrl, '_blank');
       }
     },
     goToEmail() {
-      const emailUrl = this.links.find(link => link.id === 2)?.url;
-      if (emailUrl) {
-        window.open(emailUrl, '_blank');
-      }
+      // const emailUrl = this.links.find(link => link.id === 2)?.url;
+      const emailUrl = this.scholarProfile.email
+      console.log("goto:",emailUrl)
+      // if (emailUrl) {
+      //   window.open(emailUrl, '_blank');
+      // }
     },
-    goToTwitter() {
-      const twitterUrl = this.links.find(link => link.id === 3)?.url;
-      if (twitterUrl) {
-        window.open(twitterUrl, '_blank');
+    goToGoogle() {
+      // const twitterUrl = this.links.find(link => link.id === 3)?.url;
+      const Url = this.scholarProfile.google
+      console.log("goto:",Url)
+      if (Url) {
+        window.open(Url, '_blank');
       }
     },
       saveProfile() {
@@ -162,8 +200,31 @@
     },
     cancelEditing() {
       this.editing = false;
-    }
-    }
+    },
+
+
+    loadscholarProfile(){
+        return axios.get('http://100.92.186.118:8000'+'/author/get_author_by_id',{
+          params:{
+            author_id: this.author_id
+          }
+        }).then((response)=>{
+          handleResponse(response,true,(data)=>{
+            console.log(data)
+            this.scholarProfile = data
+          })
+        })
+    },
+
+    },
+
+
+    mounted(){
+        
+        console.log("ScholarId:",this.scholarId)
+        this.loadscholarProfile();
+
+    },
   }
   </script>
   

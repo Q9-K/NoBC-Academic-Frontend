@@ -50,6 +50,8 @@
 </template>
 
 <script lang="ts" setup>
+
+    import { onMounted } from 'vue'
     import { nextTick, ref } from 'vue'
     import { ElInput } from 'element-plus'
 
@@ -76,6 +78,14 @@
     inputVisible.value = false
     inputValue.value = ''
     }
+
+    onMounted(async () => {
+        // 从后端导入 dynamicTags
+        // const res = await fetch('/api/tags')
+        // const data = await res.json()
+        // dynamicTags.value = data.tags
+        console.log("entering tag page")
+    })
 
 
 </script>
@@ -119,7 +129,8 @@
     border-radius: 2px;
     background: #6e83f7;
     padding: 17px 20px 20px;
-    height: 20vh;
+    /* height: 20vh; */
+    min-height: 20vh;
     /* display: flex; */
 }
 

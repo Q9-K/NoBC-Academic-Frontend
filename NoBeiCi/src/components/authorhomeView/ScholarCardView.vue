@@ -12,15 +12,44 @@
       <div class="content">
         <p>{{ scholar.englishAffiliation }}</p>
         <div class="buttons" >
+
+          <!-- Homepage -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> HomePage:<br/>{{ scholar.officialWebsite }} </template>
           <el-button type="primary" color="#626aef" @click="goToHomepage" circle>
             <el-icon><House /></el-icon>
             </el-button>
-          <el-button type="primary" color="#626aef" @click="goToEmail" circle>
-            <el-icon><Message /></el-icon>
-        </el-button>
+          </el-tooltip>
+
+
+          <!-- email -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> Email:<br/>{{ scholar.address }} </template>
+            <el-button type="primary" color="#626aef" @click="goToEmail" circle>
+              <el-icon><Message /></el-icon>
+            </el-button>
+          </el-tooltip>
+
+          <!-- google -->
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              placement="top-start"
+            >
+            <template #content> Google:<br/>{{ scholar.google }} </template>
           <el-button type="primary" color="#626aef" @click="goToTwitter" circle>
             <el-icon><Message /></el-icon>
             </el-button>
+          </el-tooltip>
+          
         </div>
         <div class="actions">
           <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>关注</el-button>

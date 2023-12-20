@@ -6,16 +6,24 @@
         </div>
         <div class="info">
           <div class="name">{{ scholar.name }}</div>
-          <div class="papers">论文数：{{ scholar.papers }}</div>
-          <div class="intro">{{ scholar.intro }}</div>
+          <div class="papers">
+            <el-tag class="ml-2" type="" effect="plain">论文数：{{ scholar.papers }}</el-tag>
+            <el-tag class="ml-2" type="" effect="plain">H-index：{{ scholar.H_index }}</el-tag>
+          </div>
+          <div class="intro">{{ scholar.englishAffiliation }}</div>
           <el-button class="view-papers-btn" size="small" type="primary" @click="viewPapers(scholar)" link>
             查看论文
           </el-button>
         </div>
         <div class="follow-btn">
-          <el-button type="primary" size="default" @click="toggleFollow(scholar)">
-            {{ scholar.followed ? '已关注' : '关注' }}
+          
+          <el-button type="primary" size="mini" @click="toggleFollow(scholar)" color="#626aef" v-if="scholar.followed">
+            已关注
           </el-button>
+          <el-button type="primary" size="mini" @click="toggleFollow(scholar)" color="#626aef" v-else plain>
+            <el-icon><CirclePlus /></el-icon>关注
+          </el-button>
+        
         </div>
       </div>
     </div>
@@ -31,16 +39,18 @@
         scholars: [
           {
             avatar: 'https://avatarcdn.aminer.cn/upload/avatar/601/480/832/60adf2e09e795e52168e25b6_0.jpg!240',
-            name: '学者1',
+            name: '牛魔成本',
             papers: 10,
-            intro: '这是学者1的简介',
+            H_index:6,
+            englishAffiliation:"beihang University",
             followed: false,
           },
           {
             avatar: 'https://avatarcdn.aminer.cn/upload/avatar/713/992/1245/561dbb3945ce1e596487659e_1.jpg!240',
-            name: '学者2',
+            name: 'Otto',
             papers: 5,
-            intro: '这是学者2的简介',
+            H_index:7,
+            englishAffiliation:"beijing University",
             followed: true,
           },
           // 添加更多学者...
@@ -101,7 +111,10 @@
     font-size: 13px;
   }
   
-  .papers,
+  .papers{
+    margin-left: -1vw;
+  }
+
   .intro {
     font-size: 13px;
     margin-top: 5px;

@@ -26,7 +26,7 @@
             <div class="shouchang-button">
                 <el-button
                 type="primary"
-                size="mini"
+                
                 @click="toggleCollection(paper)"
                 color="#626aef"
                 v-if="paper.collected"
@@ -36,7 +36,7 @@
 
               <el-button
                 type="primary"
-                size="mini"
+                
                 @click="toggleCollection(paper)"
                 color="#626aef"
                 v-else
@@ -47,9 +47,19 @@
 
             </div>
             <div class="lower-button">
-              <el-button size="mini" color="#d9dde6" @click="viewCitation(paper)" >
+              <el-button  color="#d9dde6" @click="viewCitation(paper)" >
               引用
             </el-button>
+
+            <el-dialog
+                title="论文引用格式"
+                v-model="citationDialogVisible"
+                width="50%"
+              >
+                <p>{{ citationFormat }}</p>
+                <el-button @click="copyCitation">复制</el-button>
+              </el-dialog>
+
             </div>
             
           </div>
@@ -70,8 +80,10 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 export default {
     name: 'PaperCollectionList',
+    
   data() {
     return {
       paperCollection: [
@@ -95,9 +107,37 @@ export default {
         },
         // 添加更多论文...
       ],
+
+      citationDialogVisible: false, // 控制引用弹窗的显示状态
+      citationFormat: "作者. (年份). 标题. 期刊, 卷(期), 页码.", // 论文引用格式
     };
   },
   methods: {
+
+    // 复制引用格式
+    copyCitation() {
+      const textarea = document.createElement('textarea');
+      textarea.value = this.citationFormat;
+      document.body.appendChild(textarea);
+
+      // 选中并复制文本
+      textarea.select();
+      document.execCommand('copy');
+
+      // 移除textarea元素
+      document.body.removeChild(textarea);
+
+      // 提示复制成功
+      ElMessage({
+        message: '引用格式已复制成功',
+        type: 'success',
+      })
+      
+      console.log("引用格式已复制：" + this.citationFormat);
+      // 可以根据需要添加复制成功提示等逻辑
+    },
+
+
     toggleCollection(paper) {
       // 切换收藏状态
       paper.collected = !paper.collected;
@@ -105,6 +145,11 @@ export default {
     viewCitation(paper) {
       // 处理查看引用逻辑
       console.log('查看引用', paper);
+      //todo: 调用接口查看引用内容
+      //this.citationFormat = '.....'
+
+      this.citationDialogVisible = true
+
     },
   },
 
