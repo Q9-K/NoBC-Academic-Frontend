@@ -2,19 +2,12 @@ export default {
   navigateBar: {
     homePage: "主页",
     search: "搜索学者、论文、期刊",
-    login: "去登录",
+    logout: "退出登录",
+    toUserPage: "个人中心",
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
     researcher: "权威学者"
-  },
-  loginMode: {
-    inputUsername: "请输入用户名",
-    inputPassword: "请输入密码",
-    makeSurePassword: "请再次确认密码",
-    inputEmail: "请输入邮箱",
-    loginButton: "登录",
-    registerButton: "注册",
   },
   homePage: {
     search: "搜索学者、论文、期刊",
@@ -77,4 +70,50 @@ export default {
     bindNotice: "学者认证过程 <br />1.进入热门学者页面<br />2.进行学者的搜索<br />3.进入对应学者主页<br />4.点击'认领'按钮,进行学者的绑定<br /><br />",
     popularScholarPage: "热门学者页面",
   },
+  priorDialog: {
+    enter: "登录注册",
+    selectField: "选择关注领域",
+    success: "成功",
+    loginMode: {
+      inputEmail: "邮箱",
+      inputPassword: "密码",
+      loginButton: "登录",
+      registerButton: "去注册",
+    },
+    registerMode: {
+      inputUsername: "用户名",
+      inputPassword: "密码",
+      inputMakeSurePassword: "确认密码",
+      inputEmail: "邮箱",
+      inputCaptcha: "验证码",
+      registerButton: "注册",
+    },
+    selectFieldMode: {
+      select: "选择您的关注领域",
+      finishSelect: "选好了"
+    },
+    finishMode: {
+      finish: "注册成功！欢迎使用NoBC学术搜索！"
+    }
+  },
+  fieldDetail: {
+    starField: "关注此领域",
+    cancelStarField: "不再关注",
+    summaryIndex: "累计指标",
+    twoYearsIndex: "近2年指标",
+    citedByCount: "被引用量",
+    i10Index: "i10指数",
+    hIndex: "h指数",
+    oaPercent: "OA占比",
+    impactFactor: "影响因子",
+    worksCount: "作品总计",
+    trend: "趋势",
+    relation: "关系",
+    paper: "论文",
+    scholar: "学者",
+    trendTab: {
+      titleOfWorkLine: "作品数和OA作品数",
+      titleOfCitedLine: "引用量"
+    }
+  }
 }
