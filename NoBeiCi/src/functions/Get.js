@@ -60,23 +60,18 @@ instance.interceptors.response.use(
 );
 
 
-const request = (config) => {
-    const { url, params, dataType, showLoading = true, addToken = false,errorCallback, showError = true } = config
-    let contentType = contentTypeForm;
-    let fromData = new FormData();
-    for (let key in params) {
-        fromData.append(key, params[key] == undefined ? "" : params[key]);
-    }
-    if (dataType != null && dataType === "json") {
-        contentType = contentTypeJson;
-    }
+
+const get=(config)=>{
+    const { url, params, showLoading = true, addToken = false,errorCallback, showError = true } = config
+    let contentType = contentTypeJson;
     let headers = {
         'Content-Type': contentType,
         'X-Requested-With': 'XMLHttpRequest',
     }
-    return instance.post(url, fromData, {
+    return instance.get(url, {
         headers: headers,
         addToken: addToken,
+        params: params,
         showLoading: showLoading,
         errorCallback: errorCallback,
         showError: showError
@@ -87,5 +82,4 @@ const request = (config) => {
         return null;
     })
 }
-
-export default request;
+export default get;
