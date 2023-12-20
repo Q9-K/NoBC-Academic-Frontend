@@ -575,9 +575,10 @@ export default {
 
 
     console.log("userInfo:",localStorage.getItem("userInformation"))
-    // this.token = localStorage.getItem("userInformation").token
-    // this.email = localStorage.getItem("userInformation").email
-    // console.log("token:",this.token)
+
+    this.token = localStorage.getItem("userInformation").token
+    this.email = localStorage.getItem("userInformation").email
+    console.log("token:",this.token)
 
     this.loadscholarMetrics()
   },
