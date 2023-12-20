@@ -2,14 +2,32 @@
     <NavigateBar></NavigateBar>
     <SearchBar></SearchBar>
     <div class="main">
-        <div class="leftNavigate">
-            <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 256px"
-                mode="inline" :items="items" @click="handleClick"></a-menu>
+        <div class="filter">
+            <div v-for="layer,layerIndex in layers" class="filterOption">
+                <div class="filterName">
+                    {{ layer.name }}
+                </div>
+                <div v-for="option, index in layer.options" @click="chooseFilter(layerIndex)" class="option">
+                    {{ option }}
+                </div>
+            </div>
         </div>
-        <div class="detail">
-            <div v-for="author in authors">
-                <div class="author-block">
-                    
+        <div class="author">
+            <div class="leftNavigate">
+                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width: 213px"
+                    mode="inline" :items="items" @click="handleClick"></a-menu>
+            </div>
+            <div class="detail">
+                <div class="search">
+                    <div class="all">综合</div>
+                    <div class="hNum">h指数</div>
+                    <div class="thesisNum">论文数</div>
+                    <div class="usedNum">引用数</div>
+                </div>
+                <div v-for="author in authors">
+                    <div class="author-block">
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,6 +40,7 @@ import { reactive, ref, watch, h } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 const selectedKeys = ref(['1']);
 const openKeys = ref(['sub1']);
+var layers = ref([{name:"h指数:", options:[1,2,3,4]},{name:"性别:",options:['男','女']},{name:"地区",options:['中国','美国','俄罗斯','台湾省']}])
 function getItem(label, key, icon, children, type) {
     return {
         key,
@@ -39,7 +58,7 @@ const items = reactive([
     getItem('Navigation Two', 'sub2', () => h(AppstoreOutlined), [
         getItem('Option 5', '5'),
         getItem('Option 6', '6'),
-        getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
+        getItem('Submenu', 'sub3',null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
     ]),
     {
         type: 'divider',
@@ -50,7 +69,6 @@ const items = reactive([
         getItem('Option 11', '11'),
         getItem('Option 12', '12'),
     ]),
-    getItem('Group', 'grp', null, [getItem('Option 13', '13'), getItem('Option 14', '14')], 'group'),
 ]);
 const handleClick = e => {
     console.log('click', e);
@@ -60,20 +78,71 @@ watch(openKeys, val => {
 });
 
 const authors = reactive([1,2,3,4,5])
+function chooseFilter(index){
+    layers.filter(index)
+}
 </script>
 <style scoped>
 .main {
     position: absolute;
-    top: 40vh;
+    top: 41vh;
+    width: 100vw;
+    min-height: 60vh;
+    background-color: #f2f4f7;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+.filter{
+    width: 70vw;
+    margin-left: 15vw;
+    height: auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    border: solid #ccc;
+    border-width: 1px;
+    margin-bottom: 10px;
+}
+.filterOption{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: left;
+    border-bottom:solid #fff;
+    border-width: 1px;
+    height: 40px;
+    width: auto;
+}
+.filterName{
+    width: 100px;
+    margin-right: 50px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.option{
+    width: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+.option:hover{
+    background-color: lightblue; 
+    border: 1px solid #ccc; 
+    cursor: pointer; 
+}
+.author{
+    margin-top: 10px;
     flex-direction: row;
     justify-content: flex-start;
     display: flex;
     text-align: space-around;
-    width: 100vw;
-    max-height: 60vh;
+    width: 70vw;
+    margin-left: 15vw;
+    background-color: #fff;
 }
 .leftNavigate{
-    flex: 4;
+    flex: 5;
     max-height: 60vh;
     overflow: auto;
 }
@@ -91,16 +160,33 @@ const authors = reactive([1,2,3,4,5])
 }
 .detail{
     flex: 25;
-    overflow-y: auto;
+}
+.search{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 50px;
+    align-items: center;
+    border-bottom: solid #f2f4f7;
+}
+.all{
+    width: 100px;
+}
+.hNum{
+    width: 100px;
+}
+.thesisNum{
+    width: 100px;
+}
+.usedNum{
+    width: 100px;
 }
 .author-block{
-    width: 80%;
+    width: 95%;
     margin-left: auto;
     margin-right: auto;
     height: 150px;
     margin-bottom: 10px;
-    margin-top: 5px;
-    border: solid;
-    border-radius: 20px;
+    border: solid #f2f4f7;
 }
 </style>

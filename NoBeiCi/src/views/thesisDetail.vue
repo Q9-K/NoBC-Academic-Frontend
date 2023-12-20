@@ -15,13 +15,14 @@ const allAbstractStyles = computed(() => {
 });
 const ifShowTranslate = ref(true)
 var works = ref([
-    { work_name: '1', authors: ["a", "b"], related: 3 },
-    { work_name: '1', authors: ["a", "b"], related: 3 },
-    { work_name: '1', authors: ["a", "b"], related: 3 }
+    { work_name: 'DGI', authors: ["ab", "baa"], related: 3 },
+    { work_name: 'GSLB', authors: ["a", "b"], related: 6 },
+    { work_name: 'MVGRL', authors: ["a", "b"], related: 7 }
 ])
-var relavantWork = ref([{ work_name: '1', authors: ["a", "b"], related: 3 },
-{ work_name: '1', authors: ["a", "b"], related: 3 },
-{ work_name: '1', authors: ["a", "b"], related: 3 }
+var relavantWork = ref([
+    { work_name: 'DGI', authors: ["ab", "baa"], related: 3 },
+    { work_name: 'GSLB', authors: ["a", "b"], related: 6 },
+    { work_name: 'MVGRL', authors: ["a", "b"], related: 7 }
 ])
 var relatedWork = ref([
     { work_name: '1', authors: ["a", "b"], related: 3 },
@@ -248,7 +249,7 @@ onMounted(() => {
                             <span class="pdf">PDF</span>
                         </div>
                         <div class="ppt">
-                            <span style="color: #979797;">PPT</span>
+                            <span style="color: #979797;">认领</span>
                         </div>
                         <div class="codeData">
                             <p class="code-title" id="code"><span>代码</span></p>
@@ -311,6 +312,7 @@ onMounted(() => {
                                     </div>
                                 </div>
                                 <div class="work_related">
+                                    被引用
                                     {{ work.related }}
                                 </div>
                             </div>
@@ -337,7 +339,7 @@ onMounted(() => {
     width: 100%;
     min-height: 90vh;
     height: auto;
-    background-color: #f2f4f7;
+    background-color: #333;
     overflow-x: hidden;
 
     .indexArticle {
@@ -616,10 +618,8 @@ onMounted(() => {
 
                     .ppt {
                         background-color: #e7e7e7;
-                        cursor: pointer;
                         width: 100%;
                         max-width: 64px;
-                        position: relative;
                         height: 24px;
                         box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
                         border-radius: 2px !important;
@@ -629,8 +629,6 @@ onMounted(() => {
                         font-size: 14px;
                         justify-content: center;
                         align-items: center;
-                        padding-left: 10px;
-                        padding-right: 10px;
                         font-weight: 700;
                         margin-right: 10px;
                     }
@@ -792,12 +790,12 @@ onMounted(() => {
                         align-items: center;
                         justify-content: start;
                         width: 100%;
-                        border: solid;
+                        border: solid lightgray;
                         border-left: hidden;
                         border-right: hidden;
                         border-top: hidden;
                         border-width: 1px;
-                        
+                        margin-bottom: 8px;
 
                         .first {
                             width: 114px;
@@ -849,9 +847,14 @@ onMounted(() => {
                             align-items: flex-start;
                             width: 100%;
                             height: 10vh;
-
+                            border-bottom: dashed;
+                            border-width: 1px;
+                            border-left: hidden;
+                            border-top: hidden;
                             .work_name {
                                 margin-left: 20px;
+                                font-size: 20px;
+                                font-weight: 600;
                             }
 
                             .author_names {
@@ -863,11 +866,14 @@ onMounted(() => {
 
                                 .author_name {
                                     width: auto;
+                                    color: #067c08;
                                 }
                             }
 
                             .work_related {
+                                margin-top: 5px;
                                 margin-left: 20px;
+                                font-size: 13px;
                             }
                         }
                     }
