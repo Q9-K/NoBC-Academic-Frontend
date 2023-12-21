@@ -11,11 +11,10 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
+    "@ant-design/icons-vue": "^7.0.1",
     "@antv/data-set": "^0.11.8",
     "@antv/g2": "^5.1.5",
     "@antv/g2plot": "^2.4.31",
-    "@antv/l7": "^2.20.6",
-    "@antv/l7-maps": "^2.20.6",
     "@element-plus/icons": "^0.0.11",
     "@element-plus/icons-vue": "^2.1.0",
     "animate.css": "^4.1.1",
@@ -30,7 +29,7 @@
     "TagCloud": "^2.4.0",
     "vue": "^3.3.4",
     "vue-debounce": "^4.0.1",
-    "vue-router": "^4.2.4",
+    "vue-router": "^4.2.5",
     "vue3-i18n": "^1.1.5"
   },
   "devDependencies": {

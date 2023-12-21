@@ -64,6 +64,11 @@ const router = createRouter({
       path: '/field',
       name: 'field',
       component: () => import('../views/field/Field.vue')
+    },
+    {
+      path: '/fieldDetail/:fieldId',
+      name: 'fieldDetail',
+      component: () => import('../views/fieldDetail/FieldDetail.vue')
     }
   ]
 })
