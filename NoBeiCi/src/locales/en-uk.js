@@ -81,6 +81,11 @@ export default {
     trendTab: {
       titleOfWorkLine: "Works and OA Works",
       titleOfCitedLine: "Cited"
+    },
+    relationTab: {
+      titleOfAncestorsTree: "Parent Fields",
+      titleOfChildrenTree: "Children Fields",
+      titleOfRelatedGraph: "Related Fields"
     }
   }
   ,
