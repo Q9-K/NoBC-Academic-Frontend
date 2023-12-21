@@ -73,6 +73,8 @@ import CooperationAgencyVue from "../components/personInfoView/CooperationAgency
 import ColumnPlot from "../components/authorhomeView/ColumnPlot.vue";
 
 
+
+
 export default {
     data(){
         return{
@@ -94,7 +96,7 @@ export default {
             name: '张三',
             title: '教授',
             englishAffiliation: 'beihang University',
-            
+            scholar_id:'111',
             }
         };
     },
@@ -114,6 +116,9 @@ export default {
     mounted(){
         this.author_id = 'https://openalex.org/'+this.$route.params.id;
         console.log("id:",this.author_id)
+        this.scholar.scholar_id = this.author_id
+
+        // bus.$emit('scholar-id-updated', this.author_id);
     },
 
     components:{

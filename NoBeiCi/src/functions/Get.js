@@ -20,9 +20,12 @@ instance.interceptors.request.use(
                 background: 'rgba(0,0,0,0.7)'
             })
         }
-        if (config.addToken && store.getters.token) {
-            config.headers['X-Token'] = store.getters.token;//这里应该为获取Token的方法
+        //console.log("config",config)
+        //console.log("token:",JSON.parse(localStorage.getItem("userInformation")).token)
+        if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
+            config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
         }
+        console.log("config",config)
         return config;
     }, (error) => {
         if (error.config.showLoading && loading) {

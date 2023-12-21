@@ -241,7 +241,7 @@
                         <el-input v-model="person.lastName"></el-input>
                     </el-form-item> -->
                     <el-form-item label="昵称">
-                        <el-input v-model="person.nickname"></el-input>
+                        <el-input v-model="person.nickName"></el-input>
                     </el-form-item>
                     <el-form-item label="性别">
                         <el-radio-group v-model="person.gender">
@@ -394,7 +394,7 @@ import PaperCollection from "../components/personInfoView/PaperCollection.vue";
 import BrowsingHistory from "../components/personInfoView/BrowsingHistory.vue";
 
 import CooperationAgency from "../components/personInfoView/CooperationAgency.vue";
-
+import get from "../functions/Get.js";
 
 export default {
     data() {
@@ -437,7 +437,7 @@ export default {
             token: null,
             person: {
                 realName: 'liu zhao feng',
-                nickname: 'morty',
+                nickName: 'morty',
                 gender: '男',
                 position: '教授',
                 subject: '',
@@ -489,7 +489,7 @@ export default {
       }
     },
 
-    loadscholarMetrics(){
+    async loadscholarMetrics(){
         return axios.get('http://100.92.186.118:8000'+'/author/get_scholar_metrics/',{
           params:{
             author_id: this.author_id
@@ -502,8 +502,36 @@ export default {
         })
     },
 
+
+
+    async loadUserInfo(){
+        const result = await get(
+        {
+            url: 'http://100.117.229.168:8000/user/get_user_info/',
+            params:{
+
+            },
+            addToken: true,
+        }
+        );
+        console.log(result.data)
+        this.person = result.data;
+        this.person.nickName = result.data.name;
+        this.person.realName = result.data.real_name;
+        this.author_id = result.data.author_id;
+        if(! this.author_id){
+            this.is_author_binded = false;
+        }
+
+    },
+
+
+
     async changeContent(index) {
-       this.chosenIndex = -1;
+        if(index===2 ){
+            this.loadUserInfo()
+        }
+        this.chosenIndex = -1;
           setTimeout(() => {
           this.chosenIndex = index;
         },300); // 这里设置一个延迟，
@@ -511,6 +539,7 @@ export default {
     console.log(`切换到按钮${index}的内容`);
     // localStorage.setItem('activeIndex:',this.activeIndex)
 
+        
       },
 
       saveForm() {
@@ -574,12 +603,14 @@ export default {
   mounted(){
 
 
-    console.log("userInfo:",localStorage.getItem("userInformation"))
+    console.log("userInfo:",JSON.parse(localStorage.getItem("userInformation")))
 
-    this.token = localStorage.getItem("userInformation").token
-    this.email = localStorage.getItem("userInformation").email
+    this.token = JSON.parse(localStorage.getItem("userInformation")).token
+    this.email = JSON.parse(localStorage.getItem("userInformation")).email
     console.log("token:",this.token)
+    console.log("email:",this.email)
 
+    this.loadUserInfo()
     this.loadscholarMetrics()
   },
 }

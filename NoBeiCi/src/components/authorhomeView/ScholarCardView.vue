@@ -63,6 +63,11 @@
   </template>
   
   <script>
+import get from "../../functions/Get.js";
+import request from "../../functions/Request.js"
+import { ElMessage } from 'element-plus'
+
+
   export default {
     name: 'ScholarCard',
     props: {
@@ -107,15 +112,82 @@
     },
 
 
-    follow(){
+    async follow(){
+        const result = await request(
+        {
+            url: 'http://100.117.229.168:8000/user/follow_scholar/',
+            params:{
+              scholar_id: this.scholar.scholar_id
+            },
+            addToken: true,
+        }
+        );
+        if(result){
+          ElMessage({
+            message: '关注成功',
+            type: 'success',
+          })
+        }
+        
+        console.log(result)
         this.isfollowed = true
+
     },
 
-    unfollow(){
+    async unfollow(){
+      const result = await request(
+        {
+            url: 'http://100.117.229.168:8000/user/unfollow_scholar/',
+            params:{
+              scholar_id: this.scholar.scholar_id
+            },
+            addToken: true,
+        }
+        );
+        if(result){
+          ElMessage({
+            message: '取关成功',
+            type: 'success',
+          })
+        }
+        
+        console.log(result)
         this.isfollowed = false
     },
 
+
+    async isAuthorFollowed(){
+      const result = await get(
+        {
+            url: 'http://100.117.229.168:8000/user/check_author_follow/',
+            params:{
+              author_id: this.scholar.scholar_id
+            },
+            addToken: true,
+        }
+        );
+        
+        
+        console.log(result)
+        this.isfollowed = result.data.followed
     }
+
+    },
+
+    
+
+    mounted(){
+
+     
+      // // 在这里可以处理接收到的 scholar_id 数据
+      this.$nextTick(() => {
+        console.log("scholar_id:",this.scholar.scholar_id)
+        this.isAuthorFollowed()
+      })
+      
+      // this.isAuthorFollowed()
+    }
+
   }
   </script>
   
