@@ -1,20 +1,28 @@
 <script setup>
 import * as echarts from 'echarts'
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, toRaw } from 'vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import axios from "axios";
 import { computed } from 'vue'
 import i18n from "../locales/index.js";
 import chatInThesis from "../components/chatPDF/chatInThesis.vue"
 import { indexOf } from 'lodash';
+import { Collection } from '@element-plus/icons-vue/dist/types';
 var title = ref('')
 var abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
 const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
 const authorShips = ref([])
+
+//存放论文数据
 var pdf_url = ref('')
 var hasPDF = ref(true)
 var date = ref('')
+var instituion = ref('')
+var data = ref({ name: '', children: [] })
+var visit_count = ref('')
+var cited_by_count = ref('')
+
 const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
 });
@@ -34,72 +42,86 @@ function showTranslate() {
 function showAllAbstract() {
     ifShowMoreButton.value = !ifShowMoreButton.value;
 }
+//相关论文设置引用
 function setRelated() {
-    works = relatedWork
+    works = relavantWork
     isHighlighted1.value = true
     isHighlighted2.value = false
-    console.log(isHighlighted2)
 }
+//相关论文设置相关
 function setRelavant() {
-    works = relavantWork
+    works = relatedWork
     isHighlighted1.value = false
     isHighlighted2.value = true
-    console.log(isHighlighted2)
 }
-async function getThesis(){
+//打开当前论文的pdf
+function navigateToExternalURL() {
+    window.open(pdf_url, '_blank')
+}
+// 打开PDF
+function openPDF(url){
+    window.open(url, '_blank')
+}
+// 收藏论文
+function collection(){
+    
+}
+//获取数据
+async function getThesis() {
     try {
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {params: {
-                id: "https://openalex.org/W4319782169", 
+        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+            params: {
+                id: "W2900586920",
                 user_id: "166"
-            } 
+            }
         });
-        console.log(res)
         abstract.value = res.data.data.abstract
         title.value = res.data.data.title
         authorShips.value = res.data.data.authorships
-        console.log(authorShips)
-        if(res.data.data.pdf_url == null){
+        if (res.data.data.pdf_url == null) {
             hasPDF.value = false
-        }else{
-            pdf_url.value = res.data.data.pdf_url
+        } else {
+            pdf_url = toRaw(res.data.data.pdf_url)
         }
         date.value = res.data.data.publication_date
+        instituion = toRaw(res.data.data.locations[0].source.display_name)
+        visit_count = res.data.data.visit_count
+        cited_by_count = res.data.data.cited_by_count
         relatedWork.value = res.data.data.related_works_info
         relavantWork.value = res.data.data.referenced_works_info
         works.value = relavantWork.value
-        console.log(abstract)
-    }catch(error){
+        data.value.name = res.data.data.title.substring(0,10)+".."
+        data.value.id = res.data.data.id
+        for (let i = 0; i < res.data.data.referenced_works_info.length; i++) {
+            data.value.children.push({ name: res.data.data.referenced_works_info[i].title.substring(0,10)+"..", 
+            id: res.data.data.referenced_works_info[i].id})
+        }
+    } catch (error) {
         console.error()
     }
 }
-onMounted(() => {
-    // getThesisData();
-    getThesis()
-    const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
-    const data = {
-        name: "计算机科学",
-        children: [
-            {
-                name: "人工智能",
-                children: [
-                    {
-                        name: "计算机视觉",
-                    }, {
-                        name: "自然语言处理"
-                    }
-                ]
-            }, {
-                name: "软件工程",
-                children: [
-                    {
-                        name: "面向对象软件工程",
-                    }, {
-                        name: "智能化软件工程"
-                    }
-                ]
+// 为子结点添加数据
+function findChildren(data, name, referenced_works) {
+    for (let children of data.children) {
+        if (children.name === name && children.children == null) {
+            children.id = referenced_works.data.id
+            children.children = []
+            for (let i = 0; i < referenced_works.data.referenced_works_info.length; i++) {
+                children.children.push({ name: referenced_works.data.referenced_works_info[i].title.substring(0,10)+".." ,
+                id: referenced_works.data.referenced_works_info[i].id})
             }
-        ]
+            return;
+        }
+        if (children.children != null) {
+            findChildren(children, name, referenced_works)
+        }
     }
+}
+
+onMounted(async () => {
+    // getThesisData();
+    await getThesis()
+    const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
     const options = {
         tooltip: {
             trigger: 'item',
@@ -108,7 +130,7 @@ onMounted(() => {
         series: [
             {
                 type: 'tree',
-                data: [data],
+                data: [toRaw(data.value)],
                 top: '1%',
                 left: '10%',
                 bottom: '1%',
@@ -136,9 +158,56 @@ onMounted(() => {
             }
         ]
     }
-
     treemapOfBigField.hideLoading();
     treemapOfBigField.setOption(options)
+    treemapOfBigField.on('click', async function (params) {
+        if (params.data.children == null && params.treeAncestors.length <= 3) {
+            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+                params: {
+                    id: params.data.id,
+                    user_id: "166"
+                }
+            });
+            findChildren(data.value, params.name, res.data)
+            const options = {
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove'
+                },
+                series: [
+                    {
+                        type: 'tree',
+                        data: [toRaw(data.value)],
+                        top: '1%',
+                        left: '10%',
+                        bottom: '1%',
+                        right: '20%',
+                        symbolSize: 7,
+                        label: {
+                            position: 'left',
+                            verticalAlign: 'middle',
+                            align: 'right',
+                            fontSize: 12
+                        },
+                        leaves: {
+                            label: {
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                align: 'left'
+                            }
+                        },
+                        emphasis: {
+                            focus: 'descendant'
+                        },
+                        expandAndCollapse: true,
+                        animationDuration: 550,
+                        animationDurationUpdate: 750
+                    }
+                ]
+            }
+            treemapOfBigField.setOption(options)
+        }
+    })
 });
 </script>
 
@@ -158,7 +227,7 @@ onMounted(() => {
                     <div class="author-line">
                         <div class="authors-authors">
                             <div class="authors">
-                                <div v-for="author,index in authorShips">
+                                <div v-for="author, index in authorShips">
                                     <span>
                                         <span class="author-link-font-author">
                                             <span class="personLink">
@@ -167,7 +236,7 @@ onMounted(() => {
                                                 </a>
                                             </span>
                                         </span>
-                                        <span class="mr" v-if="index!=authorShips.length-1">,</span>
+                                        <span class="mr" v-if="index != authorShips.length - 1">,</span>
                                     </span>
                                 </div>
                             </div>
@@ -181,7 +250,7 @@ onMounted(() => {
                                 p-id="54727"></path>
                         </svg>
                         <span>
-                            CoRR
+                            {{ instituion }}
                             <!-- -->
                             {{ date }}
                         </span>
@@ -190,13 +259,13 @@ onMounted(() => {
                         <div class="miscLine">
                             <span class="citation">
                                 <span>{{ i18n.t("thesisDetail.quote") }}</span>
-                                <strong>2</strong>
+                                <strong> {{ cited_by_count }}</strong>
                             </span>
                             <span class="line-split">|</span>
                             <span class="views">
                                 <span>
                                     <span>{{ i18n.t("thesisDetail.browse") }}</span>
-                                    <span>371</span>
+                                    <span> {{ visit_count }} </span>
                                 </span>
                             </span>
                         </div>
@@ -224,13 +293,13 @@ onMounted(() => {
                                                     <span class="morebtn" @click="showAllAbstract">收起</span>
                                                 </span>
                                             </div>
-                                            <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
+                                            <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
                                                 查看译文</div>
                                             <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">
                                                 收起译文</div>
                                             <div style="margin-top: 5px;line-height: 22px" v-if="!ifShowTranslate">
                                                 <p style="text-align: left;">{{ translate }}</p>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -238,14 +307,14 @@ onMounted(() => {
                         </div>
                     </div>
                     <div class="actionButton">
-                        <div class="pdf-download" :class="{grey : !hasPDF}">
+                        <div class="pdf-download" :class="{ grey: !hasPDF }" @click="navigateToExternalURL">
                             <svg t="1656602493083" class="icon" viewBox="0 0 1024 1024" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" p-id="33567" width="200" height="200">
                                 <path
                                     d="M482.114017 444.641987c-17.534816 56.44419-37.693456 143.670302-67.25946 215.40946-15.294968 38.845378-14.527019 32.061836-26.046242 56.572181l9.919331-3.199784c101.881123-28.542073 173.236307-35.581598 239.535831-47.804773-13.311102-10.495292-24.89432-18.622743-34.045702-27.006177-45.564924-50.492592-61.435853-59.963952-122.103758-193.906912z m499.99825 323.178185c-12.991123 14.527019-35.837581 22.910454-69.435313 22.910454-57.916091 0-110.584536-15.99892-186.867386-54.908294-131.191145 14.527019-270.701728 29.885983-349.160432 55.036285-3.839741 1.535896-8.383434 3.071793-13.759071 5.311642-94.52162 161.653088-164.788877 230.192462-226.480713 227.504643-19.582678-0.89594-47.99676-12.223175-57.148142-17.534816l-11.327236-10.751275L64.030238 987.837321a69.371317 69.371317 0 0 1-3.839741-41.213218c8.383434-40.381274 51.836501-104.44095 143.350324-161.653089 14.527019-10.687279 47.612786-27.518143 78.07473-42.045161 23.102441-36.73352 33.789719-60.219935 63.035745-125.303543 33.149762-78.586695 63.291728-172.468358 82.362441-239.599827v-0.767948c-28.158099-92.217775-44.988963-154.869546-16.766869-256.238704 6.847538-28.990043 31.99784-58.748035 60.219935-58.748034h18.302765c17.534816 0 34.301685 6.143585 46.52486 18.302764 50.300605 50.3646 26.686199 180.019849 1.535896 281.453002-1.535896 4.543693-2.303844 8.383434-3.071793 10.687279C564.220475 458.849028 612.473218 543.963282 660.469978 583.640604c19.838661 15.230972 39.293348 32.765788 63.675702 46.460864 34.36568-3.839741 65.083607-7.103521 96.313499-7.10352 94.585615 0 151.797754 16.766868 173.876263 52.604449 7.679482 12.159179 11.455227 26.686199 9.151383 41.91717-0.767948 19.070713-7.615486 36.605529-21.310562 50.364601z m-48.188747-63.675702c-7.679482-7.679482-29.566004-29.374017-136.310799-29.374017-5.311641 0-18.430756-1.343909-25.278294 6.271577 55.676242 24.382354 108.920648 42.877106 143.990281 42.877105 5.375637 0 9.983326-0.703952 14.52702-1.4719h3.071792c3.839741-1.535896 6.07959-2.303844 6.847538-9.919331-1.535896-2.303844-3.071793-5.311641-6.847538-8.319438zM262.67283 813.449092c-15.99892 9.151382-28.926047 17.534816-36.60553 23.678402-54.140346 49.532657-88.44203 99.833261-92.281771 128.823304 34.36568-11.391231 79.354644-61.755831 128.887301-152.501706z m217.713304-516.381144l3.839741-3.071793c5.311641-24.318359 9.087387-50.556587 13.63108-67.387451l2.303844-12.159179c7.679482-43.517063 4.73568-68.859352-8.255443-87.162117l-11.455226-3.839741c-1.91987 2.943801-3.711749 6.015594-5.311642 9.151383-12.991123 31.99784-12.287171 95.865529 5.311642 164.468898z"
                                     p-id="33568" fill="#ffffff"></path>
                             </svg>
-                            <span class="pdf" >PDF</span>
+                            <span class="pdf">PDF</span>
                         </div>
                         <div class="ppt">
                             <span style="color: #979797;">认领</span>
@@ -277,7 +346,7 @@ onMounted(() => {
                             </el-icon>
                             <span>引用</span>
                         </div>
-                        <div class="mark">
+                        <div class="mark" @click="collection()">
                             <el-icon>
                                 <StarFilled />
                             </el-icon>
@@ -304,15 +373,16 @@ onMounted(() => {
                         </div>
                         <div class="relavantDetailBody">
                             <div v-for="work in works" class="relavantWork">
-                                <div class="work_name"><p>{{ work.title }}</p></div>
-                                <div class="author_names">
-                                    <div v-for="name in work.authors" class="author_name">
-                                        <div> {{ name }} </div>
-                                    </div>
+                                <div class="work_name">
+                                    <p>{{ work.title }}</p>
                                 </div>
                                 <div class="work_related">
                                     被引用
                                     {{ work.cited_by_count }}
+                                </div>
+                                <div class="more">
+                                    <div class="jump" @click="LookThesis">查看</div>
+                                    <div class="pdf" @click="openPDF(work.pdf_url)">PDF</div>
                                 </div>
                             </div>
                         </div>
@@ -338,7 +408,7 @@ onMounted(() => {
     width: 100%;
     min-height: 90vh;
     height: auto;
-    background-color: #333;
+    background-color: #f2f4f7;
     overflow-x: hidden;
 
     .indexArticle {
@@ -588,6 +658,7 @@ onMounted(() => {
                         width: 100%;
                         max-width: 60px;
                         position: relative;
+                        cursor: pointer;
                         height: 24px;
                         padding-left: 10px;
                         padding-right: 10px;
@@ -608,14 +679,15 @@ onMounted(() => {
                             vertical-align: -0.15em;
                             fill: currentColor;
                         }
-                    
+
                         .pdf {
                             color: #e8edf4;
                         }
 
                     }
-                    .grey{
-                        background-color:#6d6d6d;
+
+                    .grey {
+                        background-color: #e7e7e7;
                     }
 
                     .ppt {
@@ -633,6 +705,7 @@ onMounted(() => {
                         align-items: center;
                         font-weight: 700;
                         margin-right: 10px;
+                        cursor: pointer;
                     }
 
                     .codeData {
@@ -642,7 +715,7 @@ onMounted(() => {
                         .code-title {
                             border-radius: 2px;
                             border: 1px solid #e7e7e7;
-                            background-color: #fff;
+                            background-color: #e7e7e7;
                             color: #979797;
                             display: flex;
                             font-size: 14px;
@@ -759,6 +832,7 @@ onMounted(() => {
                         padding-right: 10px;
                         font-weight: 700;
                         margin-right: 10px;
+                        cursor: pointer;
                     }
                 }
             }
@@ -770,7 +844,7 @@ onMounted(() => {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                align-items: start;
+                align-items: flex-start;
                 background-color: #fff;
 
                 .relavant {
@@ -790,7 +864,7 @@ onMounted(() => {
                         flex-direction: row;
                         display: flex;
                         align-items: center;
-                        justify-content: start;
+                        justify-content: flex-start;
                         width: 100%;
                         border: solid lightgray;
                         border-left: hidden;
@@ -839,16 +913,16 @@ onMounted(() => {
                         height: auto;
                         display: flex;
                         flex-direction: column;
-                        justify-content: start;
+                        justify-content: flex-start;
 
                         .relavantWork {
                             padding-top: 10px;
-                            padding-bottom: 10px;
                             display: flex;
                             flex-direction: column;
                             align-items: flex-start;
                             width: 100%;
-                            height: 10vh;
+                            min-height: 10vh;
+                            height: auto;
                             border-bottom: dashed;
                             border-width: 1px;
                             border-left: hidden;
@@ -861,25 +935,41 @@ onMounted(() => {
                                 display: flex;
                                 justify-content: left;
                                 flex-direction: row;
-                            }
-
-                            .author_names {
-                                margin-left: 20px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: start;
-                                flex-direction: row;
-
-                                .author_name {
-                                    width: auto;
-                                    color: #067c08;
+                                p{
+                                    text-align: left;
                                 }
                             }
-
                             .work_related {
                                 margin-top: 5px;
                                 margin-left: 20px;
                                 font-size: 13px;
+                            }
+                            .more {
+                                display: flex;
+                                margin-left: 20px;
+                                flex-direction: row;
+                                align-items: center;
+                                justify-content: flex-start;
+                                height: 30px;
+                                .jump{
+                                    width: 50px;
+                                    font-size: 12px;
+                                    color: white;
+                                    border-width: 1px;
+                                    background-color: #4759c5;
+                                    cursor: pointer;
+                                }
+                                .pdf{
+                                    border: solid;
+                                    border-width: 1px;
+                                    margin-left: 20px;
+                                    font-size: 12px;
+                                    width: 50px;
+                                    color: white;
+                                    font-weight: 700;
+                                    background-color: #c51c01;
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
@@ -920,4 +1010,5 @@ onMounted(() => {
 .all {
     display: flex;
     flex-direction: column;
-}</style>
+}
+</style>
