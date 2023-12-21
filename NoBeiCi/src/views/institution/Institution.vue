@@ -5,27 +5,37 @@ import NavigateBar from '../../components/NavigateBar.vue'
 import SearchBar from '../../components/SearchBar.vue'
 import i18n from "../../locales/index.js";
 import get from "../../functions/Get.js";
+import {useInstitution} from "../../stores/institution.js"
 const router = useRouter();
+const store = useInstitution();
+const page_num = ref(1);
+const page_size = ref(20);
 const total = ref(0);
 const institutions = ref([
-    {id:"1",name:"University of Michigan–Ann Arbor",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"2",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Si%C3%A8ge%20du%20CNRS%20rue%20Michel-Ange%20Paris%206.jpg"},
-    {id:"3",name:"University of Michigan–Ann Arbor",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"4",name:"University of Michigan–Ann Arbor",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"5",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"6",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"7",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"8",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"9",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
-    {id:"10",name:"111",img:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"1",display_name:"University of Michigan–Ann Arbor",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"2",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Si%C3%A8ge%20du%20CNRS%20rue%20Michel-Ange%20Paris%206.jpg"},
+    {id:"3",display_name:"University of Michigan–Ann Arbor",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"4",display_name:"University of Michigan–Ann Arbor",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"5",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"6",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"7",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"8",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"9",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
+    {id:"10",display_name:"111",image_url:"https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/University%20of%20Michigan%20logo.svg"},
 ])
 const goInstitution = (id) =>{
+    store.changeId(id);
+    var strs = id.split('/');
+    console.log(strs[strs.length-1]);
+    id = strs[strs.length-1];
+    
     router.push({ name: 'institutionDetail', params: { institutionId: id } });
 }
 const search = (value)=>{
     console.log(value.value)
 }
 const getInstitutions =async (page_size,page_num)=>{
+    console.log(page_size,page_num)
     const result = await get(
         {
             url: 'http://100.117.229.168:8000/institution/getInstitutionList/',
@@ -36,6 +46,11 @@ const getInstitutions =async (page_size,page_num)=>{
         }
     );
     institutions.value = result.data.institutions;
+    for(let i=0;i<institutions.value.length;i++){
+        if(institutions.value[i].image_url==null){
+            institutions.value[i].image_url = "/src/assets/background/institution.webp";
+        }
+    }
     total.value = result.data.total;
 
 }
@@ -76,7 +91,14 @@ onMounted(()=>{
         </div>
     
     </el-scrollbar>
-    <div class="page"><el-pagination background layout="total, prev, pager, next, jumper" :total="total" class="pagination" /></div>
+    <div class="page">
+        <el-pagination background layout="total, prev, pager, next, jumper" 
+        :total="total" 
+        v-model:currentPage = "page_num"
+        class="pagination" 
+        @current-change = "getInstitutions(20,page_num)"
+        />
+    </div>
     
 </template>
 
@@ -117,6 +139,8 @@ onMounted(()=>{
             justify-content: center;
             align-items: center;
                 .image {
+                    max-height: 300px;
+                    object-fit: cover;
                 }
  
             }

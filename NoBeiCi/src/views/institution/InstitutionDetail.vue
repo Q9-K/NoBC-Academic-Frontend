@@ -6,6 +6,8 @@ import i18n from "../../locales/index.js";
 import DataSet from '@antv/data-set';
 import { Column } from '@antv/g2plot';
 import get from "../../functions/Get.js";
+import {useInstitution} from "../../stores/institution.js"
+const store = useInstitution();
 const router = useRouter();
 const proxy = getCurrentInstance();
 var data = [];
@@ -139,14 +141,19 @@ const backToList = () => {
     })
 }
 const checkAssociatedInsititution = (id) => {
+  store.changeId(id);
+  var strs = id.split('/');
+  console.log(strs[strs.length-1]);
+  id = strs[strs.length-1];
+  router.push({ name: 'institutionDetail', params: { institutionId: id } });
   console.log(id);
 }
 const getDetail = async () => {
   const result = await get({
-    // url: "http://100.117.229.168:8000//institution/getInstitutionDetail",
-    url:"https://api.openalex.org/institutions/I27837315",
+    url: "http://100.117.229.168:8000//institution/getInstitutionDetail",
+    // url:"https://api.openalex.org/institutions/I27837315",
     params: {
-      id: "https://openalex.org/I27837315",
+      id: store.getId,
     },
 
   });
@@ -163,7 +170,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
 
 )
 onMounted(() => {
-  // getDetail();
+  getDetail();
 
 
   const columnPlot1 = new Column(document.getElementById('worksCount'), {
@@ -290,11 +297,11 @@ const relatedInstitutions = ref([
       <div class="content-related-ins">
         <div class="related-ins-title">关联机构</div>
         <div class="related-ins-list">
-          <div v-for="item in institution.associated_institutions" class="ins-item">
-            <div class="ins-name" @click="checkAssociatedInsititution(item.id)">
-              <div class="name">{{ item.display_name }}</div>
-            </div>
-          </div>
+          <el-carousel :interval="4000" type="card" height="200px">
+            <el-carousel-item v-for="item in institution.associated_institutions" :key="item">
+              <span  class ="name" @click="checkAssociatedInsititution(item.id)">{{ item.display_name }}</span>
+            </el-carousel-item>
+          </el-carousel>
         </div>
       </div>
     </div>
@@ -438,35 +445,35 @@ const relatedInstitutions = ref([
           margin-bottom: 20px;
         }
         .related-ins-list {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-            .ins-item {
-              width: 20vw;
-              border: solid 1px #5e5b5b;
-              border-radius: 5px;
-              padding: 3px;
-              margin: 5px;
-              transition: all 0.3s ease-in-out;
-                .ins-name {
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 20vw;
-                  height: 6vw;
-                    .name {
-                      transition: all 0.3s ease-in-out;
-                    }
-                    .name:hover {
-                      color: #409EFF;
-                    }
-                }
-            }
-            .ins-item:hover{
-              box-shadow:3px 3px 2px 1px  rgba(75, 72, 72, 0.907);
-              cursor: pointer;
-            }
+
+          .el-carousel__item .name {
+            font-size: 20px;
+            color: #080a0b;
+            opacity: 0.75;
+            line-height: 200px;
+            margin: 0;
+            text-align: center;
+
+          }
+
+          .el-carousel__item:nth-child(2n) {
+            background-image: url(../../assets/background/OIP-1.jpg);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+          }
+
+          .el-carousel__item:nth-child(2n + 1) {
+            background-image: url(../../assets/background/OIP-C.jpg);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+          }
+
         }
     }
 }
+
 </style>
