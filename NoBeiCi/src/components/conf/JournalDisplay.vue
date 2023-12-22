@@ -18,11 +18,18 @@
 import {ref} from 'vue'
 import router from '../../routes'
 import i18n from "../../locales/index.js";
-
+const { data } = defineProps(['data']);
+if (data) {
+  console.log(data);
+}
+const url = data.id;
+const parts = url.split('/');
+const ident = parts[parts.length - 1];
 const navigateToJournal = () => {
     // router.push({path: '/journal/123/statics'}) 移动端
-    window.open('/journal/123/statics', '_blank');  
+    window.open(`/journal/${ident}/statics`, '_blank');  
 }
+
 </script>
 
 <style>

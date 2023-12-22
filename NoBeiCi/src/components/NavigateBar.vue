@@ -106,22 +106,6 @@ const handleTurnDark = () => {
         <div class="single-navigate-outer">
           {{ i18n.t("navigateBar.researcher") }}
         </div>
-      <div class="flex justify-around" style="height: 100%; width: 75%">
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.homePage") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.conferences") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.institution") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.field") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.researcher") }}
-        </div>
       </div>
     </div>
     <div class="search-input-outer">

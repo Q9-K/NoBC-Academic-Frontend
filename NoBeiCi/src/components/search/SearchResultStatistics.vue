@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="statics">
       <div ref="container"></div>
     </div>
@@ -47,8 +47,69 @@
   </script>
 
 <style>
+  
+</style> -->
+
+<template>
+  <div class="statics">
+    <div ref="container"></div>
+  </div>
+</template>
+
+<script>
+import { Column } from '@antv/g2plot';
+
+export default {
+  mounted() {
+    const data = [
+      {
+      year: '1994',
+      value: 60,
+      },
+      {
+        year: '1995',
+        value: 49,
+      },{
+        year: '1996',
+        value: 55,
+      },
+      {
+        year: '1997',
+        value: 49,
+      },
+      {
+        year: '1998',
+        value: 49,
+      },{
+        year: '1999',
+        value: 55,
+      },
+    ];
+
+    const columnPlot = new Column(this.$refs.container, {
+      title: {
+        visible: true,
+        text: '设置图表暗黑主题',
+      },
+      description: {
+        visible: true,
+        text: 'g2plot内置了暗黑主题，可通过theme配置。',
+      },
+      theme: 'light',
+      data,
+      xField: 'year',
+      yField: 'value',
+    });
+
+    columnPlot.render();
+  }
+};
+
+</script>
+
+<style>
 .statics {
   max-width: 300px;
   margin: 0;
-}  
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <button @click="toggleDrawer" :class="{active: showDrawer}" class="time-range">时间</button>
+      <button @click="toggleDrawer" :class="{active: showDrawer}" class="time-range">{{ i18n.t('timeRanges.timeRangesTime') }}</button>
       <div v-if="showDrawer" class="drawer">
         <div class="form-row">
           <select v-model="startYear" class="select">
@@ -20,32 +20,37 @@
     </div>
   </template>
   
-  <script>
-  import { Search } from '@element-plus/icons-vue'
+  <script setup>
+  import { ref, watch } from 'vue';
   import i18n from "../../locales/index.js";
-  export default {
-    data() {
-        const currentYear = new Date().getFullYear();
-        const years = [...Array(50).keys()].map(i => currentYear - i);
-      return {
-        showDrawer: false,
-        startYear: null,
-        endYear: null,
-        currentYear,
-        years,
-      };
-    },
-    methods: {
-      toggleDrawer() {
-        this.showDrawer = !this.showDrawer;
-      },
-      setTimeRange(years) {
-        this.endYear = this.currentYear;
-        this.startYear = this.currentYear - years + 1;
-      }
+  
+  const currentYear = new Date().getFullYear();
+  const years = [...Array(50).keys()].map(i => currentYear - i);
+  const showDrawer = ref(false);
+  const startYear = ref(null);
+  const endYear = ref(null);
+  
+  const toggleDrawer = () => {
+    showDrawer.value = !showDrawer.value;
+  };
+  
+  const sendDataToParent = () => {
+    if (startYear.value !== null && endYear.value !== null) {
+      this.$emit('sendData', { startYear: startYear.value, endYear: endYear.value });
     }
   };
+
+  const setTimeRange = (years) => {
+    endYear.value = currentYear;
+    startYear.value = currentYear - years + 1;
+    sendDataToParent();
+  };
+  
+  watch([startYear, endYear], () => {
+    sendDataToParent();
+  });
   </script>
+  
   
   <style>
   .time-range {
