@@ -1,0 +1,617 @@
+<template>
+    <NavigateBar></NavigateBar>
+    <div class="searchBox">
+        <div class="searchMain">
+            <h2>NOBC帮你理解科学</h2>
+            <div class="searchIcon">
+                <div style="margin-top:10px;background-color: #fff;width:40px;margin-right:3pxh;eight:20px;z-index:9999">
+                    <el-icon style="font-size: 20px; z-index:9999;cursor:pointer;" @click="searchScholar()">
+                        <Search />
+                    </el-icon>
+                </div>
+            </div>
+            <a-select v-model:value="scholar_name" show-search size='large' placeholder="Select" :options="options" class="select"
+                :filter-option="false" @focus="handleFocus" @blur="handleBlur" @search="handleSearch"
+                @select="handleOptionSelect"></a-select>
+        </div>
+        <div class="info1">
+            <div class="infoDetail">
+                <div class="avatar1">
+                    <el-icon style="font-size: 25px; color:antiquewhite">
+                        <Avatar />
+                    </el-icon>
+                </div>
+                <div class="data">
+                    <div class="num">
+                        1111
+                    </div>
+                    <div class="name">
+                        科研人员
+                    </div>
+                </div>
+            </div>
+            <div class="infoDetail">
+                <div class="avatar1">
+                    <el-icon style="font-size: 25px; color:antiquewhite">
+                        <Collection />
+                    </el-icon>
+                </div>
+                <div class="data">
+                    <div class="num">
+                        1111
+                    </div>
+                    <div class="name">
+                        论文成果
+                    </div>
+                </div>
+            </div>
+            <div class="infoDetail">
+                <div class="avatar1">
+                    <el-icon style="font-size: 25px;color:antiquewhite">
+                        <Money />
+                    </el-icon>
+                </div>
+                <div class="data">
+                    <div class="num">
+                        1111
+                    </div>
+                    <div class="name">
+                        知识概念
+                    </div>
+                </div>
+            </div>
+            <div class="infoDetail">
+                <div class="avatar1">
+                    <el-icon style="font-size: 25px;color:antiquewhite">
+                        <Share />
+                    </el-icon>
+                </div>
+                <div class="data">
+                    <div class="num">
+                        1111
+                    </div>
+                    <div class="name">
+                        引用关系
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="filter">
+            <div v-for="layer, layerIndex in layers" class="filterOption">
+                <div class="filterName">
+                    {{ layer.name }}
+                </div>
+                <div v-for="option, index in layer.options" @click="chooseFilter(layerIndex, index)" class="option"
+                    :class="{ highlight: index === layers[layerIndex].highlight }">
+                    {{ option }}
+                </div>
+            </div>
+        </div>
+        <div class="author">
+            <div class="leftNavigate">
+                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys1" style="width: 213px"
+                    mode="inline" :items="items1" @click="handleClick1"></a-menu>
+                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 213px"
+                    mode="inline" :items="items2" @click="handleClick2"></a-menu>
+            </div>
+            <div class="detail">
+                <div class="search">
+                    <div class="all" @click="select1" :class="{ highlighted: isHighlighted1 }">综合</div>
+                    <div class="hNum" @click="select2" :class="{ highlighted: isHighlighted2 }">h指数</div>
+                    <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">论文数</div>
+                    <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
+                </div>
+                <div v-for="scholar in scholars" class="author_block">
+                    <div class="avatar">
+                        <img style="padding: 20px" src="../../assets/vouzenus/vouzenus.jpg">
+                    </div>
+                    <div class="info">
+                        <div class="scholar_head">{{ scholar.name }}</div>
+                        <div class="scholar_makes">
+                            <div class="H-index">
+                                <div style="font-size:11px">
+                                    H-index:
+                                    {{ scholar.makes.H_index }}
+                                </div>
+                            </div>
+                            <div class="thesis">
+                                <div style="font-size:11px">
+                                    论文数:
+                                    {{ scholar.makes.thesis }}
+                                </div>
+                            </div>
+                            <div class="icon">
+                                <el-icon style="background-color: #adbbdc;font-size:24px">
+                                    <Connection />
+                                </el-icon>
+                            </div>
+                            <div class="used">
+                                <div style="font-size:11px">
+                                    引用数:
+                                    {{ scholar.makes.used }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scholar_field">
+                            <div v-for="field in fields">
+                                {{ field }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script setup>
+import NavigateBar from '../../components/NavigateBar.vue';
+import SearchBar from '../../components/SearchBar.vue';
+import { reactive, ref, watch, h, toRaw } from 'vue';
+import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import request from "../../functions/Request"
+// 选择的选项
+const options = ref([{value: 1},{value: 2}]);
+// 搜索的名字
+const scholar_name = ref();
+
+// const handleOptionSelect = (value) => {
+//     props.selectFunction(value)
+// }
+
+const handleBlur = () => {
+    console.log('blur');
+};
+
+const handleFocus = () => {
+    console.log('focus');
+};
+//左侧聚类选择选项1
+var selectedKeys1 = ref();
+//左侧聚类选择选项2
+var selectedKeys2 = ref();
+const openKeys = ref(['sub1']);
+// 选择order种类
+var isHighlighted1 = ref(true)
+var isHighlighted2 = ref(false)
+var isHighlighted3 = ref(false)
+var isHighlighted4 = ref(false)
+function select1() {
+    isHighlighted1.value = true
+    isHighlighted2.value = false
+    isHighlighted3.value = false
+    isHighlighted4.value = false
+}
+function select2() {
+    isHighlighted1.value = false
+    isHighlighted2.value = true
+    isHighlighted3.value = false
+    isHighlighted4.value = false
+}
+function select3() {
+    isHighlighted1.value = false
+    isHighlighted2.value = false
+    isHighlighted3.value = true
+    isHighlighted4.value = false
+}
+function select4() {
+    isHighlighted1.value = false
+    isHighlighted2.value = false
+    isHighlighted3.value = false
+    isHighlighted4.value = true
+}
+var isfilterHighlight = ref(false)
+// 搜索结果，学者列表
+var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+])
+// 过滤条件层
+var layers = ref([{ name: "h指数:", options: [1, 2, 3, 4], highlight: -1 },
+{ name: "性别:", options: ['男', '女'], highlight: -1 },
+{ name: "地区", options: ['中国', '美国', '俄罗斯', '台湾省'], highlight: -1 }
+])
+//下拉框的种类
+function getItem(label, key, icon, children, type) {
+    return {
+        key,
+        icon,
+        children,
+        label,
+        type,
+    };
+}
+const items1 = reactive([
+    getItem('职称 (2)', 'sub1', () => h(MailOutlined), [
+        getItem('Professor (12)', 1),
+        getItem('Research (13)', 2),
+    ]),
+]);
+const items2 = reactive([
+    getItem('机构 (13)', 'sub2', () => h(AppstoreOutlined), [
+        getItem('北航大专 (15)', 1),
+        getItem('清华大学 (16)', 2),
+        getItem('清华大学 (16)', 3),
+        getItem('清华大学 (16)', 4),
+        getItem('清华大学 (16)', 5),
+        getItem('清华大学 (16)', 6),
+        getItem('清华大学 (16)', 7),
+        getItem('清华大学 (16)', 8),
+        getItem('清华大学 (16)', 9),
+        getItem('清华大学 (16)', 10),
+        getItem('清华大学 (16)', 11),
+        getItem('清华大学 (16)', 12),
+        getItem('清华大学 (16)', 13)
+    ]),
+]);
+//第一个聚类的点击事件
+const handleClick1 = e => {
+    if (toRaw(selectedKeys1.value) == e.key) {
+        selectedKeys1.value[0] = -1
+    }
+    else {
+        selectedKeys1.value = e.key
+    }
+};
+//第二类聚类的点击事件
+const handleClick2 = e => {
+    if (toRaw(selectedKeys2.value) == e.key) {
+        selectedKeys2.value[0] = -1
+    }
+    else {
+        selectedKeys2.value = e.key
+    }
+};
+watch(openKeys, val => {
+    console.log('openKeys', val);
+});
+// 点击之后高亮，并取消同层的其他高亮,再次点击取消高亮
+function chooseFilter(layerIndex, index) {
+    if (layers.value[layerIndex].highlight == index) {
+        layers.value[layerIndex].highlight = -1
+    }
+    else {
+        layers.value[layerIndex].highlight = index
+    }
+}
+
+//搜索学者
+async function searchScholar(){
+    console.log(value.value)
+    const result = await request(
+        {
+            url: "http://100.99.200.37:8000/user/add_favorite/",
+            params: {
+                author_name: value
+            },
+            addToken: false
+        }
+    )
+    if (result) {
+        ElMessage({
+            message: "关注成功",
+            type: 'success',
+        })
+    }
+    console.log(result)
+}
+</script>
+<style scoped>
+.searchBox {
+    margin-top: 10vh;
+    left: 0;
+    width: 100vw;
+    height: 30vh;
+    display: flex;
+    background: linear-gradient(#0000CD, #000000);
+}
+
+.searchMain {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    width: 40vw;
+    height: 100%;
+    margin-left: 200px;
+    margin-right: auto;
+}
+
+h2 {
+    flex: 1;
+    margin-top: 70px;
+    margin-bottom: 0px;
+    color: white;
+    font-weight: 600;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 3px;
+}
+
+.searchIcon {
+    height: 1px;
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.select {
+    flex: 1;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    width: 500px;
+    height: 80px;
+    border-radius: 30px;
+}
+
+.ant-select-selector {
+    height: 200px;
+}
+
+.info1 {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.infoDetail {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+}
+
+.avatar1 {
+    height: 20px;
+    margin: auto;
+    margin-right: 10px;
+    flex: 1;
+}
+
+.data {
+    flex: 2;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.num {
+    font-weight: 600;
+    color: aliceblue;
+    width: auto;
+    flex: 0 1 0;
+    font-size: 10px;
+}
+
+.name {
+    font-weight: 200;
+    opacity: 0.8;
+    color: aliceblue;
+    width: auto;
+    flex: 0 1 0;
+    font-size: 12px;
+}
+
+.main {
+    position: absolute;
+    top: 41vh;
+    width: 100vw;
+    min-height: 60vh;
+    background-color: #f2f4f7;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.filter {
+    width: 70vw;
+    margin-left: 15vw;
+    height: auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    border: solid #ccc;
+    border-width: 1px;
+    margin-bottom: 10px;
+}
+
+.filterOption {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: left;
+    border-bottom: solid #fff;
+    border-width: 1px;
+    height: 40px;
+    width: auto;
+}
+
+.filterName {
+    width: 100px;
+    margin-right: 50px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.option {
+    width: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.option:hover {
+    background-color: lightblue;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #4759c5;
+}
+
+.author {
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: flex-start;
+    display: flex;
+    text-align: space-around;
+    width: 70vw;
+    margin-left: 15vw;
+    background-color: #fff;
+}
+
+.leftNavigate {
+    flex: 5;
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.leftNavigate::-webkit-scrollbar {
+    width: 2px;
+    /* 设置滚动条宽度 */
+}
+
+.leftNavigate::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* 设置滚动条拖动部分的颜色 */
+    border-radius: 6px;
+    /* 设置滚动条拖动部分的圆角 */
+}
+
+.leftNavigate::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    /* 设置滚动条轨道的颜色 */
+}
+
+.detail {
+    flex: 25;
+}
+
+.search {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 50px;
+    align-items: center;
+    border-bottom: solid #f2f4f7;
+}
+
+.all {
+    width: 100px;
+}
+
+.hNum {
+    width: 100px;
+}
+
+.thesisNum {
+    width: 100px;
+}
+
+.usedNum {
+    width: 100px;
+}
+
+.author_block {
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    border: solid #f2f4f7;
+}
+
+.avatar {
+    align-self: flex-start;
+    flex: 1;
+}
+
+.info {
+    margin-left: auto;
+    margin-right: auto;
+    height: 150px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 10;
+}
+
+.scholar_head {
+    margin-top: 10px;
+    margin-left: 20px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.scholar_makes {
+    margin-left: 20px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    .H-index {
+        border: solid #ccc;
+        border-width: 1px;
+        margin-right: 20px;
+        height: 50%;
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .thesis {
+        border: solid #ccc;
+        border-width: 1px;
+        margin-right: 20px;
+        height: 50%;
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon {
+        height: 50%;
+    }
+
+    .used {
+        border: solid #ccc;
+        border-width: 1px;
+        margin-right: 20px;
+        height: 50%;
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.scholar_field {
+    margin-left: 20px;
+    height: 50px;
+}
+
+.highlighted {
+    color: #4759c5;
+    background-color: #fafafa;
+    border-bottom: hidden;
+}</style>

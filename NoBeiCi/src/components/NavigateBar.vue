@@ -28,6 +28,10 @@ const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
 const isDark = ref(false)
 
+if (localStorage.getItem('theme') === null) {
+  localStorage.setItem('theme', 'light')
+}
+
 if (props.whetherSearchInputVisible === undefined) {
   isSearchInputVisible = ref(true)
 }
@@ -41,6 +45,17 @@ watch(
     isSearchInputVisible.value = !!newValue;
   }
 )
+
+onMounted(() => {
+  if (localStorage.getItem('theme') === 'light') {
+    isDark.value = false
+    disableDarkMode()
+  }
+  else {
+    isDark.value = true
+    enableDarkMode()
+  }
+})
 
 const handleToUserPage = () => {
   router.push('/personinfo')
@@ -58,11 +73,13 @@ const handleLanguageChange = (newLanguage) => {
 const handleTurnLight = () => {
   disableDarkMode()
   isDark.value = false
+  localStorage.setItem('theme', 'light')
 }
 
 const handleTurnDark = () => {
   enableDarkMode()
   isDark.value = true
+  localStorage.setItem('theme', 'dark')
 }
 
 </script>
@@ -70,7 +87,7 @@ const handleTurnDark = () => {
 <template>
   <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
-      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
+      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl" />
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="flex justify-around" style="height: 100%; width: 75%">

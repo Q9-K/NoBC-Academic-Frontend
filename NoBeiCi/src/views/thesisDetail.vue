@@ -1,45 +1,254 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import * as echarts from 'echarts'
+import { ref, onMounted, toRaw } from 'vue';
 import NavigateBar from "../components/NavigateBar.vue";
 import axios from "axios";
 import { computed } from 'vue'
 import i18n from "../locales/index.js";
+import chatInThesis from "../components/chatPDF/chatInThesis.vue"
+import request from "../functions/Request"
+import { ElMessage } from 'element-plus';
 
-const abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
+var title = ref('')
+var abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
 const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
+const authorShips = ref([])
+
+// 是否打开链接
+var isShowLink = ref(false)
+
+//原文链接开关
+function changeShowLink(){
+    isShowLink.value = !isShowLink.value
+    console.log(isShowLink.value)
+}
+//原文链接列表
+var links = ref([])
+
+function openLink(link){
+    console.log(1)
+    window.open(link, '_blank')
+}
+//存放论文数据
+var pdf_url = ref('')
+var hasPDF = ref(true)
+var date = ref('')
+var instituion = ref('')
+var data = ref({ name: '', children: [] })
+var visit_count = ref('')
+var cited_by_count = ref('')
+var work_id = ref('')
+
 const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
 });
 const ifShowTranslate = ref(true)
-function showTranslate(){
+var works = ref([
+    { work_name: 'DGI', authors: ["ab", "baa"], related: 3 },
+    { work_name: 'GSLB', authors: ["a", "b"], related: 6 },
+    { work_name: 'MVGRL', authors: ["a", "b"], related: 7 }
+])
+var relavantWork = ref([])
+var relatedWork = ref([])
+var isHighlighted1 = ref(true)
+var isHighlighted2 = ref(false)
+function showTranslate() {
     ifShowTranslate.value = !ifShowTranslate.value;
 }
 function showAllAbstract() {
     ifShowMoreButton.value = !ifShowMoreButton.value;
 }
-async function getThesisData() {
+//相关论文设置引用
+function setRelated() {
+    works = relavantWork
+    isHighlighted1.value = true
+    isHighlighted2.value = false
+}
+//相关论文设置相关
+function setRelavant() {
+    works = relatedWork
+    isHighlighted1.value = false
+    isHighlighted2.value = true
+}
+//打开当前论文的pdf
+function navigateToExternalURL() {
+    window.open(pdf_url, '_blank')
+}
+// 打开PDF
+function openPDF(url) {
+    window.open(url, '_blank')
+}
+// 收藏论文
+async function collection() {
+    const result = await request(
+        {
+            url: "http://100.99.200.37:8000/user/add_favorite/",
+            params: {
+                work_id: "W2900586920"
+            },
+            addToken: true
+        }
+    )
+    if (result) {
+        ElMessage({
+            message: "关注成功",
+            type: 'success',
+        })
+    }
+}
+//获取数据
+async function getThesis() {
     try {
-        const token = "111"; // 等待生成Token
-        const { data: res } = await axios.post("https://datacenter.aminer.cn/gateway/open_platform/api/v3/paper/detail/list", { ids: '5ce2c5a5ced107d4c61c839b' }, {
-            headers: {
-                "Content-Type": "application/json;charset=utf-8",
-                "Authorization": `Bearer ${token}`
+        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+            params: {
+                id: "W2900586920",
+                user_id: "1592295057@qq.com"
             }
         });
-        console.log(res);
+        abstract.value = res.data.data.abstract
+        title.value = res.data.data.title
+        authorShips.value = res.data.data.authorships
+        if (res.data.data.pdf_url == null) {
+            hasPDF.value = false
+        } else {
+            pdf_url = toRaw(res.data.data.pdf_url)
+        }
+        date.value = res.data.data.publication_date
+        instituion = toRaw(res.data.data.locations[0].source.display_name)
+        visit_count = res.data.data.visit_count
+        cited_by_count = res.data.data.cited_by_count
+        relatedWork.value = res.data.data.related_works_info
+        relavantWork.value = res.data.data.referenced_works_info
+        works.value = relavantWork.value
+        data.value.name = res.data.data.title.substring(0, 10) + ".."
+        data.value.id = res.data.data.id
+        work_id.value = res.data.data.id
+        //原文链接列表初值
+        for (let i = 0; i < res.data.data.locations.length; i++) {
+            links.value.push(res.data.data.locations[i].landing_page_url)
+        }
+        for (let i = 0; i < res.data.data.referenced_works_info.length; i++) {
+            data.value.children.push({
+                name: res.data.data.referenced_works_info[i].title.substring(0, 10) + "..",
+                id: res.data.data.referenced_works_info[i].id
+            })
+        }
     } catch (error) {
-        console.error(error.response.data);
+        console.error()
+    }
+}
+// 为子结点添加数据
+function findChildren(data, name, referenced_works) {
+    for (let children of data.children) {
+        if (children.name === name && children.children == null) {
+            children.id = referenced_works.data.id
+            children.children = []
+            for (let i = 0; i < referenced_works.data.referenced_works_info.length; i++) {
+                children.children.push({
+                    name: referenced_works.data.referenced_works_info[i].title.substring(0, 10) + "..",
+                    id: referenced_works.data.referenced_works_info[i].id
+                })
+            }
+            return;
+        }
+        if (children.children != null) {
+            findChildren(children, name, referenced_works)
+        }
     }
 }
 
-onMounted(() => {
-    getThesisData();
-    console.log(ifShowMoreButton.value)
+onMounted(async () => {
+    // getThesisData();
+    await getThesis()
+    const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
+    const options = {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [
+            {
+                type: 'tree',
+                data: [toRaw(data.value)],
+                top: '1%',
+                left: '10%',
+                bottom: '1%',
+                right: '20%',
+                symbolSize: 7,
+                label: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right',
+                    fontSize: 12
+                },
+                leaves: {
+                    label: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                },
+                emphasis: {
+                    focus: 'descendant'
+                },
+                expandAndCollapse: true,
+                animationDuration: 550,
+                animationDurationUpdate: 750
+            }
+        ]
+    }
+    treemapOfBigField.hideLoading();
+    treemapOfBigField.setOption(options)
+    treemapOfBigField.on('click', async function (params) {
+        if (params.data.children == null && params.treeAncestors.length <= 3) {
+            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+                params: {
+                    id: params.data.id,
+                    user_id: "1592295057@qq.com"
+                }
+            });
+            findChildren(data.value, params.name, res.data)
+            const options = {
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove'
+                },
+                series: [
+                    {
+                        type: 'tree',
+                        data: [toRaw(data.value)],
+                        top: '1%',
+                        left: '30%',
+                        bottom: '1%',
+                        right: '30%',
+                        symbolSize: 7,
+                        label: {
+                            position: 'left',
+                            verticalAlign: 'middle',
+                            align: 'right',
+                            fontSize: 12
+                        },
+                        leaves: {
+                            label: {
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                align: 'left'
+                            }
+                        },
+                        emphasis: {
+                            focus: 'descendant'
+                        },
+                        expandAndCollapse: true,
+                        animationDuration: 550,
+                        animationDurationUpdate: 750
+                    }
+                ]
+            }
+            treemapOfBigField.setOption(options)
+        }
+    })
 });
-
-// translate.setUseVersion2(); //设置使用v2.x 版本
-// translate.execute(); //执行翻译初始化操作，显示出select语言选择
 </script>
 
 <template>
@@ -51,34 +260,23 @@ onMounted(() => {
                     <div class="titleline">
                         <h1 class="titleInner">
                             <span class="text">
-                                AudioLDM 2: Learning Holistic Audio Generation with Self-supervised
-                                Pretraining
+                                {{ title }}
                             </span>
                         </h1>
                     </div>
                     <div class="author-line">
                         <div class="authors-authors">
                             <div class="authors">
-                                <div>
+                                <div v-for="author, index in authorShips">
                                     <span>
                                         <span class="author-link-font-author">
                                             <span class="personLink">
-                                                <a class="author_label" href="/profile/haohe-liu/6371f916ec88d95668c98c67">
-                                                    <span>Haohe Liu</span>
+                                                <a class="author_label" :href=author.author.id>
+                                                    <span>{{ author.author.display_name }}</span>
                                                 </a>
                                             </span>
                                         </span>
-                                        <span class="mr">,</span>
-                                    </span>
-                                    <span>
-                                        <span class="author-link-font-author"
-                                            to="/profile/qiao-tian/637301ddec88d95668d41a23" target="_blank">
-                                            <span class="personLink">
-                                                <a class="author_label" href="/profile/qiao-tian/637301ddec88d95668d41a23">
-                                                    <span>Qiao Tian</span>
-                                                </a>
-                                            </span>
-                                        </span>
+                                        <span class="mr" v-if="index != authorShips.length - 1">,</span>
                                     </span>
                                 </div>
                             </div>
@@ -92,22 +290,22 @@ onMounted(() => {
                                 p-id="54727"></path>
                         </svg>
                         <span>
-                            CoRR
+                            {{ instituion }}
                             <!-- -->
-                            (2023)
+                            {{ date }}
                         </span>
                     </p>
                     <div class="tagLine">
                         <div class="miscLine">
                             <span class="citation">
-                                <span>{{i18n.t("thesisDetail.quote")}}</span>
-                                <strong>2</strong>
+                                <span>{{ i18n.t("thesisDetail.quote") }}</span>
+                                <strong> {{ cited_by_count }}</strong>
                             </span>
                             <span class="line-split">|</span>
                             <span class="views">
                                 <span>
-                                    <span>{{i18n.t("thesisDetail.browse")}}</span>
-                                    <span>371</span>
+                                    <span>{{ i18n.t("thesisDetail.browse") }}</span>
+                                    <span> {{ visit_count }} </span>
                                 </span>
                             </span>
                         </div>
@@ -126,7 +324,7 @@ onMounted(() => {
                                         <div class="abstract-reasonWrap">
                                             <div class="abstract-more" :style="allAbstractStyles">
                                                 <div style="text-align: left;font-size: 14px;font-weight: 400;">
-                                                   {{ abstract }} 
+                                                    {{ abstract }}
                                                 </div>
                                                 <span v-if="ifShowMoreButton" class="abstract-morebtn">
                                                     <span class="morebtn" @click="showAllAbstract">更多</span>
@@ -135,11 +333,13 @@ onMounted(() => {
                                                     <span class="morebtn" @click="showAllAbstract">收起</span>
                                                 </span>
                                             </div>
-                                            <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">查看译文</div>
-                                            <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">收起译文</div>
+                                            <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
+                                                查看译文</div>
+                                            <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">
+                                                收起译文</div>
                                             <div style="margin-top: 5px;line-height: 22px" v-if="!ifShowTranslate">
                                                 <p style="text-align: left;">{{ translate }}</p>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +347,7 @@ onMounted(() => {
                         </div>
                     </div>
                     <div class="actionButton">
-                        <div class="pdf-download">
+                        <div class="pdf-download" :class="{ grey: !hasPDF }" @click="navigateToExternalURL">
                             <svg t="1656602493083" class="icon" viewBox="0 0 1024 1024" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" p-id="33567" width="200" height="200">
                                 <path
@@ -157,7 +357,7 @@ onMounted(() => {
                             <span class="pdf">PDF</span>
                         </div>
                         <div class="ppt">
-                            <span style="color: #979797;">PPT</span>
+                            <span style="color: #979797;">认领</span>
                         </div>
                         <div class="codeData">
                             <p class="code-title" id="code"><span>代码</span></p>
@@ -166,13 +366,20 @@ onMounted(() => {
                             </p>
                         </div>
                         <div class="originLink">
-                            <el-icon>
-                                <Promotion />
-                            </el-icon>
-                            <span>原文链接</span>
-                            <el-icon>
-                                <ArrowDown />
-                            </el-icon>
+                            <div class="origin" @click="changeShowLink()">
+                                <el-icon>
+                                    <Promotion />
+                                </el-icon>
+                                <span>原文链接</span>
+                                <el-icon>
+                                    <ArrowDown />
+                                </el-icon>
+                            </div>
+                            <div v-if="isShowLink" class="Link">
+                                <div v-for="link,index in links" class="link" @click="openLink(link)">
+                                    <div> {{link}} </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="share">
                             <el-icon>
@@ -186,7 +393,7 @@ onMounted(() => {
                             </el-icon>
                             <span>引用</span>
                         </div>
-                        <div class="mark">
+                        <div class="mark" @click="collection()">
                             <el-icon>
                                 <StarFilled />
                             </el-icon>
@@ -194,311 +401,371 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
+                <div class="relation">
+                    <div class="relavant">相关论文</div>
+                    <div class="relavantDetail">
+                        <div class="relavantDetailHead">
+                            <div class="first" @click="setRelated" :class="{ highlighted: isHighlighted1 }">
+                                <el-icon style="margin-right: 5px;font-size:20px">
+                                    <Document />
+                                </el-icon>
+                                引用论文
+                            </div>
+                            <div class="second" @click="setRelavant" :class="{ highlighted: isHighlighted2 }">
+                                <el-icon style="margin-right: 5px;font-size:20px">
+                                    <Document />
+                                </el-icon>
+                                相关论文
+                            </div>
+                        </div>
+                        <div class="relavantDetailBody">
+                            <div v-for="work in works" class="relavantWork">
+                                <div class="work_name">
+                                    <p>{{ work.title }}</p>
+                                </div>
+                                <div class="work_related">
+                                    被引用
+                                    {{ work.cited_by_count }}
+                                </div>
+                                <div class="more">
+                                    <div class="jump" @click="LookThesis">查看</div>
+                                    <div class="pdf" @click="openPDF(work.pdf_url)">PDF</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="relationHead">引文网络</div>
+                    <div id="containerOfTreemap" class="map"></div>
+                </div>
             </div>
             <div class="chat">
                 <div>
-                    <div class="rightBar">
-                        hello
-                    </div>
+                    <chatInThesis class="rightBar"></chatInThesis>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .main {
     margin-top: 10vh;
     display: flex;
     width: 100%;
     min-height: 90vh;
+    height: auto;
     background-color: #f2f4f7;
+    overflow-x: hidden;
+}
+.indexArticle {
+    width: 100%;
+    color: #333;
+    max-width: 2000px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-top: 30px;
+    background-color: #f2f4f7;
+    max-width: 1440px;
+    overflow-x: hidden;
 
-    .indexArticle {
+    .indexContent {
         width: 100%;
-        color: #333;
-        max-width: 2000px;
-        padding-left: 15px;
-        padding-right: 15px;
-        margin: 0 auto;
-        position: relative;
-        --width_video: 29%;
-        --gap: 5%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        padding-top: 30px;
-        background: #f2f4f7;
-        max-width: 1440px;
+        flex: 1 1;
+        margin-right: 20px;
 
-        .indexContent {
-            width: 100%;
-            flex: 1 1;
-            margin-right: 20px;
+        .background {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
 
-            .background {
-                background-color: #fff;
-                border-radius: 10px;
-                padding: 20px;
+            .titleline {
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 6px;
+                font-size: 24px;
+                font-weight: 700;
 
-                .titleline {
+                .titleInner {
+                    line-height: 25px;
                     display: flex;
-                    flex-direction: row;
-                    margin-bottom: 6px;
+                    flex-wrap: wrap;
                     font-size: 24px;
                     font-weight: 700;
 
-                    .titleInner {
-                        line-height: 25px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        font-size: 24px;
+                    .text {
+                        font-size: 22px;
+                        font-family: TimesNewRomanPS-BoldMT, TimesNewRomanPS;
                         font-weight: 700;
-
-                        .text {
-                            font-size: 22px;
-                            font-family: TimesNewRomanPS-BoldMT, TimesNewRomanPS;
-                            font-weight: 700;
-                            color: #000e28;
-                            line-height: 26px;
-                        }
+                        color: #000e28;
+                        line-height: 26px;
                     }
                 }
+            }
 
-                .author-line {
+            .author-line {
+                overflow: hidden;
+                display: flex;
+                text-overflow: ellipsis;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+
+                .authors-authors {
+                    max-height: 40px;
                     overflow: hidden;
-                    display: flex;
-                    text-overflow: ellipsis;
-                    -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 3;
 
-                    .authors-authors {
-                        max-height: 40px;
+                    .authors {
+                        display: flex;
+                        flex-wrap: wrap;
+                        margin-top: 8px;
                         overflow: hidden;
+                        font-size: 12px;
 
-                        .authors {
-                            display: flex;
-                            flex-wrap: wrap;
-                            margin-top: 8px;
-                            overflow: hidden;
-                            font-size: 12px;
+                        .author-link-font-author {
+                            .personLink {
+                                position: relative;
 
-                            .author-link-font-author {
-                                .personLink {
-                                    position: relative;
-
-                                    .author_label {
-                                        color: #6b6b6b;
-                                    }
+                                .author_label {
+                                    color: #6b6b6b;
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                .confInfo {
-                    font-size: 14px;
-                    color: #6b6b6b;
-                    margin-top: 5px;
-                    margin-bottom: 0;
-                    display: flex;
+            .confInfo {
+                font-size: 14px;
+                color: #6b6b6b;
+                margin-top: 5px;
+                margin-bottom: 0;
+                display: flex;
 
-                    .icon {
-                        font-size: 16px;
-                        text-align: center;
-                        margin-right: 5px;
-                        line-height: 28px;
-                    }
+                .icon {
+                    font-size: 16px;
+                    text-align: center;
+                    margin-right: 5px;
+                    line-height: 28px;
                 }
+            }
 
-                .tagLine {
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 15px;
-                    flex-wrap: wrap;
+            .tagLine {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
 
-                    .miscLine {
-                        margin-top: 7px;
-                        margin-right: 12px;
+                .miscLine {
+                    margin-top: 7px;
+                    margin-right: 12px;
+                    font-size: 13px;
+
+                    .citation {
+                        color: #067c08;
                         font-size: 13px;
+                        white-space: pre;
+                    }
 
-                        .citation {
-                            color: #067c08;
-                            font-size: 13px;
-                            white-space: pre;
-                        }
+                    .line-split {
+                        margin: 0 10px;
+                        color: #d5d5d5;
+                    }
 
-                        .line-split {
-                            margin: 0 10px;
-                            color: #d5d5d5;
-                        }
-
-                        .views {
-                            color: #4759c5;
-                            font-size: 13px;
-                            font-weight: bolder;
-                        }
+                    .views {
+                        color: #4759c5;
+                        font-size: 13px;
+                        font-weight: bolder;
                     }
                 }
+            }
 
-                .abstract {
+            .abstract {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
+
+                .abstract-title {
                     display: flex;
                     align-items: center;
-                    margin-bottom: 15px;
-                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    flex-direction: column;
 
-                    .abstract-title {
+                    .abstract-absTop {
+                        width: 100%;
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
+                        margin-bottom: 10px;
+                        line-height: 15px;
+                        font-size: 15px;
+                        font-weight: 500;
+                        color: #222;
                         flex-direction: column;
+                        align-items: flex-start;
+                    }
 
-                        .abstract-absTop {
-                            width: 100%;
+                    .abstract-absLabel {
+                        width: 100%;
+                        font-size: 20px;
+                        font-weight: 500;
+                        color: #666;
+
+                        .abstract-abstractContent {
                             display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            margin-bottom: 10px;
-                            line-height: 15px;
-                            font-size: 15px;
-                            font-weight: 500;
-                            color: #222;
+                            position: relative;
+                            margin: 0 !important;
                             flex-direction: column;
-                            align-items: flex-start;
-                        }
 
-                        .abstract-absLabel {
-                            width: 100%;
-                            font-size: 20px;
-                            font-weight: 500;
-                            color: #666;
+                            .abstract-translatecontent {
+                                position: absolute;
+                                right: 20px;
+                                top: 0;
+                            }
 
-                            .abstract-abstractContent {
+                            .abstract-aiabstractcontent {
                                 display: flex;
-                                position: relative;
-                                margin: 0 !important;
                                 flex-direction: column;
+                                justify-content: space-between;
 
-                                .abstract-translatecontent {
-                                    position: absolute;
-                                    right: 20px;
-                                    top: 0;
-                                }
+                                .abstract-reasonWrap {
+                                    line-height: 20px;
+                                    position: relative;
+                                    font-size: 14px;
+                                    font-weight: 400;
+                                    color: #666;
 
-                                .abstract-aiabstractcontent {
-                                    display: flex;
-                                    flex-direction: column;
-                                    justify-content: space-between;
-
-                                    .abstract-reasonWrap {
-                                        line-height: 20px;
-                                        position: relative;
+                                    .abstract-more {
+                                        display: flex;
                                         font-size: 14px;
                                         font-weight: 400;
                                         color: #666;
+                                        max-height: 88px;
+                                        overflow: hidden;
+                                        line-height: 22px;
+                                        position: relative;
 
-                                        .abstract-more {
-                                            display: flex;
-                                            font-size: 14px;
-                                            font-weight: 400;
-                                            color: #666;
-                                            max-height: 88px;
-                                            overflow: hidden;
-                                            line-height: 22px;
-                                            position: relative;
-
-                                            .abstract-morebtn {
-                                                font-size: 12px;
-                                                margin-left: 2px;
-                                                color: #4759c5;
-                                                border: none;
-                                                cursor: pointer;
-                                                padding: 0 10px;
-                                                background: #fff;
-                                                position: absolute;
-                                                top: 66px;
-                                                right: 0;
-                                                z-index: 10;
-                                            }
-                                            .abstract-morebtn2 {
-                                                font-size: 12px;
-                                                margin-left: 2px;
-                                                color: #4759c5;
-                                                border: none;
-                                                cursor: pointer;
-                                                padding: 0 10px;
-                                                background: #fff;
-                                                position: absolute;
-                                                bottom: 0px;
-                                                right: 0;
-                                                z-index: 10;
-                                            }
-                                        }
-
-                                        .abstract-tranText {
-                                            margin-top: 3px;
-                                            cursor: pointer;
+                                        .abstract-morebtn {
+                                            font-size: 12px;
+                                            margin-left: 2px;
                                             color: #4759c5;
-                                            display: flex;
+                                            border: none;
+                                            cursor: pointer;
+                                            padding: 0 10px;
+                                            background: #fff;
+                                            position: absolute;
+                                            top: 66px;
+                                            right: 0;
+                                            z-index: 10;
                                         }
+
+                                        .abstract-morebtn2 {
+                                            font-size: 12px;
+                                            margin-left: 2px;
+                                            color: #4759c5;
+                                            border: none;
+                                            cursor: pointer;
+                                            padding: 0 10px;
+                                            background: #fff;
+                                            position: absolute;
+                                            bottom: 0px;
+                                            right: 0;
+                                            z-index: 10;
+                                        }
+                                    }
+
+                                    .abstract-tranText {
+                                        margin-top: 3px;
+                                        cursor: pointer;
+                                        color: #4759c5;
+                                        display: flex;
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                .actionButton {
+            .actionButton {
+                display: flex;
+                flex-direction: row;
+                grid-row-gap: 10px;
+                row-gap: 10px;
+                margin-top: 16px;
+                flex-wrap: wrap;
+                height: 25px;
+
+                .pdf-download {
+                    background-color: #c51c01;
+                    width: 100%;
+                    max-width: 60px;
+                    position: relative;
+                    cursor: pointer;
+                    height: 24px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    font-weight: 700;
+                    margin-right: 10px;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: center;
+                    align-items: center;
+                    box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
+                    border-radius: 2px !important;
+                    border: 1px solid #e7e7e7 !important;
+
+                    .icon {
+                        width: 23px;
+                        height: 20px;
+                        margin-right: 4px;
+                        vertical-align: -0.15em;
+                        fill: currentColor;
+                    }
+
+                    .pdf {
+                        color: #e8edf4;
+                    }
+
+                }
+
+                .grey {
+                    background-color: #e7e7e7;
+                }
+
+                .ppt {
+                    background-color: #e7e7e7;
+                    width: 100%;
+                    max-width: 64px;
+                    height: 24px;
+                    box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
+                    border-radius: 2px !important;
+                    border: 1px solid #e7e7e7 !important;
+                    border: none !important;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: center;
+                    align-items: center;
+                    font-weight: 700;
+                    margin-right: 10px;
+                    cursor: pointer;
+                }
+
+                .codeData {
                     display: flex;
                     flex-direction: row;
-                    grid-row-gap: 10px;
-                    row-gap: 10px;
-                    margin-top: 16px;
-                    flex-wrap: wrap;
 
-                    .pdf-download {
-                        background-color: #c51c01;
-                        width: 100%;
-                        max-width: 60px;
-                        position: relative;
-                        height: 24px;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        font-weight: 700;
-                        margin-right: 10px;
-                        display: flex;
-                        font-size: 14px;
-                        justify-content: center;
-                        align-items: center;
-                        box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
-                        border-radius: 2px !important;
-                        border: 1px solid #e7e7e7 !important;
-
-                        .icon {
-                            width: 23px;
-                            height: 20px;
-                            margin-right: 4px;
-                            vertical-align: -0.15em;
-                            fill: currentColor;
-                        }
-
-                        .pdf {
-                            color: #e8edf4;
-                        }
-
-                    }
-
-                    .ppt {
+                    .code-title {
+                        border-radius: 2px;
+                        border: 1px solid #e7e7e7;
                         background-color: #e7e7e7;
-                        cursor: pointer;
-                        width: 100%;
-                        max-width: 64px;
-                        position: relative;
+                        color: #979797;
                         height: 24px;
-                        box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
-                        border-radius: 2px !important;
-                        border: 1px solid #e7e7e7 !important;
-                        border: none !important;
                         display: flex;
                         font-size: 14px;
                         justify-content: center;
@@ -507,52 +774,39 @@ onMounted(() => {
                         padding-right: 10px;
                         font-weight: 700;
                         margin-right: 10px;
+                        margin-bottom: 0;
+                        cursor: pointer;
                     }
 
-                    .codeData {
+                    .data-title {
+                        color: #979797;
+                        background-color: #e7e7e7;
+                        height: 24px;
                         display: flex;
-                        flex-direction: row;
-
-                        .code-title {
-                            border-radius: 2px;
-                            border: 1px solid #e7e7e7;
-                            background-color: #fff;
-                            color: #979797;
-                            display: flex;
-                            font-size: 14px;
-                            justify-content: center;
-                            align-items: center;
-                            padding-left: 10px;
-                            padding-right: 10px;
-                            font-weight: 700;
-                            margin-right: 10px;
-                            margin-bottom: 0;
-                            cursor: pointer;
-                        }
-
-                        .data-title {
-                            color: #979797;
-                            background-color: #e7e7e7;
-                            height: 24px;
-                            display: flex;
-                            font-size: 14px;
-                            justify-content: center;
-                            align-items: center;
-                            border-radius: 4px;
-                            padding-left: 10px;
-                            padding-right: 10px;
-                            font-weight: 700;
-                            margin-right: 10px;
-                            margin-bottom: 0;
-                            cursor: pointer;
-                        }
+                        font-size: 14px;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 4px;
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        font-weight: 700;
+                        margin-right: 10px;
+                        margin-bottom: 0;
+                        cursor: pointer;
                     }
+                }
 
-                    .originLink {
+                .originLink {
+                    display: flex;
+                    flex-direction: column;
+
+
+                    .origin {
                         color: #979797;
                         background-color: #fff;
                         cursor: pointer;
                         height: 24px;
+                        width: 106px;
                         background: #fff;
                         box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
                         border-radius: 2px !important;
@@ -574,84 +828,277 @@ onMounted(() => {
                             fill: currentColor;
                         }
                     }
-
-                    .share {
-                        margin-left: auto;
-                        height: 24px;
-                        background: #fff;
-                        box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
-                        border-radius: 2px !important;
-                        border: 1px solid #e7e7e7 !important;
-                        color: #6d6d6d;
+                    .Link {
+                        margin-top: 5px;
+                        height: auto;
+                        width: auto;
+                        border: solid #ccc;
+                        border-width: 1px;
+                        background-color: #fff;
                         display: flex;
-                        font-size: 14px;
-                        justify-content: center;
-                        align-items: center;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        font-weight: 700;
-                        margin-right: 10px;
-
-                        .icon {
-                            margin-right: 3px;
-                            width: 1em;
-                            height: 1em;
-                            vertical-align: -0.15em;
-                            fill: currentColor;
+                        flex-direction: column;
+                        z-index: 9999;
+                        .link{
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                            padding-left: 5px;
+                            padding-right: 5px;
+                            font-size: 12px;
+                            cursor: pointer;
+                            opacity: 1;
+                        }
+                        .link:hover{
+                            background-color: lightblue;
+                            color: #4759c5;
                         }
                     }
 
-                    .bib {
-                        height: 24px;
-                        background: #fff;
-                        box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
-                        border-radius: 2px !important;
-                        border: 1px solid #e7e7e7 !important;
-                        color: #6d6d6d;
-                        display: flex;
-                        font-size: 14px;
-                        justify-content: center;
-                        align-items: center;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        font-weight: 700;
-                        margin-right: 10px;
+                    .icon {
+                        margin-right: 3px;
+                        width: 1em;
+                        height: 1em;
+                        vertical-align: -0.15em;
+                        fill: currentColor;
                     }
+                }
 
-                    .mark {
-                        height: 24px;
-                        background: #fff;
-                        box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
-                        border-radius: 2px !important;
-                        border: 1px solid #e7e7e7 !important;
-                        color: #6d6d6d;
-                        display: flex;
-                        font-size: 14px;
-                        justify-content: center;
-                        align-items: center;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        font-weight: 700;
-                        margin-right: 10px;
+                .share {
+                    margin-left: auto;
+                    height: 24px;
+                    background: #fff;
+                    box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
+                    border-radius: 2px !important;
+                    border: 1px solid #e7e7e7 !important;
+                    color: #6d6d6d;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: center;
+                    align-items: center;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    font-weight: 700;
+                    margin-right: 10px;
+
+                    .icon {
+                        margin-right: 3px;
+                        width: 1em;
+                        height: 1em;
+                        vertical-align: -0.15em;
+                        fill: currentColor;
                     }
+                }
+
+                .bib {
+                    height: 24px;
+                    background: #fff;
+                    box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
+                    border-radius: 2px !important;
+                    border: 1px solid #e7e7e7 !important;
+                    color: #6d6d6d;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: center;
+                    align-items: center;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    font-weight: 700;
+                    margin-right: 10px;
+                }
+
+                .mark {
+                    height: 24px;
+                    background: #fff;
+                    box-shadow: 0 4px 13px 0 #e8edf4, 0 2px 2px 0 hsla(0, 0%, 87.5%, .5);
+                    border-radius: 2px !important;
+                    border: 1px solid #e7e7e7 !important;
+                    color: #6d6d6d;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: center;
+                    align-items: center;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    font-weight: 700;
+                    margin-right: 10px;
+                    cursor: pointer;
                 }
             }
         }
 
-        .chat {
-            display: block;
+        .relation {
+            margin-top: 3vh;
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #fff;
 
-            .rightBar {
-                flex: 0 0 370px;
-                max-width: 370px;
-                min-width: 370px;
+            .relavant {
+                padding: 20px;
+                font-weight: 700;
+                font-size: large;
+            }
+
+            .relavantDetail {
+                padding-left: 20px;
+                width: 100%;
+                border-color: #979797;
+                display: flex;
+                flex-direction: column;
+
+                .relavantDetailHead {
+                    flex-direction: row;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    width: 100%;
+                    border: solid lightgray;
+                    border-left: hidden;
+                    border-right: hidden;
+                    border-top: hidden;
+                    border-width: 1px;
+                    margin-bottom: 8px;
+
+                    .first {
+                        width: 114px;
+                        height: 40px;
+                        border: solid;
+                        border-color: #979797;
+                        border-width: 1px;
+                        margin-right: 1px;
+                        font-size: 13px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: 600;
+                        cursor: pointer;
+                    }
+
+                    .second {
+                        width: 114px;
+                        height: 40px;
+                        border: solid;
+                        border-color: #979797;
+                        border-width: 1px;
+                        margin-right: 1px;
+                        font-size: 13px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: 600;
+                        cursor: pointer;
+                    }
+
+                    .highlighted {
+                        color: #4759c5;
+                        background-color: #fafafa;
+                        border-bottom: hidden;
+                    }
+                }
+
+                .relavantDetailBody {
+                    width: 100%;
+                    height: auto;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+
+                    .relavantWork {
+                        padding-top: 10px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        width: 100%;
+                        min-height: 10vh;
+                        height: auto;
+                        border-bottom: dashed;
+                        border-width: 1px;
+                        border-left: hidden;
+                        border-top: hidden;
+
+                        .work_name {
+                            align-self: flex-start;
+                            margin-left: 20px;
+                            font-size: 15px;
+                            font-weight: 600;
+                            display: flex;
+                            justify-content: left;
+                            flex-direction: row;
+
+                            p {
+                                text-align: left;
+                            }
+                        }
+
+                        .work_related {
+                            margin-top: 5px;
+                            margin-left: 20px;
+                            font-size: 13px;
+                        }
+
+                        .more {
+                            display: flex;
+                            margin-left: 20px;
+                            flex-direction: row;
+                            align-items: center;
+                            justify-content: flex-start;
+                            height: 30px;
+
+                            .jump {
+                                width: 50px;
+                                font-size: 12px;
+                                color: white;
+                                border-width: 1px;
+                                background-color: #4759c5;
+                                cursor: pointer;
+                            }
+
+                            .pdf {
+                                border: solid;
+                                border-width: 1px;
+                                margin-left: 20px;
+                                font-size: 12px;
+                                width: 50px;
+                                color: white;
+                                font-weight: 700;
+                                background-color: #c51c01;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            .relationHead {
+                padding: 20px;
+                font-weight: 700;
+                font-size: large;
+            }
+
+
+            .map {
+                align-self: center;
+                margin-top: 20px;
+                min-width: 90%;
+                width: auto;
+                min-height: 30vh;
+                height: auto;
             }
         }
     }
-}
 
-.all {
-    display: flex;
-    flex-direction: column;
+    .chat {
+        display: block;
+
+        .rightBar {
+            flex: 0 0 370px;
+            max-width: 370px;
+            min-width: 370px;
+            height: 70vh;
+        }
+    }
 }
 </style>

@@ -20,8 +20,8 @@ instance.interceptors.request.use(
                 background: 'rgba(0,0,0,0.7)'
             })
         }
-        if (config.addToken && store.getters.token) {
-            config.headers['X-Token'] = store.getters.token;//这里应该为获取Token的方法
+        if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
+            config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
         }
         return config;
     }, (error) => {
@@ -47,7 +47,7 @@ instance.interceptors.response.use(
             if (errorCallback) {
                 errorCallback(responseData)
             }
-            return Promise.reject({ showError: showError, msg: responseData.info });
+            return Promise.reject({ showError: showError, msg: responseData.msg });
         }
 
 

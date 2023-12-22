@@ -42,6 +42,8 @@ body {
   /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 h1 {
@@ -80,6 +82,8 @@ button:focus-visible {
   width: 100vw;
   height: 100vh;
   background-color: #efefef;
+  width: 100vw;
+  height: auto;
 }
 
 @media {
