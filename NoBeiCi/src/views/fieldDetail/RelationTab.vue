@@ -20,7 +20,7 @@ onMounted(() => {
 let childrenTree
 let childrenTreeCnData
 let childrenTreeEnData
-const idNodeMap = new Map()
+const childrenIdNodeMap = new Map()
 onMounted(() => {
 
   childrenTreeCnData = [{
@@ -35,7 +35,7 @@ onMounted(() => {
     children: []
   }]
 
-  idNodeMap.set(props.currentFieldId, {
+  childrenIdNodeMap.set(props.currentFieldId, {
     cnNode: childrenTreeCnData[0],
     enNode: childrenTreeEnData[0]
   })
@@ -102,7 +102,7 @@ onMounted(() => {
           }
           childrenTreeEnData[0].children.push(enNode)
 
-          idNodeMap.set(id, {
+          childrenIdNodeMap.set(id, {
             cnNode: cnNode,
             enNode: enNode
           })
@@ -152,7 +152,8 @@ onMounted(() => {
             },
             expandAndCollapse: true,
             animationDuration: 550,
-            animationDurationUpdate: 750
+            animationDurationUpdate: 750,
+            initialTreeDepth: 100
           }
         ]
       })
@@ -173,7 +174,7 @@ onMounted(() => {
                 })
               }
               else {
-                const parent = idNodeMap.get(clickedFieldId)
+                const parent = childrenIdNodeMap.get(clickedFieldId)
                 parent.cnNode.children.length = 0
                 parent.enNode.children.length = 0
 
@@ -191,13 +192,20 @@ onMounted(() => {
                     children: []
                   }
 
-
                   parent.cnNode.children.push(cnNode)
                   parent.enNode.children.push(enNode)
+
+                  childrenIdNodeMap.set(id, {
+                    cnNode: cnNode,
+                    enNode: enNode
+                  })
                 }
               }
             })
             .then(() => {
+
+              console.log(childrenTreeCnData)
+
               if (i18n.getLocale() === 'en') {
                 childrenTree.setOption({
                   series: {
@@ -215,7 +223,7 @@ onMounted(() => {
             })
         }
         else {
-          const parent = idNodeMap.get(clickedFieldId)
+          const parent = childrenIdNodeMap.get(clickedFieldId)
           parent.cnNode.children.length = 0
           parent.enNode.children.length = 0
         }
@@ -223,6 +231,100 @@ onMounted(() => {
 
 
     })
+})
+
+let ancestorsTree
+let ancestorsTreeCnData
+let ancestorsTreeEnData
+const ancestorsIdNodeMap = new Map()
+onMounted(() => {
+
+  ancestorsTreeCnData = [{
+    name: props.currentFieldCnName,
+    id: "https://openalex.org/" + props.currentFieldId,
+    children: []
+  }]
+
+  ancestorsTreeEnData = [{
+    name: props.currentFieldEnName,
+    id: "https://openalex.org/" + props.currentFieldId,
+    children: []
+  }]
+
+  ancestorsIdNodeMap.set(props.currentFieldId, {
+    cnNode: ancestorsTreeCnData[0],
+    enNode: ancestorsTreeEnData[0]
+  })
+
+  for (let {display_name, chinese_display_name, id} of props.ancestors) {
+
+    const cnNode = {
+      name: chinese_display_name,
+      id: id,
+      children: []
+    }
+    ancestorsTreeCnData[0].children.push(cnNode)
+
+    const enNode = {
+      name: display_name,
+      id: id,
+      children: []
+    }
+    ancestorsTreeEnData[0].children.push(enNode)
+
+    ancestorsIdNodeMap.set(id, {
+      cnNode: cnNode,
+      enNode: enNode
+    })
+  }
+
+  let ancestorsTreeData
+  if (i18n.getLocale() === 'en') {
+    ancestorsTreeData = ancestorsTreeEnData
+  }
+  else {
+    ancestorsTreeData = ancestorsTreeCnData
+  }
+
+  ancestorsTree = echarts.init(document.getElementById('container-of-ancestor-tree'))
+  ancestorsTree.setOption({
+    tooltip: {
+    trigger: 'item',
+      triggerOn: 'mousemove'
+    },
+    series: [
+      {
+        type: 'tree',
+        data: ancestorsTreeData,
+        top: '1%',
+        left: '15%',
+        bottom: '1%',
+        right: '7%',
+        symbolSize: 7,
+        orient: 'RL',
+        label: {
+          position: 'right',
+          verticalAlign: 'middle',
+          align: 'left'
+        },
+        leaves: {
+          label: {
+            position: 'left',
+            verticalAlign: 'middle',
+            align: 'right'
+          }
+        },
+        emphasis: {
+          focus: 'descendant'
+        },
+        expandAndCollapse: true,
+        animationDuration: 550,
+        animationDurationUpdate: 750
+      }
+    ]
+  })
+
+
 })
 
 watch(() => {
