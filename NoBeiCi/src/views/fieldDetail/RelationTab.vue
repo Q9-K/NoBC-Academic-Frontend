@@ -1,6 +1,6 @@
 <script setup>
 import i18n from "../../locales/index.js";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import * as echarts from 'echarts'
 import get from '../../functions/Get.js'
 import {ElMessage} from "element-plus";
@@ -236,7 +236,6 @@ onMounted(() => {
 let ancestorsTree
 let ancestorsTreeCnData
 let ancestorsTreeEnData
-const ancestorsIdNodeMap = new Map()
 onMounted(() => {
 
   ancestorsTreeCnData = [{
@@ -250,11 +249,6 @@ onMounted(() => {
     id: "https://openalex.org/" + props.currentFieldId,
     children: []
   }]
-
-  ancestorsIdNodeMap.set(props.currentFieldId, {
-    cnNode: ancestorsTreeCnData[0],
-    enNode: ancestorsTreeEnData[0]
-  })
 
   for (let {display_name, chinese_display_name, id} of props.ancestors) {
 
@@ -271,11 +265,6 @@ onMounted(() => {
       children: []
     }
     ancestorsTreeEnData[0].children.push(enNode)
-
-    ancestorsIdNodeMap.set(id, {
-      cnNode: cnNode,
-      enNode: enNode
-    })
   }
 
   let ancestorsTreeData
@@ -327,6 +316,99 @@ onMounted(() => {
 
 })
 
+let relatedGraph
+let relatedGraphCnData = []
+let relatedGraphEnData = []
+onMounted(() => {
+
+  const rootNodeScore = props.relatedFields[0].score * 1.2
+
+  let allScore = rootNodeScore
+  for (let {score} of props.relatedFields) {
+    allScore += score
+  }
+
+  relatedGraphCnData.push({
+    id: props.currentFieldId,
+    name: props.currentFieldCnName,
+    value: rootNodeScore,
+    symbolSize: rootNodeScore * 5 / allScore
+  })
+
+  relatedGraphEnData.push({
+    id: props.currentFieldId,
+    name: props.currentFieldEnName,
+    value: rootNodeScore,
+    symbolSize: rootNodeScore * 5 / allScore
+  })
+
+  for (let {score, id, display_name, chinese_display_name} of props.relatedFields) {
+    relatedGraphCnData.push({
+      id: id,
+      name: chinese_display_name,
+      value: score,
+      symbolSize: score * 5 / allScore
+    })
+
+    relatedGraphEnData.push({
+      id: id,
+      name: display_name,
+      value: score,
+      symbolSize: score * 5 / allScore
+    })
+  }
+
+  let relatedGraphData
+  if (i18n.getLocale() === 'en') {
+    relatedGraphData = relatedGraphEnData
+  }
+  else {
+    relatedGraphData = relatedGraphCnData
+  }
+
+  const relatedGraphLink = []
+  for (let {id} of props.relatedFields) {
+    relatedGraphLink.push({
+      source: props.currentFieldId,
+      target: id
+    })
+  }
+
+  console.log(relatedGraphEnData)
+
+  relatedGraph = echarts.init(document.getElementById('container-of-related-graph'))
+  relatedGraph.setOption({
+    tooltip: {},
+    series: [
+      {
+        name: 'Les Miserables',
+        type: 'graph',
+        layout: 'circular',
+        data: relatedGraphData,
+        links: relatedGraphLink,
+        roam: true,
+        label: {
+          show: true,
+          position: 'right',
+          formatter: '{b}'
+        },
+        labelLayout: {
+          hideOverlap: true
+        },
+        scaleLimit: {
+          min: 0.4,
+          max: 2
+        },
+        lineStyle: {
+          color: 'source',
+          curveness: 0.3
+        }
+      }
+    ]
+  })
+
+})
+
 watch(() => {
   return i18n.getLocale()
 },
@@ -337,11 +419,33 @@ watch(() => {
         data: childrenTreeEnData
       }
     })
+    ancestorsTree.setOption({
+      series: {
+        data: ancestorsTreeEnData
+      }
+    })
+    console.log(relatedGraphEnData)
+    relatedGraph.setOption({
+      series: {
+        data: relatedGraphEnData
+      }
+    })
   }
   else {
     childrenTree.setOption({
       series: {
         data: childrenTreeCnData
+      }
+    })
+    ancestorsTree.setOption({
+      series: {
+        data: ancestorsTreeCnData
+      }
+    })
+    console.log(relatedGraphCnData)
+    relatedGraph.setOption({
+      series: {
+        data: relatedGraphCnData,
       }
     })
   }
@@ -363,6 +467,12 @@ watch(() => {
         </div>
         <div id="container-of-children-tree" class="up-tree"></div>
       </div>
+      <div class="up-tree-outer">
+        <div class="title-of-up-tree">
+          {{ i18n.t('fieldDetail.relationTab.titleOfRelatedGraph') }}
+        </div>
+        <div class="up-tree" id="container-of-related-graph"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -383,7 +493,7 @@ watch(() => {
     flex-wrap: nowrap;
     .up-tree-outer {
       height: 100%;
-      width: 50%;
+      width: 33%;
       display: flex;
       flex-wrap: wrap;
       .title-of-up-tree {
@@ -394,6 +504,22 @@ watch(() => {
         width: 100%;
         height: 90%;
       }
+    }
+  }
+  .related-fields-graph-outer {
+    margin-top: 5vh;
+    width: 100%;
+    height: 58vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+    padding: 3% 5%;
+    margin-bottom: 3vh;
+    .related-fields-graph {
+      height: 90%;
+      width: 50%;
     }
   }
 }
