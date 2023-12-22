@@ -27,12 +27,6 @@ const menuClickHandler = (index)=>{
         <el-menu-item index="2" @click="menuClickHandler('scholarClaim')">
             <span>{{i18n.t('admin.handleScholarGrievances')}}</span>
         </el-menu-item>
-        <el-menu-item index="3" @click="menuClickHandler('achievementCertify')">
-          <span>{{i18n.t('admin.handleAchievementCertification')}}</span>
-        </el-menu-item>
-        <el-menu-item index="4" @click="menuClickHandler('achievementClaim')">
-          <span>{{i18n.t('admin.handleAchievementGrievances')}}</span>
-        </el-menu-item>
       </el-menu>
     </div>
 

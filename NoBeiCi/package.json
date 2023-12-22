@@ -24,6 +24,7 @@
     "element-plus": "^2.3.14",
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "pinyin": "^3.0.0-alpha.5",
     "qs": "^6.11.2",
     "TagCloud": "^2.4.0",

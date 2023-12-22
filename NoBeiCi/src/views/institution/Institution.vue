@@ -1,11 +1,15 @@
 <script setup>
 import {ref,onMounted} from 'vue'
 import {useRouter} from 'vue-router'
+import axios from "axios";
 import NavigateBar from '../../components/NavigateBar.vue'
 import SearchBar from '../../components/SearchBar.vue'
 import i18n from "../../locales/index.js";
 import get from "../../functions/Get.js";
 import {useInstitution} from "../../stores/institution.js"
+import {checkIsChinese} from "../../functions/checkIsChinese.js";
+import {handleResponse} from "../../functions/handleResponse.js";
+import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
 const store = useInstitution();
 const page_num = ref(1);
@@ -25,8 +29,8 @@ const institutions = ref([
 ])
 const goInstitution = (id) =>{
     store.changeId(id);
+    console.log("store.id:",store.getId);
     var strs = id.split('/');
-    console.log(strs[strs.length-1]);
     id = strs[strs.length-1];
     
     router.push({ name: 'institutionDetail', params: { institutionId: id } });
@@ -57,6 +61,44 @@ const getInstitutions =async (page_size,page_num)=>{
 onMounted(()=>{
     getInstitutions(20,1);
 })
+
+const handleSearchInstitution= (value) => {
+
+    let codeOfLanguage = 0
+    if (checkIsChinese(value)) {
+    codeOfLanguage = 1
+}
+
+return axios.get('http://100.117.229.168:8000' + '/institution/getInstitutionByKeyword/', {
+    params: {
+        keyword: value,
+        language: codeOfLanguage
+    }
+    }).then((response) => {
+    handleResponse(response, false, (data) => {
+        const upperSearchBar = useUpperSearchBarStore()
+        if (codeOfLanguage === 0) {
+            for (let {id, display_name} of data.institutions) {
+                upperSearchBar.addIntoOptions(id, display_name)
+            }
+        }
+        else if (codeOfLanguage === 1) {
+            for (let {id, chinese_display_name} of data.institutions) {
+                upperSearchBar.addIntoOptions(id, chinese_display_name)
+            }
+        }
+    })
+    })
+}
+
+const handleSelectInstitution = (value) => {
+    let fullId = ''
+    fullId += value
+    store.changeId(fullId)
+    const depart = fullId.split('/')
+    let id = depart.at(depart.length - 1)
+    router.push('/institution/' + id)
+}
 </script>
 
 <template>
@@ -65,7 +107,8 @@ onMounted(()=>{
     <el-scrollbar>
         <div class="search">
             <SearchBar 
-            @formDataChange="search"
+            :search-function="handleSearchInstitution"
+            :select-function="handleSelectInstitution"
             ></SearchBar>
         </div>
         <div class="i-container">

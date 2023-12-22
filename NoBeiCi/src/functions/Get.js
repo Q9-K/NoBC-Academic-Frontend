@@ -40,6 +40,7 @@ instance.interceptors.response.use(
         if (showLoading && loading) {
             loading.close();
         }
+        console.log(response)
         const responseData = response.data;
         if (responseData.code == 200) {
             return responseData;

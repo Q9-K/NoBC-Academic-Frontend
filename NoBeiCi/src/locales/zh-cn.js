@@ -20,8 +20,6 @@ export default {
   admin:{
     reviewScholarCertification:"审核学者认证",
     handleScholarGrievances:"处理学者申诉",
-    handleAchievementCertification:"处理学术成果认证",
-    handleAchievementGrievances:"处理学术成果申诉",
     detail:"详细信息",
     applicantName:"申请者",
     scholarName:"认证学者",

@@ -1,17 +1,15 @@
 import {defineStore} from "pinia";
 export const useInstitution = defineStore('institution', {
-    state: () => {
-      return {
+    state: () => ({
         institutionId: '',
-      }
-    },
+    }),
     actions: {
       changeId(id) {
-        this.id  = id;
+        this.institutionId  = id;
       },
-
     },
     getters: {
-      getId: state => state.institutionId
-    }
+      getId: (state) => state.institutionId,
+    },
+    persist: true,
 })

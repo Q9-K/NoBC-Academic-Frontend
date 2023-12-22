@@ -20,8 +20,6 @@ export default {
   admin:{
     reviewScholarCertification:"Review Scholar Certification",
     handleScholarGrievances:"Handle Scholar Grievances",
-    handleAchievementCertification:"Handle Achievement Certification",
-    handleAchievementGrievances:"Handle Achievement Grievances",
     detail:"Detail",
     applicantName:"Applicant",
     scholarName:"Scholar's Name",

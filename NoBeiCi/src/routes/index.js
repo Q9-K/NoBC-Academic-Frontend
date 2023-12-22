@@ -44,16 +44,6 @@ const router = createRouter({
           component: () => import('../views/admin/ScholarCertify.vue'),
         },
         {
-          path: 'achievementCertify',
-          name: "achievementCertify",
-          component: () => import('../views/admin/AchievementCertify.vue'),
-        },
-        {
-          path: 'achievementClaim',
-          name: "achievementClaim",
-          component: () => import('../views/admin/AchievementClaim.vue'),
-        },
-        {
           path: 'scholarClaim',
           name: "scholarClaim",
           component: () => import('../views/admin/ScholarClaim.vue'),
