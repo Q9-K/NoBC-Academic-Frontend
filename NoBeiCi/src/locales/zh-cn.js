@@ -30,13 +30,6 @@ export default {
     sortEarliest:"按时间最早排序",
     backToList:"返回列表",
   },
-  thesisDetail:{
-    quote:"引用",
-    browse:"浏览"
-  },
-  field: {
-    moreDetail: "更多"
-  },
   priorDialog: {
     enter: "登录注册",
     selectField: "选择关注领域",

@@ -30,13 +30,6 @@ export default {
     sortEarliest:"Earliest",
     backToList:"Back",
   },
-  thesisDetail:{
-    quote:"Quote",
-    browse:"Browse"
-  },
-  field: {
-    moreDetail: "More"
-  },
   priorDialog: {
     enter: "Enter",
     selectField: "Select Interests",

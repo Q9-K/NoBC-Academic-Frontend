@@ -10,6 +10,7 @@ import {Star, StarFilled} from "@element-plus/icons-vue";
 import {LineChartOutlined, ApartmentOutlined, FileTextOutlined, TeamOutlined} from "@ant-design/icons-vue";
 import TrendTab from "./TrendTab.vue";
 import RelationTab from "./RelationTab.vue";
+import PaperTab from "./PaperTab.vue";
 
 const {params} = useRoute();
 console.log(params)
@@ -343,6 +344,9 @@ const handleSwitchIndexRange = (newShow) => {
                 </div>
               </div>
             </div>
+          </template>
+          <template #default>
+            <PaperTab :current-field-id="fieldId" />
           </template>
         </el-tab-pane>
         <el-tab-pane lazy="lazy" name="scholar">
