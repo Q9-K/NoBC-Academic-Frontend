@@ -11,7 +11,7 @@
                 <p>一句话总结</p>
             </div>
         </div>
-        <div class="Intro">
+        <div class="Intro" ref="scrollContainer">
             <div v-for="(message, index) in messages" :key="index">
                 <div v-if="index % 2 === 0" class="left">
                     <div class="topHead">
@@ -43,36 +43,55 @@ import axios from 'axios';
 import { onMounted } from 'vue';
 import { ref } from 'vue';
 import { Search } from "@element-plus/icons-vue";
+//对这篇文章的介绍
 const introduce = ref('')
+//第一条消息
 const message = ref('详细介绍这篇论文')
+//pdf的url
 const pdf_url = ref('https://hal.science/hal-00001006/document')
+// placeholder
 const content = ref('请输入你的想法')
+// 发送的消息
 const textarea = ref('')
-const messages = ref(["1erent types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that ut",
-    "1erent types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific obje",
-    "1erent types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific obje"])
+// 所有的消息
+const messages = ref([])
 async function getIntroduction() {
     try {
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/", { params: { "msg": message, "pdf_url": pdf_url } });
-        introduce = res.reply.result
-        messages.push(introduce)
+        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
+            {
+                params: { msg: message.value, pdf_url: pdf_url.value }
+            }
+        );
+        introduce.value = res.data.reply.result
+        messages.value.push(introduce.value)
     } catch (error) {
-        console.error(error.response.data);
+        console.error(error);
     }
 }
 async function getMessage() {
     try {
-        messages.push(content)
-        console.log("1")
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/", { params: { "msg": content, "pdf_url": pdf_url } });
-        introduce = res.reply.result
-        message.push(introduce)
+        console.log(textarea.value)
+        messages.value.push(textarea.value)
+        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
+            {
+                params: { msg: textarea.value, pdf_url: pdf_url.value }
+            }
+        );
+        introduce.value = res.data.reply.result
+        messages.value.push(introduce.value)
+        textarea.value = ''
+        // 滚动到最底部
+        // const container = this.$refs.scrollContainer;
+        // container.scrollTo({
+        //     top: container.scrollHeight,
+        //     behavior: 'smooth'
+        // });
     } catch (error) {
         console.error(error.response.data);
     }
 }
 onMounted(() => {
-    //getIntroduction();
+    getIntroduction();
 })
 </script>
 <style scoped>
@@ -114,7 +133,7 @@ onMounted(() => {
     margin-left: 5%;
     margin-right: 5%;
     overflow-y: auto;
-    scrollbar-color:#eee;
+    scrollbar-color: #eee;
     /* 在 Firefox 中设置滚动条颜色 */
     scrollbar-width: 1px;
     /* 在 Firefox 中设置滚动条宽度 */
@@ -156,6 +175,7 @@ onMounted(() => {
     display: flex;
     justify-content: flex-end;
     z-index: 9999;
+    cursor: pointer;
 }
 
 .button {
@@ -177,7 +197,8 @@ onMounted(() => {
         justify-self: start;
         align-items: center;
         margin-bottom: 2px;
-        .name{
+
+        .name {
             font-weight: 700;
         }
     }
@@ -203,18 +224,20 @@ onMounted(() => {
         justify-self: flex-start;
         align-items: center;
         margin-bottom: 2px;
-        .name{
+
+        .name {
             font-weight: 700;
         }
     }
 
     .message {
         margin-right: 3%;
-        text-align: left;
+        text-align: right;
         margin-bottom: 2vh;
     }
 }
 
 h2 {
     font-weight: 1000;
-}</style>
+}
+</style>

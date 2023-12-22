@@ -47,7 +47,7 @@ instance.interceptors.response.use(
             if (errorCallback) {
                 errorCallback(responseData)
             }
-            return Promise.reject({ showError: showError, msg: responseData.info });
+            return Promise.reject({ showError: showError, msg: responseData.msg });
         }
 
 
