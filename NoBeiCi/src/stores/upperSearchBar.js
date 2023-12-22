@@ -21,6 +21,9 @@ export const useUpperSearchBarStore = defineStore('upperSearchBar', {
         label: title
       })
     },
+
+
+
     /**
      * 清空已有的全部选项
      */

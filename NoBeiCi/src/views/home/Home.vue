@@ -15,6 +15,8 @@ import PreDialog from "./PriorDialog.vue";
 
 const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
 
+const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
+
 const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
 
