@@ -27,6 +27,14 @@ export default {
     sortLatest:"按时间最晚排序",
     sortEarliest:"按时间最早排序",
     backToList:"返回列表",
+    status:"审核状态",
+    tobecertified:"只显示待审核",
+    showall:"显示全部",
+    certification:"认证材料",
+    scholar:"学者",
+    remark:"备注",
+    accept:"通过申请",
+    decline:"拒绝申请",
   },
   thesisDetail:{
     quote:"引用",
@@ -85,5 +93,15 @@ export default {
       titleOfChildrenTree: "子领域关系",
       titleOfRelatedGraph: "相关领域关系"
     }
+  },
+  institution: {
+    detail:"详细信息",
+    homepage:"机构官网",
+    type:'机构类别',
+    location:"地理位置",
+    relatedJournal:"相关期刊",
+    relatedInstitution:"关联机构",
+    worksCount:"发表学术成果数量",
+    citedCount:"学术成果被引次数",
   }
 }

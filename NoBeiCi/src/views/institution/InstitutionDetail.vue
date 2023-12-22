@@ -7,6 +7,7 @@ import i18n from "../../locales/index.js";
 import { Column } from '@antv/g2plot';
 import get from "../../functions/Get.js";
 import {useInstitution} from "../../stores/institution.js"
+const language = ref("cn");
 const store = useInstitution();
 const router = useRouter();
 const route = useRoute();
@@ -56,7 +57,9 @@ const getDetail = async () => {
   if(institution.value.image_url==null){
        institution.value.image_url = "/src/assets/background/institution.webp";
   }
-
+  if(institution.value.chinese_display_name==""){
+      institution.value.chinese_display_name = institution.value.display_name;
+  }
 
   var chartDom = document.getElementById('worksCount');
   var myChart = echarts.init(chartDom);
@@ -107,7 +110,7 @@ const getDetail = async () => {
   option2 && myChart2.setOption(option2);
 }
 watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
-    console.log(newValue);
+  language.value = newValue
 }
 
 )
@@ -127,54 +130,53 @@ onMounted(() => {
 
 <template>
   <div class="header"><NavigateBar></NavigateBar></div>
-  <el-button plain  @click="backToList()" class="back" style="border: none; background-color: #FAFAFA;">返回机构列表</el-button>
+  <el-button plain  @click="backToList()" class="back" style="border: none; background-color: #FAFAFA;">{{ i18n.t('admin.backToList') }}</el-button>
   <el-scrollbar>
     <div class="content">
       <div class="content-top">
         <div class="institution-name">
-          <span class="name">{{ institution.display_name }}</span>
+          <span class="name">{{language === "cn" ? institution.chinese_display_name : institution.display_name}}</span>
         </div>
-        <div class="institution-image">
-          <img :src="institution.image_url" class="image"/>
+        <div class="institution-image" >
+          <img :src="institution.image_url" class="image" style="background-color: rgb(250, 250, 250) !important;"/>
         </div>
       </div>
       <el-divider style="margin: 5px;"></el-divider>
-      <!-- <div id="map"></div> -->
       <div class="content-middle">
         <div class="description">
           <div class="homepage">
-            <div class="homepage-label">机构官网</div>
+            <div class="homepage-label">{{ i18n.t('institution.homepage') }}</div>
             <div class="homepage-link"><a :href="institution.homepage_url">{{institution.homepage_url}}</a></div>
           </div>
           <el-divider style="margin: 5px;"></el-divider>
           <div class="type">
-            <div class="type-label">机构类别</div>
+            <div class="type-label">{{ i18n.t('institution.type') }}</div>
             <div class="type-content">{{ institution.type }}</div>
           </div>
           <el-divider style="margin: 5px;"></el-divider>
           <div class="country-code">
-            <div class="country-code-label">地理位置</div>
+            <div class="country-code-label">{{ i18n.t('institution.location') }}</div>
             <div class="country-code-content">{{ institution.geo.country_code }},{{ institution.geo.city }}</div>
           </div>
           <el-divider style="margin: 5px;"></el-divider>
           <div class="repositories">
-            <div class="repositories-label">相关期刊</div>
+            <div class="repositories-label">{{ i18n.t('institution.relatedJournal') }}</div>
             <div class="repositories-content" v-for="item in institution.repositories">
               {{item.display_name}}
             </div>
             <div class="repositories-content" v-if="institution.repositories.length==0">
-              <el-empty description="暂无相关期刊" />
+              <el-empty :description=" language=='cn' ? '暂无关联机构' : 'No Data' "  />
             </div>
           </div>
           <el-divider style="margin: 5px;"></el-divider>
         </div>
         <div class="count">
           <div class="worksCount">
-            <div class="worksCount-title">发表学术成果数量</div>
+            <div class="worksCount-title">{{ i18n.t('institution.worksCount') }}</div>
             <div id="worksCount"></div>
           </div>
           <div class="citedCount">
-            <div class="citedCount-title">学术成果被引次数</div>
+            <div class="citedCount-title">{{ i18n.t('institution.citedCount') }}</div>
             <div id="citedCount"></div>
           </div>
         </div>
@@ -183,14 +185,14 @@ onMounted(() => {
       </div>
       <el-divider style="margin: 5px;"></el-divider>
       <div class="content-related-ins">
-        <div class="related-ins-title">关联机构</div>
+        <div class="related-ins-title">{{ i18n.t('institution.relatedInstitution') }}</div>
         <div class="related-ins-list">
           <el-carousel :interval="4000" type="card" height="200px">
             <el-carousel-item v-for="item in institution.associated_institutions" :key="item">
               <span  class ="name" @click="checkAssociatedInsititution(item.id)">{{ item.display_name }}</span>
             </el-carousel-item>
             <el-carousel-item v-if="institution.associated_institutions.length==0">
-              <span  class ="name" >暂无关联机构</span>
+              <span  class ="name" >{{ language=="cn" ? "暂无关联机构":"No Data" }}</span>
             </el-carousel-item>
           </el-carousel>
         </div>

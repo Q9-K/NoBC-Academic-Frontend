@@ -1,29 +1,97 @@
 <script setup>
-import {ref,onMounted} from 'vue'
+import {ref,onMounted,nextTick} from 'vue'
+import get from "../../functions/Get.js";
 import i18n from "../../locales/index.js";
+import ImageViewer from "../../components/ImageViewer.vue";
 const showInfoList = ref(true);
-const detail = ref({id:0});
+const detail = ref({
+  id:0,
+  img:[
+    {src:"https://cdn.wwads.cn/creatives/m88Dv8ffgDW2NO9TVOfe2Ee3QYRtwORH2acMe3Id.png",},
+    {src:"https://cdn.wwads.cn/creatives/m88Dv8ffgDW2NO9TVOfe2Ee3QYRtwORH2acMe3Id.png",},
+
+  ],
+  beizhu:"备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注",  
+});
+const certifications = ref([
+
+])
+const certificationsCopy = ref([
+
+])
 const scholarList = ref([
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"2",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"3",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09"}
+{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"1"},
+{id:"2",name:"222",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"3",name:"333",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"1",name:"444",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
+{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"}
 ])
 const checkDetail = (id)=>{
   detail.value.id = id;
-  console.log("id:",detail.value.id);
   showInfoList.value = !showInfoList.value;
-
+  //getDetail(id);
+  imagePreview();
 }
 const backToList = ()=>{
+  getCertifications();
+  imageViewerRef.value = null;
+  previewImgList.value = [];
   showInfoList.value = !showInfoList.value;
 }
+const getCertifications = async()=>{
+  certifications.value = await get({
+      url:"/manager/get_certifications_pending/",
+      params:{},
+      addtoken: true
+  });
+  certificationsCopy.value = certifications.value;
+}
+const getDetail = async(id)=>{
+     detail.value  = await get({
+      url:"/manager/get_certification_detail/",
+      params:{certification_id:id},
+      addtoken: true
+     });
+     
+}
+onMounted(()=>{
+  getCertifications();
+})
+const sortEarliest = ()=>{
+
+}
+const sortLatest = ()=>{
 
 
+}
+const filterTobecertified = ()=>{
+  certifications.value = certifications.value.filter(item=>item.status == 0);
+}
+const showall = ()=>{
+  certifications.value = certificationsCopy.value;
+}
+
+//图片预览
+const imageViewerRef = ref(null);
+const previewImgList = ref([]);
+const imagePreview = () => {
+    const imageNodeList = document
+      .querySelector("#detail")
+      .querySelectorAll("img");
+    console.log(imageNodeList);
+    const imageList = [];
+    imageNodeList.forEach((item, index) => {
+      const src = item.getAttribute("src");
+      imageList.push(src);
+      item.addEventListener("click", () => {
+        imageViewerRef.value.show(index);
+      });
+    });
+    previewImgList.value = imageList;
+};
 </script>
 
 <template>
@@ -34,8 +102,10 @@ const backToList = ()=>{
   <Transition>
     <div class="brief-infoList" v-show="showInfoList">
       <div class="sort">
-        <el-button color="#2353a4">{{ i18n.t('admin.sortEarliest') }}</el-button>
-        <el-button color="#2353a4">{{ i18n.t('admin.sortLatest') }}</el-button>
+        <el-button color="#2353a4" @click="sortEarliest()">{{ i18n.t('admin.sortEarliest') }}</el-button>
+        <el-button color="#2353a4" @click="sortLatest()">{{ i18n.t('admin.sortLatest') }}</el-button>
+        <el-button color="#2353a4" @click="filterTobecertified()">{{ i18n.t('admin.tobecertified') }}</el-button>
+        <el-button color="#2353a4" @click="showall()">{{ i18n.t('admin.showall') }}</el-button>
       </div>
       <div v-for="item in scholarList" class="scholar-item">
           <div class="brief-info">
@@ -43,12 +113,14 @@ const backToList = ()=>{
               <div class="title-name">{{i18n.t('admin.applicantName')}}</div>
               <div class="title-schName">{{i18n.t('admin.scholarName')}}</div>
               <div class="title-time">{{i18n.t('admin.applicationTime')}}</div>
+              <div class="title-status">{{i18n.t('admin.status')}}</div>
             </div>
             <el-divider style="margin: 5px !important"></el-divider>
             <div class="info-info">
               <div class="info-name">{{item.name}}</div>
               <div class="info-schName">{{item.scholarName}}</div>
               <div class="info-time">{{item.time}}</div>
+              <div class="info-status">{{item.name}}</div>
             </div>
           </div>
           <div class="detail-button">
@@ -65,23 +137,47 @@ const backToList = ()=>{
   </Transition>
   <!-- 详情 -->
   <Transition>
-    <div class="detail" v-show="!showInfoList">
+    <div class="detail" id="detail" v-show="!showInfoList">
+      <ImageViewer
+        ref="imageViewerRef" 
+        :imageList="previewImgList"
+      ></ImageViewer>
       <div @click="backToList()" class="back-to-list"><el-icon><DArrowLeft /></el-icon>{{i18n.t('admin.backToList')}}</div>
       <div class="detail-panel">
         <div class="info-panel">
-          <div class="applicant-info">
-            申请者
+          <div class="applicant-scholar">
+            <div class="applicant-info">
+              {{ i18n.t('admin.applicantName') }}
+            </div>
+            <el-divider direction="vertical" style="margin: 0; height: 150px; !important;"></el-divider>
+            <div class="scholar-info">
+              {{ i18n.t('admin.scholar') }}
+            </div>
           </div>
-          <div class="scholar-info">
-            学者
-          </div>
+          <el-divider style="margin: 0;"></el-divider>
+          <div class="certification-label">{{ i18n.t('admin.certification') }}</div>
+          
           <div class="certification">
-            认证材料
+          
+            <div v-for="item in detail.img" class="certification-img">
+              <el-image :src="item.src" style="width: 330px; height: 250px;"></el-image>
+            </div>
+          </div>
+          <el-divider style="margin: 0;"></el-divider>
+          <div class="addition">
+            <div class="addition-label">{{ i18n.t('admin.remark') }}</div>
+            <el-input
+              v-model="detail.beizhu"
+              :rows="10"
+              type="textarea"
+              disabled
+            />
           </div>
         </div>
+        <el-divider direction="vertical" style="margin: 0; height: 800px !important;"></el-divider>
         <div class="submit-panel">
-          <el-button>通过申请</el-button>
-          <el-button>拒绝申请</el-button>
+          <el-button type="success" style="margin-top: 20px; !important">{{ i18n.t('admin.accept') }}</el-button>
+          <el-button type="danger" style="margin-top: 20px; !important">{{ i18n.t('admin.decline') }}</el-button>
         </div>
       </div>
     </div>
@@ -127,7 +223,10 @@ const backToList = ()=>{
                 width: 200px;
               }
               .title-time {
-                width: 400px;
+                width: 300px;
+              }
+              .title-status{
+                width: 100px;
               }
           }
           .info-info {
@@ -144,7 +243,10 @@ const backToList = ()=>{
                 width: 200px;
               }
               .info-time {
-                width: 400px;
+                width: 300px;
+              }
+              .info-status {
+                width: 100px;
               }
           }
       }
@@ -180,21 +282,44 @@ const backToList = ()=>{
           width: 80%;
           display: flex;
           flex-direction: column;
+          .applicant-scholar{
+            display: flex;
+            height: 150px;
             .applicant-info {
-              height: 300px;
-              background-color: aqua;
+              width: 50%;
+              height: 150px;
+             
             }
             .scholar-info {
-              height: 300px;
-              background-color: rgb(15, 52, 52);
+              width: 50%;
+              height: 150px;
+              
             }
+          }
+          .certification-label{
+            margin-top: 20px;
+          }
             .certification {
-              height: 200px;
-              background-color: rgb(95, 245, 245);
+              height: 350px;
+              display: flex;
+              overflow-x: scroll;
+              justify-content: start;
+              align-items: center;
+              .certification-img {
+                margin:20px;
+
+              }
+            }
+            .addition{
+              height: 300px;
+              padding: 20px;
+              .addition-label{
+
+              }
             }
         }
         .submit-panel {
-          background-color: rgb(41, 177, 177);
+
           width: 20%;
         }
     }

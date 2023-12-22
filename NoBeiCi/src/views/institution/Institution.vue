@@ -1,5 +1,5 @@
 <script setup>
-import {ref,onMounted} from 'vue'
+import {ref,onMounted,watch} from 'vue'
 import {useRouter} from 'vue-router'
 import axios from "axios";
 import NavigateBar from '../../components/NavigateBar.vue'
@@ -11,6 +11,7 @@ import {checkIsChinese} from "../../functions/checkIsChinese.js";
 import {handleResponse} from "../../functions/handleResponse.js";
 import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
+const language = ref("cn")
 const store = useInstitution();
 const page_num = ref(1);
 const page_size = ref(20);
@@ -53,6 +54,10 @@ const getInstitutions =async (page_size,page_num)=>{
     for(let i=0;i<institutions.value.length;i++){
         if(institutions.value[i].image_url==null){
             institutions.value[i].image_url = "/src/assets/background/institution.webp";
+        }
+        if(institutions.value[i].chinese_display_name==""){
+            console.log(institutions.value[i].display_name);
+            institutions.value[i].chinese_display_name = institutions.value[i].display_name;
         }
     }
     total.value = result.data.total;
@@ -99,6 +104,9 @@ const handleSelectInstitution = (value) => {
     let id = depart.at(depart.length - 1)
     router.push('/institution/' + id)
 }
+watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
+    language.value = newValue
+});
 </script>
 
 <template>
@@ -113,20 +121,21 @@ const handleSelectInstitution = (value) => {
         </div>
         <div class="i-container">
             
-            <div v-for="item in institutions" class="card">
-                <div class="card-box" >
-                    <div class="img-box">
+            <div v-for="item in institutions" class="card" style="background-color: rgb(250, 250, 250) !important;">
+                <div class="card-box" style="background-color: rgb(250, 250, 250) !important;">
+                    <div class="img-box" style="background-color: rgb(250, 250, 250) !important;">
                         <img
                         :src="item.image_url"
                         class="image"
+                        style="background-color: rgb(250, 250, 250) !important;"
                         />
                     </div>
                     <el-divider style="margin: 0;"></el-divider>
-                    <div class="name-box">
-                        <div class="name">{{item.display_name}}</div>
+                    <div class="name-box" style="background-color: rgb(250, 250, 250) !important;">
+                        <div class="name" style="background-color: rgb(250, 250, 250) !important; color:black !important">{{language === "cn" ? item.chinese_display_name : item.display_name}}</div>
                     </div>
-                    <div class="button-box">
-                            <button text class="button" @click=goInstitution(item.id)>详细信息</button>
+                    <div class="button-box" style="background-color: rgb(250, 250, 250) !important;">
+                            <button text class="button" @click=goInstitution(item.id)>{{i18n.t('institution.detail')}}</button>
                     </div>
                 </div>
             </div>
@@ -165,7 +174,7 @@ const handleSelectInstitution = (value) => {
     height: 55vh;
     
     .card {
-        background-color: rgb(250, 250, 250);
+        background-color: rgb(250, 250, 250) !important;
         width: 300px;
         text-align: center;
         margin: 20px 10px ;
@@ -206,7 +215,7 @@ const handleSelectInstitution = (value) => {
                     transition: all 0.5s;
                 }
                 .button:hover{
-                        background-color: rgb(238, 238, 238);
+                        background-color: rgb(238, 238, 238) !important;
                         border: none;
                         box-shadow:  3px 3px 2px 1px  rgba(75, 72, 72, 0.907);
                 }

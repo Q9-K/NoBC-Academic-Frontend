@@ -27,6 +27,14 @@ export default {
     sortLatest:"Latest",
     sortEarliest:"Earliest",
     backToList:"Back",
+    status:"Status",
+    tobecertified:"To be certified",
+    showall:"Show all",
+    certification:"Certifications",
+    scholar:"Scholar",
+    remark:"Remark",
+    accept:"Accept",
+    decline:"Decline",
   },
   thesisDetail:{
     quote:"Quote",
@@ -85,5 +93,15 @@ export default {
       titleOfChildrenTree: "Children Fields",
       titleOfRelatedGraph: "Related Fields"
     }
+  },
+  institution: {
+    detail:"Detail",
+    homepage:"Homepage",
+    type:'Institution Type',
+    location:"Location",
+    relatedJournal:"Related Journal",
+    relatedInstitution:"Related Institution",
+    worksCount:"Works Count",
+    citedCount:"Cited Counts",
   }
 }
