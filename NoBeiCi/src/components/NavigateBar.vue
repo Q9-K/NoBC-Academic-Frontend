@@ -9,15 +9,31 @@ import { User, Lock, Message } from "@element-plus/icons-vue";
 import English from '../assets/i18n/EN-UK.svg'
 import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
+import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons-vue";
+import router from "../routes/index.js";
+import sunUrl from '../assets/sun.png';
+import moonUrl from '../assets/moon.png'
+import {
+  enable as enableDarkMode,
+  disable as disableDarkMode
+} from "darkreader";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
 const isRegister = 2
 
-const isSearchInputVisible = ref(false)
+let isSearchInputVisible
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
+const isDark = ref(false)
+
+if (props.whetherSearchInputVisible === undefined) {
+  isSearchInputVisible = ref(true)
+}
+else {
+  isSearchInputVisible = ref(false)
+}
 
 watch(
   () => props.whetherSearchInputVisible,
@@ -26,8 +42,27 @@ watch(
   }
 )
 
+const handleToUserPage = () => {
+  router.push('/personinfo')
+}
+
+const handleLogout = () => {
+  localStorage.clear()
+  router.push('/')
+}
+
 const handleLanguageChange = (newLanguage) => {
   i18n.setLocale(newLanguage);
+}
+
+const handleTurnLight = () => {
+  disableDarkMode()
+  isDark.value = false
+}
+
+const handleTurnDark = () => {
+  enableDarkMode()
+  isDark.value = true
 }
 
 </script>
@@ -38,6 +73,22 @@ const handleLanguageChange = (newLanguage) => {
       <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
     </div>
     <div class="navigate-outer flex justify-start">
+      <div class="flex justify-around" style="height: 100%; width: 75%">
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.homePage") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.conferences") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.institution") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.field") }}
+        </div>
+        <div class="single-navigate-outer">
+          {{ i18n.t("navigateBar.researcher") }}
+        </div>
       <div class="flex justify-around" style="height: 100%; width: 75%">
         <div class="single-navigate-outer">
           {{ i18n.t("navigateBar.homePage") }}
@@ -69,20 +120,41 @@ const handleLanguageChange = (newLanguage) => {
     <div class="user-set-outer">
       <el-popover trigger="click" popper-style="width: fit-content" placement="bottom-end">
         <template #reference>
-          <img class="user-profile" :src="defaultUserProfile">
+          <UserOutlined style="font-size: 180%" />
         </template>
         <template #default>
-          <div style="width: 15vw; display: flex; flex-wrap: wrap">
+          <div style="width: 10vw; display: flex; flex-wrap: wrap">
             <div style="width: 100%; height: 6vh; display: flex; flex-wrap: nowrap">
               <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
                 <img style="height: 80%" :src="defaultUserProfile" />
               </div>
               <div style="width: 65%; height: 100%; display: flex; justify-content: flex-start; align-items: center">
-                <p style="font-family: STSong,serif; cursor: pointer" @click="() => isLoginRegisterModeOpen = true">
-                  {{ i18n.t('navigateBar.login') }}
+                <p style="font-family: STSong,serif; ; cursor: pointer" @click="() => isLoginRegisterModeOpen = true">
+                  大傻逼
                 </p>
               </div>
             </div>
+            <el-menu
+              class="user-menu"
+              mode="vertical"
+            >
+              <el-menu-item class="user-menu-item" @click="handleToUserPage" >
+                <div class="user-menu-item-icon">
+                  <menu-outlined style="font-size: 145%" />
+                </div>
+                <div class="user-menu-item-text">
+                  {{ i18n.t('navigateBar.toUserPage') }}
+                </div>
+              </el-menu-item>
+              <el-menu-item class="user-menu-item" @click="handleLogout">
+                <div class="user-menu-item-icon">
+                  <logout-outlined style="font-size: 145%" />
+                </div>
+                <div class="user-menu-item-text">
+                  {{ i18n.t('navigateBar.logout') }}
+                </div>
+              </el-menu-item>
+            </el-menu>
           </div>
         </template>
       </el-popover>
@@ -90,12 +162,12 @@ const handleLanguageChange = (newLanguage) => {
     <div class="i18n-config-outer">
       <el-popover trigger="click" popper-style="width: fit-content" placement="bottom-end">
         <template #reference>
-          <img style="height: 45%" :src="i18nIcon" />
+          <global-outlined style="font-size: 180%" />
         </template>
         <template #default>
           <div style="width: 7vw;  display: flex; flex-wrap: wrap;">
             <div
-              style="width: 100%; height: 4.5vh; display: flex; flex-wrap: nowrap; cursor: pointer"
+              class="language-config"
               @click="() => handleLanguageChange('cn')"
             >
               <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
@@ -107,7 +179,7 @@ const handleLanguageChange = (newLanguage) => {
             </div>
             <div style="width: 100%; height: 1vh"></div>
             <div
-              style="width: 100%; height: 4.5vh; display: flex; flex-wrap: nowrap; cursor: pointer"
+              class="language-config"
               @click="() => handleLanguageChange('en')"
             >
               <div style="width: 35%; height: 100%; display: flex; justify-content: center; align-items: center">
@@ -121,43 +193,10 @@ const handleLanguageChange = (newLanguage) => {
         </template>
       </el-popover>
     </div>
-    <div >
-
+    <div class="light-dark-mode-outer">
+      <img @click="handleTurnDark" v-if="!isDark" :src="sunUrl" class="mode-button" alt="light" />
+      <img @click="handleTurnLight" v-if="isDark" :src="moonUrl" class="mode-button" alt="dark" />
     </div>
-  </div>
-  <div>
-    <el-dialog
-      v-model="isLoginRegisterModeOpen"
-      style="width: 35vw; height: 73vh; border-radius: 20px"
-    >
-      <div class="login-register-mode-outer">
-        <div class="login-register-input-outer content-evenly">
-          <div class="login-register-input">
-            <el-input :placeholder="i18n.t('loginMode.inputUsername')" :prefix-icon="User" />
-          </div>
-          <div class="login-register-input">
-            <el-input :placeholder="i18n.t('loginMode.inputPassword')" :prefix-icon="Lock" />
-          </div>
-          <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input :placeholder="i18n.t('loginMode.makeSurePassword')" :prefix-icon="Lock" />
-          </div>
-          <div v-if="isLoginOrRegister === isRegister" class="login-register-input">
-            <el-input :placeholder="i18n.t('loginMode.inputEmail')" :prefix-icon="Message" />
-          </div>
-        </div>
-        <div class="login-register-button-outer">
-          <div style="width: 100%; height: 25%; display: flex; flex-wrap: nowrap">
-            <el-button v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 65%" type="primary">
-              {{ i18n.t('loginMode.loginButton') }}
-            </el-button>
-            <div v-if="isLoginOrRegister === isLogin" style="height: 100%; width: 10%"></div>
-            <el-button class="grow" style="height: 100%; width: 25%" type="default" @click="evt => isLoginOrRegister = isRegister">
-              {{ i18n.t('loginMode.registerButton') }}
-            </el-button>
-          </div>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -198,7 +237,7 @@ const handleLanguageChange = (newLanguage) => {
   }
   .search-input-outer {
     height: 100%;
-    width: 25%;
+    width: 27%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -214,7 +253,7 @@ const handleLanguageChange = (newLanguage) => {
   }
   .user-set-outer {
     height: 100%;
-    width: 10%;
+    width: 4%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -229,6 +268,17 @@ const handleLanguageChange = (newLanguage) => {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .light-dark-mode-outer {
+    height: 100%;
+    width: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mode-button {
+      height: 37px;
+      width: 37px;
+    }
   }
 }
 
@@ -254,6 +304,45 @@ const handleLanguageChange = (newLanguage) => {
     height: 35%;
     display: flex;
     align-items: center;
+  }
+}
+
+.language-config {
+  width: 100%;
+  height: 4.5vh;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.language-config:hover {
+  cursor: pointer;
+  background-color: #e7e7e7;
+  border-radius: 10%;
+}
+
+.user-menu {
+  width: 100%;
+  .user-menu-item {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    .user-menu-item-icon {
+      position: relative;
+      width: 25%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      right: 5%;
+    }
+    .user-menu-item-text {
+      width: 75%;
+      height: 100%;
+      display: flex;
+      padding-left: 6.5%;
+      justify-content: start;
+      align-items: center;
+    }
   }
 }
 

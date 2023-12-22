@@ -20,7 +20,18 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chatPDF',
+      name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
+    },
+    {
+      path: '/institution',
+      name: "institution",
+      component: () => import('../views/institution/Institution.vue'),
+    },
+    {
+      path: '/institution/:institutionId',
+      name: "institutionDetail",
+      component: () => import('../views/institution/InstitutionDetail.vue'),
     },
     {
       path: '/admin',
@@ -44,16 +55,21 @@ const router = createRouter({
           component: () => import('../views/admin/AchievementClaim.vue'),
         },
         {
-          path: 'achievementPublication',
-          name: "achievementPublication",
-          component: () => import('../views/admin/AchievementPublication.vue'),
-        },
-        {
           path: 'scholarClaim',
           name: "scholarClaim",
           component: () => import('../views/admin/ScholarClaim.vue'),
         }
       ]
+    },
+    {
+      path: '/field',
+      name: 'field',
+      component: () => import('../views/field/Field.vue')
+    },
+    {
+      path: '/fieldDetail/:fieldId',
+      name: 'fieldDetail',
+      component: () => import('../views/fieldDetail/FieldDetail.vue')
     },
     {
       path: '/search',

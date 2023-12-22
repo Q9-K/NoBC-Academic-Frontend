@@ -12,7 +12,7 @@ const menuClickHandler = (index)=>{
 
 <template>
   <div class="header"><NavigateBar></NavigateBar></div>
-  <div class="container">
+  <div class="admin-container">
     <div class="left-tool">
         <el-menu
         active-text-color="#ffd04b"
@@ -27,20 +27,21 @@ const menuClickHandler = (index)=>{
         <el-menu-item index="2" @click="menuClickHandler('scholarClaim')">
             <span>{{i18n.t('admin.handleScholarGrievances')}}</span>
         </el-menu-item>
-        <el-menu-item index="3" @click="menuClickHandler('achievementPublication')">
-          <span>{{i18n.t('admin.handleAchievementPublication')}}</span>
-        </el-menu-item>
-        <el-menu-item index="4" @click="menuClickHandler('achievementCertify')">
+        <el-menu-item index="3" @click="menuClickHandler('achievementCertify')">
           <span>{{i18n.t('admin.handleAchievementCertification')}}</span>
         </el-menu-item>
-        <el-menu-item index="5" @click="menuClickHandler('achievementClaim')">
+        <el-menu-item index="4" @click="menuClickHandler('achievementClaim')">
           <span>{{i18n.t('admin.handleAchievementGrievances')}}</span>
         </el-menu-item>
       </el-menu>
     </div>
+
     <div class="display">
+      <el-scrollbar>
         <router-view></router-view>
+      </el-scrollbar>
     </div>
+ 
   </div>
 
 </template>
@@ -49,8 +50,8 @@ const menuClickHandler = (index)=>{
 .header {
     height: 10vh;
 }
-.container {
-    width: 100vw;
+.admin-container {
+    width: 97vw;
     display: flex;
     margin-top: 5vh;
     height: 85vh;
@@ -68,10 +69,18 @@ const menuClickHandler = (index)=>{
         }
     }
     .display {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       background-color: #f0f1f4;
+        padding: 5px;
         width: 80%;
         overflow-y: scroll;
-
+        overflow-x:hidden;
+    }
+    .display::-webkit-scrollbar {
+      display: none; /* Chrome Safari */
     }
 }
+
+
 </style>

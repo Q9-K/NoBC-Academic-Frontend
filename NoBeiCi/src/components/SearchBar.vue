@@ -12,6 +12,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @search="handleSearch"
+        @select="handleOptionSelect"
       ></a-select>
     </div>
     <div class="info">
@@ -81,10 +82,17 @@ const props = defineProps({
   info: String,
   searchFunction: {
     type: Function
+  },
+  selectFunction: {
+    type: Function
   }
 })
 const options = ref([]);
 const value = ref(undefined);
+
+const handleOptionSelect = (value) => {
+  props.selectFunction(value)
+}
 
 const handleBlur = () => {
   console.log('blur');
@@ -107,13 +115,11 @@ const handleSearch = debounce((value) => {
       console.log(upperSearchBar.getOptions)
     })
 
-}, "800ms")
+}, "10ms")
 
 </script>
 <style scoped>
 .searchBox {
-  position: absolute;
-  top: 10vh;
   left: 0;
   width: 100vw;
   height: 30vh;
