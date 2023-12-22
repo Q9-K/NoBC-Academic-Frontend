@@ -32,12 +32,11 @@ const hasStared = ref(false)
 const indexRange = ref(showSummary)
 const showIndexes = ref([])
 const activeTab = ref('trend')
+const enName = ref('')
+const cnName = ref('')
 
 let enDescription = ''
 let cnDescription = ''
-let enName = ''
-let cnName = ''
-
 
 onMounted(() => {
   axios.get('http://100.92.185.118:8000' + '/concept/get_concept_by_id/', {
@@ -71,17 +70,17 @@ onMounted(() => {
         fWorksCount.value = works_count
         fAncestors.value = ancestors
 
-        enName = display_name
-        cnName = chinese_display_name
+        enName.value = display_name
+        cnName.value = chinese_display_name
         enDescription = description
         cnDescription = chinese_description
 
         if (i18n.getLocale() === 'en') {
-          fName.value = enName
+          fName.value = enName.value
           fDescription.value = enDescription
         }
         else {
-          fName.value = cnName
+          fName.value = cnName.value
           fDescription.value = cnDescription
         }
 
@@ -114,11 +113,11 @@ watch(() => {
 },
   (newValue) => {
   if (newValue === 'en') {
-    fName.value = enName
+    fName.value = enName.value
     fDescription.value = enDescription
   }
   else {
-    fName.value = cnName
+    fName.value = cnName.value
     fDescription.value = cnDescription
   }
 
@@ -291,9 +290,8 @@ const handleSwitchIndexRange = (newShow) => {
     <div class="field-detail-body">
       <el-tabs
         v-model="activeTab"
-        class="tabs-outer"
       >
-        <el-tab-pane name="trend">
+        <el-tab-pane lazy="lazy" name="trend">
           <template #label>
             <div style="display: flex; flex-wrap: nowrap; width: fit-content; height: 100%">
               <div style="display: flex; justify-content: center; align-items: center">
@@ -310,7 +308,7 @@ const handleSwitchIndexRange = (newShow) => {
             <TrendTab :counts-by-year="fCountsByYear" />
           </template>
         </el-tab-pane>
-        <el-tab-pane name="relation">
+        <el-tab-pane lazy="lazy" name="relation">
           <template #label>
             <div style="display: flex; flex-wrap: nowrap; width: fit-content; height: 100%">
               <div style="display: flex; justify-content: center; align-items: center">
@@ -324,10 +322,16 @@ const handleSwitchIndexRange = (newShow) => {
             </div>
           </template>
           <template #default>
-            <RelationTab />
+            <RelationTab
+              :ancestors="fAncestors"
+              :related-fields="fRelatedFields"
+              :current-field-id="fieldId"
+              :current-field-cn-name="cnName"
+              :current-field-en-name="enName"
+            />
           </template>
         </el-tab-pane>
-        <el-tab-pane name="paper">
+        <el-tab-pane lazy="lazy" name="paper">
           <template #label>
             <div style="display: flex; flex-wrap: nowrap; width: fit-content; height: 100%">
               <div style="display: flex; justify-content: center; align-items: center">
@@ -341,7 +345,7 @@ const handleSwitchIndexRange = (newShow) => {
             </div>
           </template>
         </el-tab-pane>
-        <el-tab-pane name="scholar">
+        <el-tab-pane lazy="lazy" name="scholar">
           <template #label>
             <div style="display: flex; flex-wrap: nowrap; width: fit-content; height: 100%">
               <div style="display: flex; justify-content: center; align-items: center">
@@ -366,12 +370,12 @@ const handleSwitchIndexRange = (newShow) => {
   left: 0;
   top: 10vh;
   width: 100vw;
-  height: 90vw;
+  height: fit-content;
   display: flex;
   flex-wrap: wrap;
   .field-detail-header {
     width: 100%;
-    height: 16%;
+    height: 30vh;
     display: flex;
     flex-wrap: nowrap;
     z-index: 1000;
@@ -470,7 +474,7 @@ const handleSwitchIndexRange = (newShow) => {
   }
   .field-detail-body {
     width: 100%;
-    height: 84%;
+    height: fit-content;
     padding-left: 3%;
     padding-right: 3%;
   }

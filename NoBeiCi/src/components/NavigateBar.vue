@@ -11,6 +11,12 @@ import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
 import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons-vue";
 import router from "../routes/index.js";
+import sunUrl from '../assets/sun.png';
+import moonUrl from '../assets/moon.png'
+import {
+  enable as enableDarkMode,
+  disable as disableDarkMode
+} from "darkreader";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -20,6 +26,7 @@ let isSearchInputVisible
 const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
+const isDark = ref(false)
 
 if (props.whetherSearchInputVisible === undefined) {
   isSearchInputVisible = ref(true)
@@ -48,12 +55,22 @@ const handleLanguageChange = (newLanguage) => {
   i18n.setLocale(newLanguage);
 }
 
+const handleTurnLight = () => {
+  disableDarkMode()
+  isDark.value = false
+}
+
+const handleTurnDark = () => {
+  enableDarkMode()
+  isDark.value = true
+}
+
 </script>
 
 <template>
   <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
-      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
+      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl" />
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="flex justify-around" style="height: 100%; width: 75%">
@@ -160,6 +177,10 @@ const handleLanguageChange = (newLanguage) => {
         </template>
       </el-popover>
     </div>
+    <div class="light-dark-mode-outer">
+      <img @click="handleTurnDark" v-if="!isDark" :src="sunUrl" class="mode-button" alt="light" />
+      <img @click="handleTurnLight" v-if="isDark" :src="moonUrl" class="mode-button" alt="dark" />
+    </div>
   </div>
 </template>
 
@@ -200,7 +221,7 @@ const handleLanguageChange = (newLanguage) => {
   }
   .search-input-outer {
     height: 100%;
-    width: 25%;
+    width: 27%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -216,9 +237,9 @@ const handleLanguageChange = (newLanguage) => {
   }
   .user-set-outer {
     height: 100%;
-    width: 7%;
+    width: 4%;
     display: flex;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
     .user-profile {
       height: 60%;
@@ -227,10 +248,21 @@ const handleLanguageChange = (newLanguage) => {
   }
   .i18n-config-outer {
     height: 100%;
-    width: 7%;
+    width: 4%;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .light-dark-mode-outer {
+    height: 100%;
+    width: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mode-button {
+      height: 37px;
+      width: 37px;
+    }
   }
 }
 

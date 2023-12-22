@@ -79,6 +79,11 @@ export default {
     trendTab: {
       titleOfWorkLine: "作品数和OA作品数",
       titleOfCitedLine: "引用量"
+    },
+    relationTab: {
+      titleOfAncestorsTree: "父领域关系",
+      titleOfChildrenTree: "子领域关系",
+      titleOfRelatedGraph: "相关领域关系"
     }
   }
 }
