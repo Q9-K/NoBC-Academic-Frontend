@@ -70,7 +70,7 @@ const handleTurnDark = () => {
 <template>
   <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
-      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
+      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl" />
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="flex justify-around" style="height: 100%; width: 75%">
