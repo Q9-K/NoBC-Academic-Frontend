@@ -70,25 +70,9 @@ const handleTurnDark = () => {
 <template>
   <div class="navigate-bar-outer shadow-lg shadow-gray-300">
     <div class="logo-outer">
-      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl">
+      <img class="logo animate__animated animate__rubberBand animate__infinite" :src="logoUrl" />
     </div>
     <div class="navigate-outer flex justify-start">
-      <div class="flex justify-around" style="height: 100%; width: 75%">
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.homePage") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.conferences") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.institution") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.field") }}
-        </div>
-        <div class="single-navigate-outer">
-          {{ i18n.t("navigateBar.researcher") }}
-        </div>
       <div class="flex justify-around" style="height: 100%; width: 75%">
         <div class="single-navigate-outer">
           {{ i18n.t("navigateBar.homePage") }}

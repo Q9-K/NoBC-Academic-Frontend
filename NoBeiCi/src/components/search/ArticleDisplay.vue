@@ -5,17 +5,28 @@ import Clipboard from 'clipboard';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios';
 
-const {data} = defineProps(['data']);
+const {data, type} = defineProps(['data', 'type']);
 const title = ref(data.other.title);
 const authors = ref(data.other.authorships.map(authorship => authorship.author.display_name));
-const abstract = data.highlight.abstract.join('').replace(/<em>/g, '<em style="color:red;">');
-const issue = ref("Methods in molecular biology (Clifton, N.J.) (2024): 69-82")
+const abstract =computed(() => {
+    if(type === "highlight") {
+        return data.highlight.abstract.join('').replace(/<em>/g, '<em style="color:red;">');
+    } else {
+        return data.other.abstract;
+    }
+})
+const issue = computed(() => {
+    if (data.other.locations && data.other.locations.length > 0) {
+        return data.other.locations[0].source.host_organization_name + '(' + data.other.publication_date+ ')';
+    } else {
+        return "";
+    }
+})
 const numberCite = ref(data.other.cited_by_count);
 const numberViews = ref(data.other.visit_count);
 const word_id = data.other.id;
-const citeMessage = computed(() => {
-    return `${authors.value.join(", ") + " " + title.value}`;
-})
+const citeMessage = ref(data.other.citation);
+
 const copyText = () => {
   const clipboard = new Clipboard(document.body, {
     text: () => citeMessage.value
@@ -125,9 +136,14 @@ const collectArticle = () => {
 }
 
 .abstract-content {
-    word-break: break-all;
-    text-align: left;
     display: block; /* 确保是块级元素 */
+    overflow: hidden;           /* 隐藏溢出部分 */
+    text-overflow: ellipsis;    /* 显示省略号 */
+    display: -webkit-box;       /* 将元素视为弹性伸缩盒子 */
+    -webkit-box-orient: vertical;/* 设置伸缩盒子的子元素垂直排列 */
+    -webkit-line-clamp: 3;       /* 显示的行数 */
+    word-wrap: break-word;  /* 避免拆分单词 */
+    text-align: left;
 }
 
 .abstract-content em {

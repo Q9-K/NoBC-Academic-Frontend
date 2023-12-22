@@ -16,14 +16,11 @@ import i18n from "./locales/index.js";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import Antd from 'ant-design-vue';
 import { anyType } from 'ant-design-vue/es/_util/type.js';
-import Antd from 'ant-design-vue';
-import { anyType } from 'ant-design-vue/es/_util/type.js';
 import {vue3Debounce} from "vue-debounce";
 import {createPinia} from "pinia";
 import message from './functions/Message'
 import request from './functions/Request'
 const app = createApp(App)
-const pinia = createPinia();
 const pinia = createPinia();
 app.directive('debounce', vue3Debounce({ lock: true }))
 app.use(router)

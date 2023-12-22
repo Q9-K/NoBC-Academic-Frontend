@@ -10,14 +10,14 @@
                 </div>
                 <el-row type="flex" justify="center">
                     <el-col :span="12">
-                        <el-button type="primary" round>{{i18n.t('journal.journalStatistics')}}</el-button>
-                        <el-button type="primary" round>{{i18n.t('journal.journalPapers')}}</el-button>
+                        <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalStatistics')}}</el-button>
+                        <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalPapers')}}</el-button>
                     </el-col>
                 </el-row>
            </el-header>
 
            <el-main>
-                <div v-if="showStatistics">
+                <div v-if="showPaper">
                 <table class="basic-message">
                     <tr v-for="(row, rowIndex) in tableData" :key="rowIndex">
                         <td v-for="(column, columnIndex) in row" :key="columnIndex">
@@ -33,7 +33,7 @@
                                 <!-- <el-button style="margin-top: 1vh;">论文主题</el-button> -->
                                 <div class="card">
                                     <p>{{i18n.t('journal.journalTopic')}}</p>
-                                    <JournalWord :data="word"></JournalWord>
+                                    <JournalWord :data="word" />
                                 </div>
                             </el-col>
                             <el-col :span="12">   
@@ -83,8 +83,8 @@
                 <div>
                     <el-row type="flex" style="margin-left: 0; margin-top: 3vh;">
                         <el-button v-on:click="toShowThesis" type="primary" round>{{i18n.t('journal.journalHighPaper')}}</el-button>
-                        <el-button type="primary" round>{{i18n.t('journal.journalHighAuthor')}}</el-button>
-                        <el-button type="primary" round>{{i18n.t('journal.journalHighInstitution')}}</el-button>
+                        <el-button @click="toShowAuthor" type="primary" round>{{i18n.t('journal.journalHighAuthor')}}</el-button>
+                        <el-button @click="toShowInstitution" type="primary" round>{{i18n.t('journal.journalHighInstitution')}}</el-button>
                     </el-row>
 
                     <el-row type="flex" justify="center">
@@ -104,7 +104,7 @@
                     </el-row>
                 </div>
                 </div>
-                <div v-else="showStatistics">
+                <div v-else="showPaper">
                     <JournalPaper></JournalPaper>
                 </div>
            </el-main>
@@ -117,16 +117,20 @@
 
 <script setup>
 import NavigateBar from '../components/NavigateBar.vue';
-import JournalCountry from '../components/conf/JournalCountry.vue'
+import JournalCountry from '../components/conf/Country.vue'
 import JournalWord from '../components/conf/JournalWord.vue';
 import JournalCite from '../components/conf/JournalCite.vue';
 import JournalInstitute from '../components/conf/JournalInstitute.vue'
 import JournalPaper from '../components/conf/JournalPaper.vue'
-import { ref } from 'vue';
+import { onMounted, ref, getCurrentInstance } from 'vue';
 import i18n from '../locales/index.js'
+import axios from 'axios';
 
-
-
+const data = ref();
+const showPaper = ref(true);
+const showAuthor = ref(true);
+const showInstitution = ref(false);
+const showThesis = ref(false);
 const tableData = [  
         [i18n.t('journal.journalField'), '计算机体系结构/并行与分布计算/存储系统', i18n.t('journal.journal2021Number'), '54'],
         [i18n.t('journal.journalCreatedYear'), '2005', i18n.t('journal.journal2021factors'), '2.04'],
@@ -212,14 +216,42 @@ const authorData = ref([
     {author: 'Tom', thesisnumber: 223, citenumber: 23},
     {author: 'Tom', thesisnumber: 123, citenumber: 33},
     {author: 'Tom', thesisnumber: 123, citenumber: 23},
-])
+]);
 
-const toShowThesis=() => {
-    showAuthor = false;
-    showInstitution = false;
-    showThesis = true;
+const toShowPaper=() => {
+    showPaper.value = !showPaper.value;
+};
+
+const toShowInstitution = () => {
+    showInstitution.value = !showInstitution.value;
+};
+
+const toShowThesis= () => {
+    showThesis.value = !showThesis.value;
 }
 
+const toShowAuthor = () => {
+    showAuthor.value = !showAuthor.value;
+}
+
+const getAllInfo = async () => {
+    try {   
+            const instance = getCurrentInstance();
+            const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
+            const response = await axios.get('http://100.96.145.140:8000/source/get_source_by_id', {
+                params: {
+                source_id: ident,
+                },
+            });
+            data.value = response.data;
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+};
+onMounted(() =>{
+    getAllInfo();
+});
 </script>
 
 <style scoped>
