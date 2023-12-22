@@ -6,8 +6,9 @@ import axios from "axios";
 import { computed } from 'vue'
 import i18n from "../locales/index.js";
 import chatInThesis from "../components/chatPDF/chatInThesis.vue"
-import { indexOf } from 'lodash';
-import { Collection } from '@element-plus/icons-vue/dist/types';
+import request from "../functions/Request"
+import { ElMessage } from 'element-plus';
+
 var title = ref('')
 var abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
 const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
@@ -22,6 +23,7 @@ var instituion = ref('')
 var data = ref({ name: '', children: [] })
 var visit_count = ref('')
 var cited_by_count = ref('')
+var work_id = ref('')
 
 const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
@@ -59,12 +61,29 @@ function navigateToExternalURL() {
     window.open(pdf_url, '_blank')
 }
 // 打开PDF
-function openPDF(url){
+function openPDF(url) {
     window.open(url, '_blank')
 }
 // 收藏论文
-function collection(){
-    
+async function collection() {
+    console.log(work_id.value)
+    console.log(localStorage.getItem("userInformation").token)
+    const result = await request(
+        {
+            url: "http://100.99.200.37:8000/user/add_favorite/",
+            data: {
+                work_id: work_id.value
+            },
+            addToken: true
+        }
+    )
+    if(result){
+        ElMessage({
+            message: "关注成功",
+            type: 'success',
+        })
+    }
+    console.log(result)
 }
 //获取数据
 async function getThesis() {
@@ -90,11 +109,14 @@ async function getThesis() {
         relatedWork.value = res.data.data.related_works_info
         relavantWork.value = res.data.data.referenced_works_info
         works.value = relavantWork.value
-        data.value.name = res.data.data.title.substring(0,10)+".."
+        data.value.name = res.data.data.title.substring(0, 10) + ".."
         data.value.id = res.data.data.id
+        work_id.value = res.data.data.id
         for (let i = 0; i < res.data.data.referenced_works_info.length; i++) {
-            data.value.children.push({ name: res.data.data.referenced_works_info[i].title.substring(0,10)+"..", 
-            id: res.data.data.referenced_works_info[i].id})
+            data.value.children.push({
+                name: res.data.data.referenced_works_info[i].title.substring(0, 10) + "..",
+                id: res.data.data.referenced_works_info[i].id
+            })
         }
     } catch (error) {
         console.error()
@@ -107,8 +129,10 @@ function findChildren(data, name, referenced_works) {
             children.id = referenced_works.data.id
             children.children = []
             for (let i = 0; i < referenced_works.data.referenced_works_info.length; i++) {
-                children.children.push({ name: referenced_works.data.referenced_works_info[i].title.substring(0,10)+".." ,
-                id: referenced_works.data.referenced_works_info[i].id})
+                children.children.push({
+                    name: referenced_works.data.referenced_works_info[i].title.substring(0, 10) + "..",
+                    id: referenced_works.data.referenced_works_info[i].id
+                })
             }
             return;
         }
@@ -885,6 +909,7 @@ onMounted(async () => {
                             align-items: center;
                             justify-content: center;
                             font-weight: 600;
+                            cursor: pointer;
                         }
 
                         .second {
@@ -899,6 +924,7 @@ onMounted(async () => {
                             align-items: center;
                             justify-content: center;
                             font-weight: 600;
+                            cursor: pointer;
                         }
 
                         .highlighted {
@@ -927,6 +953,7 @@ onMounted(async () => {
                             border-width: 1px;
                             border-left: hidden;
                             border-top: hidden;
+
                             .work_name {
                                 align-self: flex-start;
                                 margin-left: 20px;
@@ -935,15 +962,18 @@ onMounted(async () => {
                                 display: flex;
                                 justify-content: left;
                                 flex-direction: row;
-                                p{
+
+                                p {
                                     text-align: left;
                                 }
                             }
+
                             .work_related {
                                 margin-top: 5px;
                                 margin-left: 20px;
                                 font-size: 13px;
                             }
+
                             .more {
                                 display: flex;
                                 margin-left: 20px;
@@ -951,7 +981,8 @@ onMounted(async () => {
                                 align-items: center;
                                 justify-content: flex-start;
                                 height: 30px;
-                                .jump{
+
+                                .jump {
                                     width: 50px;
                                     font-size: 12px;
                                     color: white;
@@ -959,7 +990,8 @@ onMounted(async () => {
                                     background-color: #4759c5;
                                     cursor: pointer;
                                 }
-                                .pdf{
+
+                                .pdf {
                                     border: solid;
                                     border-width: 1px;
                                     margin-left: 20px;
