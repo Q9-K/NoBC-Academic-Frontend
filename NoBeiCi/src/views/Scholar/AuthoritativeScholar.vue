@@ -7,7 +7,8 @@
                 <div class="filterName">
                     {{ layer.name }}
                 </div>
-                <div v-for="option, index in layer.options" @click="chooseFilter(layerIndex)" class="option">
+                <div v-for="option, index in layer.options" @click="chooseFilter(layerIndex, index)" class="option"
+                    :class="{ highlight: index === layers[layerIndex].highlight }">
                     {{ option }}
                 </div>
             </div>
@@ -25,33 +26,40 @@
                     <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
                 </div>
                 <div v-for="scholar in scholars" class="author_block">
-                    <div class="scholar_head">{{scholar.name}}</div>
-                    <div class="scholar_makes">
-                        <div class="H-index">
-                            <div style="font-size:11px">
-                                H-index:
-                                {{ scholar.makes.H_index }}
-                            </div>
-                        </div>
-                        <div class="thesis">
-                            <div style="font-size:11px">
-                                论文数:
-                                {{ scholar.makes.thesis }}
-                            </div>
-                        </div>
-                        <div class="icon">
-                            <el-icon style="background-color: #adbbdc;font-size:24px"><Connection /></el-icon>
-                        </div>
-                        <div class="used">
-                            <div style="font-size:11px">
-                                引用数:
-                                {{ scholar.makes.used }}
-                            </div>
-                        </div>
+                    <div class="avatar">
+                        <img style="padding: 20px" src="../../assets/vouzenus/vouzenus.jpg">
                     </div>
-                    <div class="scholar_field">
-                        <div v-for="field in fields">
-                            {{ field }}
+                    <div class="info">
+                        <div class="scholar_head">{{ scholar.name }}</div>
+                        <div class="scholar_makes">
+                            <div class="H-index">
+                                <div style="font-size:11px">
+                                    H-index:
+                                    {{ scholar.makes.H_index }}
+                                </div>
+                            </div>
+                            <div class="thesis">
+                                <div style="font-size:11px">
+                                    论文数:
+                                    {{ scholar.makes.thesis }}
+                                </div>
+                            </div>
+                            <div class="icon">
+                                <el-icon style="background-color: #adbbdc;font-size:24px">
+                                    <Connection />
+                                </el-icon>
+                            </div>
+                            <div class="used">
+                                <div style="font-size:11px">
+                                    引用数:
+                                    {{ scholar.makes.used }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scholar_field">
+                            <div v-for="field in fields">
+                                {{ field }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,7 +104,7 @@ function select4() {
     isHighlighted3.value = false
     isHighlighted4.value = true
 }
-
+var isfilterHighlight = ref(false)
 var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
@@ -104,7 +112,10 @@ var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used:
     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
 ])
 
-var layers = ref([{ name: "h指数:", options: [1, 2, 3, 4] }, { name: "性别:", options: ['男', '女'] }, { name: "地区", options: ['中国', '美国', '俄罗斯', '台湾省'] }])
+var layers = ref([{ name: "h指数:", options: [1, 2, 3, 4], highlight: -1 },
+{ name: "性别:", options: ['男', '女'], highlight: -1 },
+{ name: "地区", options: ['中国', '美国', '俄罗斯', '台湾省'], highlight: -1 }
+])
 function getItem(label, key, icon, children, type) {
     return {
         key,
@@ -130,8 +141,14 @@ const handleClick = e => {
 watch(openKeys, val => {
     console.log('openKeys', val);
 });
-function chooseFilter(index) {
-    layers.filter(index)
+// 点击之后高亮，并取消同层的其他高亮,再次点击取消高亮
+function chooseFilter(layerIndex, index) {
+    if (layers.value[layerIndex].highlight == index) {
+        layers.value[layerIndex].highlight = -1
+    }
+    else {
+        layers.value[layerIndex].highlight = index
+    }
 }
 </script>
 <style scoped>
@@ -187,6 +204,10 @@ function chooseFilter(index) {
     background-color: lightblue;
     border: 1px solid #ccc;
     cursor: pointer;
+}
+
+.highlight {
+    background-color: #4759c5;
 }
 
 .author {
@@ -254,30 +275,41 @@ function chooseFilter(index) {
 
 .author_block {
     width: 95%;
+    display: flex;
+    flex-direction: row;
+    border: solid #f2f4f7;
+}
+.avatar{
+    align-self: flex-start;    
+    flex: 1;
+}
+.info{
     margin-left: auto;
     margin-right: auto;
     height: 150px;
     margin-bottom: 10px;
-    border: solid #f2f4f7;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex: 10;
 }
-.scholar_head{
+.scholar_head {
     margin-top: 10px;
     margin-left: 20px;
     height: 30px;
     font-size: 18px;
     font-weight: 700;
 }
-.scholar_makes{
+
+.scholar_makes {
     margin-left: 20px;
     height: 50px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    .H-index{
+
+    .H-index {
         border: solid #ccc;
         border-width: 1px;
         margin-right: 20px;
@@ -287,7 +319,8 @@ function chooseFilter(index) {
         align-items: center;
         justify-content: center;
     }
-    .thesis{
+
+    .thesis {
         border: solid #ccc;
         border-width: 1px;
         margin-right: 20px;
@@ -297,10 +330,12 @@ function chooseFilter(index) {
         align-items: center;
         justify-content: center;
     }
-    .icon{
+
+    .icon {
         height: 50%;
     }
-    .used{
+
+    .used {
         border: solid #ccc;
         border-width: 1px;
         margin-right: 20px;
@@ -311,10 +346,12 @@ function chooseFilter(index) {
         justify-content: center;
     }
 }
-.scholar_field{
+
+.scholar_field {
     margin-left: 20px;
     height: 50px;
 }
+
 .highlighted {
     color: #4759c5;
     background-color: #fafafa;

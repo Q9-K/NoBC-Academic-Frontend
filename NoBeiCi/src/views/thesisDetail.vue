@@ -91,7 +91,7 @@ async function getThesis() {
         const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
             params: {
                 id: "W2900586920",
-                user_id: "166"
+                user_id: "1592295057@qq.com"
             }
         });
         abstract.value = res.data.data.abstract
@@ -189,7 +189,7 @@ onMounted(async () => {
             const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
                 params: {
                     id: params.data.id,
-                    user_id: "166"
+                    user_id: "1592295057@qq.com"
                 }
             });
             findChildren(data.value, params.name, res.data)
