@@ -12,6 +12,132 @@
     import Journal from '../components/search/Journal.vue'
     import Subject from '../components/search/Subject.vue'
     import i18n from '../locales'
+    import axios from 'axios'
+
+    const input = ref('acm');
+    const startTime = ref('');
+    const endTime = ref('');
+    const subject = ref('');
+    const journal = ref('');
+    const institution = ref('');
+    const orderWay = ref('default');
+    const data = ref([]);
+    const articleData = ref([
+            {
+                "highlight": {
+                    "abstract": [
+                        "Measures of the vestibulo-ocular reflex (VOR) and apparent concomitant motion (<em>ACM</em>), the apparent motion",
+                        "Both VOR and <em>ACM</em> remained constant throughout the placebo sessions.",
+                        "The effects of alcohol on <em>ACM</em> were greatest 50 min following cessation of drinking, near the maximum",
+                        "<em>ACM</em> measures then returned towards baseline, whereas the BAC measures remained elevated.",
+                        "Therefore, reduction of VOR gain with alcohol produces an increase of <em>ACM</em>, but the <em>ACM</em> changes are relatively"
+                    ]
+                },
+                "other": {
+                    "visit_count": 9775,
+                    "cited_by_count": 4,
+                    "publication_date": "1994-05-01",
+                    "title": "The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles",
+                    "language": "en",
+                    "authorships": [
+                        {
+                            "institutions": [
+                                {
+                                    "id": "I84218800",
+                                    "display_name": "University of California, Davis",
+                                    "type": "education"
+                                }
+                            ],
+                            "author": {
+                                "id": "A5034935533",
+                                "display_name": "Robert B. Post"
+                            },
+                            "is_corresponding": false
+                        },
+                        {
+                            "institutions": [
+                                {
+                                    "id": "I84218800",
+                                    "display_name": "University of California, Davis",
+                                    "type": "education"
+                                }
+                            ],
+                            "author": {
+                                "id": "A5008020353",
+                                "display_name": "Lori A. Lott"
+                            },
+                            "is_corresponding": false
+                        },
+                        {
+                            "institutions": [
+                                {
+                                    "id": "I2799359763",
+                                    "display_name": "Office of the Attorney General",
+                                    "type": "government"
+                                }
+                            ],
+                            "author": {
+                                "id": "A5058538284",
+                                "display_name": "Jill I. Beede"
+                            },
+                            "is_corresponding": false
+                        },
+                        {
+                            "institutions": [
+                                {
+                                    "id": "I4210131307",
+                                    "display_name": "Institute of Behavioral Sciences",
+                                    "type": "facility"
+                                }
+                            ],
+                            "author": {
+                                "id": "A5060859988",
+                                "display_name": "Richard J. Maddock"
+                            },
+                            "is_corresponding": false
+                        }
+                    ],
+                    "id": "W176955011",
+                    "type": "article"
+                }
+            }]);
+    const pageNum = ref();
+    const activeButton = ref('searchSynthesis');
+    const searchLatest = () => {
+        activeButton.value = 'searchLatest';
+        orderWay.value = 'time';
+        search();
+    };
+    const searchSynthesis = () => {
+        activeButton.value = 'searchSynthesis';
+        orderWay.value = 'default';
+        search();
+    };
+    const searchCitations = () => {
+        activeButton.value = 'searchCitations';
+        orderWay.value = 'cited_by_count';
+        search();
+    };
+    const search = async () => {
+        try {
+            const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
+            params: {
+                content: input.value,
+                start_time: startTime.value || undefined,
+                end_time: endTime.value || undefined,
+                source: journal.value || undefined,
+                concept: subject.value || undefined,
+                institution: institution.value || undefined,
+                order_by: orderWay.value,
+                page_number: pageNum.value || undefined,
+            },
+            });
+            data.value = response.data;
+            articleData.value = data.value.data.data;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 </script>
 
 <template>
@@ -21,14 +147,10 @@
             <NavBar />
         </el-row>
         <el-row style="height: 6vh; margin-left: 25vw; margin-right: 27vw; margin-top: 2vh;">
-            <el-input v-model="input" placeholder="Please input" class="input-with-select" size="small">
-                <template #prepend>
-                    <el-select v-model="select" placeholder="Select" style="width: 15vw">
-                        <el-option label="biology" value="1" />
-                        <el-option label="physical" value="2" />
-                        <el-option label="math" value="3" />
-                    </el-select>
-                </template>
+            <el-input v-model="input" placeholder="Search" class="input-with-select" size="small">
+                <!-- <template #>
+                    <el-button>高级搜索</el-button>
+                </template> -->
                 <template #append>
                     <el-button :icon="Search" />
                 </template>
@@ -40,56 +162,44 @@
             <el-row class="classify">
                 <div>
                 <!-- 选择日期 -->
-                <TimeRange />
+                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <!-- 选择学科 -->
                 <div>
-                    <Subject />
+                    <Subject style="margin-bottom: 1vh; margin-left: 2vw;"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
-                    <Journal />
+                    <Journal style="margin-bottom: 1vh; margin-left: 2vw;"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
                 <!-- 选择机构 -->
-                    <Institution />
+                    <Institution style="margin-bottom: 1vh; margin-left: 2vw;"/>
                 </div>
             </el-row>
         </el-aside>
-        <el-container>
+        <el-container class="main-content">
             <el-main>
-                <el-row gutter="10" style="margin-bottom: 3px;">
-                    <el-col :span="2"><el-button>最新</el-button></el-col>
-                    <el-col :span="2"><el-button>综合</el-button></el-col>
-                    <el-col :span="3"><el-button>引用数</el-button></el-col>
+                <el-row gutter="10" style="margin-bottom: 7px; border: outset 0.5px; height: 5vh;">
+                    <el-col :span="3"><el-button :class="{'active-button': activeButton === 'searchLatest'}" style="border:none; font-size: large;" @click="searchLatest">{{ i18n.t('search.searchLatest') }}</el-button></el-col>
+                    <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchSynthesis' }" style="border:none; font-size: large;" @click="searchSynthesis">{{ i18n.t('search.searchSynthesis') }}</el-button></el-col>
+                    <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchCitations' }" style="border:none; font-size: large;" @click="searchCitations">{{ i18n.t('search.searchCitations') }}</el-button></el-col>
                 </el-row>
                 <div>
-                <el-row>
-                    <ArticleDispaly />
-                </el-row>
-                <el-row>
-                    <ArticleDispaly />
-                </el-row>
-                <el-row>
-                    <ArticleDispaly />
-                </el-row>
-                <el-row>
-                    <ArticleDispaly />
-                </el-row>
-                <el-row>
-                    <ArticleDispaly />
+                <el-row v-for="data in articleData">
+                    <ArticleDispaly :data="data"/>
                 </el-row>
                 <el-pagination style="margin-top: 10px;" layout="prev, pager, next" :total="1000" />
                 </div>
             </el-main>
-            <el-aside class="right">
+            <el-aside style="margin-left: 0;">
                 <SearchResultStatics />
-                <p style="text-align: center;">前1000条结果统计图</p>
+                <p style="text-align: center; margin-bottom:30px">前1000条结果统计图</p>
                 <AuthorDisplay />
             </el-aside>
         </el-container>
@@ -101,45 +211,28 @@
 </template>
 
 <style scoped lang="less">
+.active-button {
+  background-color:rgb(11, 224, 47);
+}
 .el-header {
     height: 20vh;
     background-color: rgb(255, 255, 255);
 }
 
-.el-aside {
-    background-color: rgb(255, 255, 255);
-    width: 25vw;
-    height: 75vh;
-}
-
 .left {
-    float: left;
-}
-
-.right {
-    float: right;
-}
-
-.classify{
-    margin-left: 5vw;
-    margin-top: 3vh;
-}
-
-.el-main {
-    width: 75vw;
-    height: 75vh;
-    background-color: antiquewhite;
+    margin-left: 0vw;
+    margin-right: 0vw;
+    padding: 0;
 }
 
 .el-footer {
     height: 5vh;
     background-color: rgb(255, 255, 255);
 }
-.input-with-select .el-input-group__prepend {
-  background-color: var(--el-fill-color-blank);
-}
+
 .home {
-    width: 100vw;
-    height: 100vh;
+    width: 98vw;
+    padding: 0;
+    background-color: white;
 }
 </style>

@@ -19,7 +19,7 @@ const router = createRouter({
     },
     {
       path: '/chat',
-      name: 'chat',
+      name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
     },
     {
@@ -64,6 +64,16 @@ const router = createRouter({
       path: '/conf',
       name: 'conf',
       component: () => import('../views/ConfView.vue')
+    },
+    {
+      path: '/journal/:id/statics',
+      name: 'journal',
+      component: () => import('../views/Journal.vue')
+    },
+    {
+      path: '/field',
+      name: 'field',
+      component: () => import('../views/field/Field.vue')
     },
   ]
 })

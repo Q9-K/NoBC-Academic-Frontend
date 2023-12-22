@@ -5,14 +5,17 @@
           <span>发表相关论文最多的作者</span>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text item">作者{{  o }}  <span style="margin-left: 8vw;">文章数量 {{ 100+o }}</span></div>
+      <div v-for="o in 4" :key="o" class="text item">作者{{  o }}  <span style="margin-left: 4vw;">文章数量 {{ 100+o }}</span></div>
     </el-card>
-  </template>
-  
-  <style>
+</template>
+
+<script setup>
+
+</script>
+
+<style>
   .card-header {
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
   }
 </style>

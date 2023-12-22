@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="statics">
       <div ref="container"></div>
     </div>
   </template>
@@ -8,7 +8,7 @@
     import { Chart } from '@antv/g2';
   
     function renderBarChart(container) {
-        const chart = new Chart({container, width: 390, height: 300});
+        const chart = new Chart({container, width: 300, height: 300});
         // 准备数据
         const data = [
             { year: '2015', Number: 275 },
@@ -45,3 +45,10 @@
       },
     };
   </script>
+
+<style>
+.statics {
+  max-width: 300px;
+  margin: 0;
+}  
+</style>

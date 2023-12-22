@@ -22,6 +22,7 @@
   
   <script>
   import { Search } from '@element-plus/icons-vue'
+  import i18n from "../../locales/index.js";
   export default {
     data() {
         const currentYear = new Date().getFullYear();
@@ -49,8 +50,8 @@
   <style>
   .time-range {
     border: 0;
-    border-top: 3px solid #120ef7;
-    background-color: rgb(153, 203, 224);
+    border-top: 3px solid #f4081c;
+    background-color: #409EFF;
     width: 16vw;
     height: 5vh;
   }
