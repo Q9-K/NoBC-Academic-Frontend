@@ -54,7 +54,7 @@ export default {
     confSubject: "Subject",
   },
   timeRanges: {
-    timeRangesTime: "time",
+    timeRangesTime: "Time",
   },
   articleDisplay:{
     articleDisplayCite: "Cite",

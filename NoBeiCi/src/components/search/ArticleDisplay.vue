@@ -3,6 +3,7 @@ import {ref, computed} from 'vue'
 import i18n from '../../locales/index.js'
 import Clipboard from 'clipboard';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import axios from 'axios';
 
 const {data} = defineProps(['data']);
 const title = ref(data.other.title);
@@ -11,6 +12,7 @@ const abstract = data.highlight.abstract.join('').replace(/<em>/g, '<em style="c
 const issue = ref("Methods in molecular biology (Clifton, N.J.) (2024): 69-82")
 const numberCite = ref(data.other.cited_by_count);
 const numberViews = ref(data.other.visit_count);
+const word_id = data.other.id;
 const citeMessage = computed(() => {
     return `${authors.value.join(", ") + " " + title.value}`;
 })
@@ -40,6 +42,30 @@ const open = () => {
   })
 }
 
+const collectArticle = () => {
+    try {
+        const response = axios.post('http://100.99.200.37:8000/user/add_favorite/', {
+            params: {
+                word_id: word_id
+            }
+        });
+        if (response.status === 200) {  
+            ElMessage({
+                message: 'Collect successfully.',
+                type: 'success',
+            });
+        } else {
+            ElMessage({
+                message: 'Oops, fail to collect it.',
+                type: 'warning',
+            });
+            console.error('收藏失败:', response.error);  
+        }  
+    } catch(error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
 </script>
 
 <template>
@@ -63,7 +89,7 @@ const open = () => {
             <span>{{i18n.t('articleDisplay.articleDisplayCitations')}}&nbsp; </span><span style="color: rgb(241, 16, 181);">{{ numberCite }}</span>  &nbsp;|&nbsp;
             <span>{{i18n.t('articleDisplay.articleDisplayViews')}} </span> <span style="color: rgb(241, 16, 181);">{{ numberViews }}</span>
             <el-button class="quote-button" @click="copyText"><el-icon><Link /></el-icon>{{i18n.t('articleDisplay.articleDisplayCite')}}</el-button>
-            <el-button class="collect-button"><el-icon><FolderAdd /></el-icon>{{i18n.t('articleDisplay.articleDisplayCollect')}}</el-button>
+            <el-button class="collect-button" @click="collectArticle"><el-icon><FolderAdd /></el-icon>{{i18n.t('articleDisplay.articleDisplayCollect')}}</el-button>
         </div>
     </el-card>
 </template>

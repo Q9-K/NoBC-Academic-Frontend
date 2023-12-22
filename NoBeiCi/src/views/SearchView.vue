@@ -14,7 +14,7 @@
     import i18n from '../locales'
     import axios from 'axios'
 
-    const input = ref('acm');
+    const input = ref('');
     const startTime = ref('');
     const endTime = ref('');
     const subject = ref('');
@@ -138,6 +138,12 @@
             console.error('Error fetching data:', error);
         }
     }
+
+    const receiveTime = (data) => {
+        startTime.value = data.startTime;
+        endTime.value = data.endTime;
+        console.log(startTime.value);
+    }
 </script>
 
 <template>
@@ -152,7 +158,7 @@
                     <el-button>高级搜索</el-button>
                 </template> -->
                 <template #append>
-                    <el-button :icon="Search" />
+                    <el-button :icon="Search" @click="searchSynthesis"/>
                 </template>
             </el-input>
         </el-row>
@@ -162,7 +168,7 @@
             <el-row class="classify">
                 <div>
                 <!-- 选择日期 -->
-                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;"/>
+                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;" @sendData="receiveTime"/>
                 </div>
             </el-row>
             <el-row class="classify">
