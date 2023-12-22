@@ -282,13 +282,13 @@ onMounted(() => {
   <div class="trend-outer">
     <div class="line-of-counts-outer">
       <div class="line-and-title-outer">
-        <div class="title">
+        <div class="title-of-trend">
           {{ i18n.t('fieldDetail.trendTab.titleOfWorkLine') }}
         </div>
         <div id="container-of-work-trend-line" class="line-of-counts"></div>
       </div>
       <div class="line-and-title-outer">
-        <div class="title">
+        <div class="title-of-trend">
           {{ i18n.t('fieldDetail.trendTab.titleOfCitedLine') }}
         </div>
         <div id="container-of-cited-trend-line" class="line-of-counts"></div>
@@ -314,7 +314,7 @@ onMounted(() => {
       height: 100%;
       display: flex;
       flex-wrap: wrap;
-      .title {
+      .title-of-trend {
         width: 100%;
         height: 10%;
       }
