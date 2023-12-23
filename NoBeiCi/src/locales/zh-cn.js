@@ -141,7 +141,8 @@ export default {
     summary: "一句话总结",
     introduce: "该论文暂时没有pdf,无法进行对话",
     input: "请输入你的想法",
-    send: "发送"
+    send: "发送",
+    abstract: "摘要"
   },
   field: {
     moreDetail: "更多"

@@ -108,7 +108,8 @@ export default {
     summary: "Summarize in a sentence",
     introduce: "Sorry, The paper does not have a PDF",
     input: "Message ChatPDF",
-    send: "send"
+    send: "send",
+    abstract: "abstract"
   },
   field: {
     moreDetail: "More"

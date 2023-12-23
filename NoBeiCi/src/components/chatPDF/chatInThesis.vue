@@ -5,9 +5,7 @@
                 <h2>Chat Paper</h2>
             </div>
             <div class="introduction">
-                <el-icon style="font-size: 30px;">
-                    <Orange />
-                </el-icon>
+                <el-icon style="font-size: 30px;"><ChromeFilled /></el-icon>
                 <p> {{ i18n.t("thesisDetail.summary") }} </p>
             </div>
         </div>
@@ -18,7 +16,7 @@
                 <div v-for="(message, index) in messages" :key="index">
                     <div v-if="index % 2 === 0" class="left">
                         <div class="topHead">
-                            <img src="../../assets/vouzenus/vouzenus.jpg" style="width:25px;height:25px;margin-right: 2%">
+                            <img src="../../assets/vouzenus/openai-chatgpt-logo-icon-free-png.webp" style="width:25px;height:25px;margin-right: 2%">
                             <div class="name">vouzenus</div>
                         </div>
                         <div class="message">{{ message }}</div>
@@ -35,10 +33,10 @@
                 </div>
             </div>
         </div>
-        <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search"
+        <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search" @keyup.enter="getMessage"
             clearable></el-input>
         <div class="sendButton">
-            <p @click="getMessage" class="button">{{ i18n.t("thesisDetail.send") }}</p>
+            <form @click="getMessage" class="button" @keyup.enter="getMessage">{{ i18n.t("thesisDetail.send") }}</form>
         </div>
     </div>
 </template>

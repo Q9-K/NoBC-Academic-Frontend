@@ -346,7 +346,7 @@ onMounted(async () => {
                     <div class="abstract">
                         <div class="abstract-title">
                             <div class="abstract-absTop" style="margin-top: 0px;">
-                                <span>摘要</span>
+                                <span> {{ i18n.t("thesisDetail.abstract") }} </span>
                             </div>
                             <span class="abstract-absLabel">
                                 <div class="abstract-abstractContent">
@@ -361,7 +361,7 @@ onMounted(async () => {
                                                     <span class="morebtn" @click="showAllAbstract"> {{ i18n.t("thesisDetail.more") }} </span>
                                                 </span>
                                                 <span v-if="!ifShowMoreButton" class="abstract-morebtn2">
-                                                    <span class="morebtn" @click="showAllAbstract">收起</span>
+                                                    <span class="morebtn" @click="showAllAbstract">{{ i18n.t("thesisDetail.fold") }}</span>
                                                 </span>
                                             </div>
                                             <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
