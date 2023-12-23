@@ -11,13 +11,14 @@ import { ElMessage } from 'element-plus';
 import router from "../routes/index.js";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
 import { nextTick } from 'vue';
-
+// 
+var isParentReady = ref(false)
+// title和abstract
 var title = ref('')
 var abstract = ref('')
 //const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
 const authorShips = ref([])
-
 
 // 当前论文id
 var currentId = ref('')
@@ -27,17 +28,15 @@ var isShowLink = ref(false)
 //原文链接开关
 function changeShowLink() {
     isShowLink.value = !isShowLink.value
-    console.log(isShowLink.value)
 }
 //原文链接列表
 var links = ref([])
 
 function openLink(link) {
-    console.log(1)
     window.open(link, '_blank')
 }
 //存放论文数据
-var pdf_url = ref('')
+var pdf_url = ref(null)
 var hasPDF = ref(true)
 var date = ref('')
 var instituion = ref('')
@@ -78,11 +77,20 @@ function setRelavant() {
 }
 //打开当前论文的pdf
 function navigateToExternalURL() {
-    window.open(pdf_url, '_blank')
+    console.log(pdf_url)
+    if (pdf_url!= null) {
+        window.open(pdf_url, '_blank')
+    }
 }
 // 打开PDF
 function openPDF(url) {
-    window.open(url, '_blank')
+    if (url != null) {
+        window.open(url, '_blank')
+    }
+}
+function NavigateToScholar(id){
+    console.log(id)
+    router.push('/author/'+id)
 }
 // 收藏论文
 async function collection() {
@@ -129,6 +137,7 @@ async function getThesis() {
         authorShips.value = res.data.data.authorships
         if (res.data.data.pdf_url == null) {
             hasPDF.value = false
+            pdf_url.value = null
         } else {
             pdf_url = toRaw(res.data.data.pdf_url)
         }
@@ -175,12 +184,14 @@ function findChildren(data, name, referenced_works) {
         }
     }
 }
-
 onMounted(async () => {
     // getThesisData();
     const { params } = useRoute();
     currentId.value = params.thesisId
     await getThesis()
+    isParentReady.value = true;
+    nextTick(() => {
+    });
     const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
     const options = {
         tooltip: {
@@ -221,7 +232,7 @@ onMounted(async () => {
     treemapOfBigField.hideLoading();
     treemapOfBigField.setOption(options)
     treemapOfBigField.on('click', async function (params) {
-        if (params.data.children == null && params.treeAncestors.length <= 3) {
+        if (params.data.children == null && params.treeAncestors.length <= 4) {
             const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
                 params: {
                     id: params.data.id,
@@ -291,12 +302,12 @@ onMounted(async () => {
                                     <span>
                                         <span class="author-link-font-author">
                                             <span class="personLink">
-                                                <a class="author_label" :href=author.author.id>
+                                                <a class="author_label" @click="NavigateToScholar(author.author.id)">
                                                     <span>{{ author.author.display_name }}</span>
                                                 </a>
                                             </span>
                                         </span>
-                                        <span class="mr" v-if="index != authorShips.length - 1">,</span>
+                                        <span class="mr" v-if="index != authorShips.length - 1">,&nbsp;&nbsp;</span>
                                     </span>
                                 </div>
                             </div>
@@ -449,7 +460,8 @@ onMounted(async () => {
                                 </div>
                                 <div class="more">
                                     <div class="jump" @click="LookThesis(work.id)">查看</div>
-                                    <div class="pdf" @click="openPDF(work.pdf_url)">PDF</div>
+                                    <div class="pdf1" @click="openPDF(work.pdf_url)"
+                                        :class="{ grey1: work.pdf_url == null }">PDF</div>
                                 </div>
                             </div>
                         </div>
@@ -461,7 +473,8 @@ onMounted(async () => {
             </div>
             <div class="chat">
                 <div>
-                    <chatInThesis :pdf_url="pdf_url" class="rightBar"></chatInThesis>
+                    <chatInThesis class="rightBar" :pdf_url="pdf_url" v-if="!isParentReady"></chatInThesis>
+                    <chatInThesis class="rightBar" :pdf_url="pdf_url" v-if="isParentReady"></chatInThesis>
                 </div>
             </div>
         </div>
@@ -482,7 +495,7 @@ onMounted(async () => {
 .indexArticle {
     width: 100%;
     color: #333;
-    max-width: 2000px;
+    /*max-width: 2000px;*/
     padding-left: 15px;
     padding-right: 15px;
     margin: 0 auto;
@@ -498,8 +511,8 @@ onMounted(async () => {
     .indexContent {
         width: 100%;
         flex: 1 1;
-        margin-right: 20px;
-
+        /*margin-right: 20px;*/
+        margin-right: 400px;
         .background {
             background-color: #fff;
             border-radius: 10px;
@@ -554,6 +567,10 @@ onMounted(async () => {
 
                                 .author_label {
                                     color: #6b6b6b;
+                                    cursor: pointer;
+                                }
+                                .author_label:hover{
+                                    color: yellow;
                                 }
                             }
                         }
@@ -752,12 +769,14 @@ onMounted(async () => {
 
                     .pdf {
                         color: #e8edf4;
+
                     }
 
                 }
 
                 .grey {
                     background-color: #e7e7e7;
+                    cursor: auto;
                 }
 
                 .ppt {
@@ -1080,7 +1099,7 @@ onMounted(async () => {
                                 cursor: pointer;
                             }
 
-                            .pdf {
+                            .pdf1 {
                                 border: solid;
                                 border-width: 1px;
                                 margin-left: 20px;
@@ -1090,6 +1109,11 @@ onMounted(async () => {
                                 font-weight: 700;
                                 background-color: #c51c01;
                                 cursor: pointer;
+                            }
+
+                            .grey1 {
+                                background-color: #e7e7e7;
+                                cursor: auto;
                             }
                         }
                     }
@@ -1114,10 +1138,11 @@ onMounted(async () => {
             }
         }
     }
-
     .chat {
         display: block;
-
+        position: fixed;
+        /*right: 200px;*/
+        left: 68vw;
         .rightBar {
             flex: 0 0 370px;
             max-width: 370px;
@@ -1125,5 +1150,8 @@ onMounted(async () => {
             height: 70vh;
         }
     }
+}
+.indexArticle::-webkit-scrollbar {
+    width: 1px; /* 设置滚动条宽度 */
 }
 </style>
