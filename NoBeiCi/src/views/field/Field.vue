@@ -13,6 +13,7 @@ import {checkIsChinese} from "../../functions/checkIsChinese.js";
 import router from "../../routes/index.js";
 import get from '../../functions/Get.js'
 import {ElMessage} from "element-plus";
+import {debounce} from "vue-debounce";
 
 const level0Fields = ref([])
 const selectedLevel0Id = ref('https://openalex.org/C71924100')
@@ -46,7 +47,6 @@ const updateLevel0Treemap = () => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true // 设置为 true 以显示错误消息
       })
 
       // 处理响应数据
@@ -157,7 +157,7 @@ const updateLevel0Treemap = () => {
       })
     })
     .then(() => {
-      treemapOfBigField.on('click', (value) => {
+      treemapOfBigField.on('click', debounce((value) => {
 
         console.log(value)
 
@@ -229,9 +229,9 @@ const updateLevel0Treemap = () => {
           parent.cnNode.children.length = 0
           parent.enNode.children.length = 0
         }
-      })
+      }), "1000ms")
 
-      treemapOfBigField.on('contextmenu', (value) => {
+      treemapOfBigField.on('contextmenu', debounce((value) => {
         const dblId = value.data.id
 
         const getFieldInformation = async (fieldId) => {
@@ -292,7 +292,7 @@ const updateLevel0Treemap = () => {
               selectedFieldDescription.value = selectedFieldCnDescription
             }
           })
-      })
+      }), "1000ms")
     })
 }
 
@@ -487,7 +487,7 @@ watch(
     </div>
     <div class="simple-information-of-big-field-outer">
       <div id="containerOfTreemap" class="treemap-of-big-field"></div>
-      <div class="simple-information-card-outer">
+      <div v-if="selectedFieldName !== ''" class="simple-information-card-outer">
         <el-card class="simple-information-card">
           <template #header>
             <div class="simple-information-card-header">

@@ -3,6 +3,7 @@
 import {onMounted, ref} from "vue";
 import get from "../../functions/Get.js";
 import {ElMessage} from "element-plus";
+import ScholarDisplay from "../../components/ScholarDisplay.vue";
 
 const props = defineProps([
   'currentFieldId'
@@ -57,17 +58,18 @@ onMounted(() => {
       }
       else {
         const data = response.data
-        allScholars.value.push({
-          id: data.id,
-          avatar: data.avatar,
-          citedByCount: data.cited_by_count,
-          name: data.display_name,
-          worksCount: data.works_count,
-          impactFactor: data.summary_stats['2yr_mean_citedness'],
-          hIndex: data.summary_stats['h_index'],
-          i10Index: data.summary_stats['i10_index'],
-          oaPercent: data.summary_stats['oa_percent']
-        })
+        allScholars.value = data
+        // allScholars.value.push({
+        //   id: data.id,
+        //   avatar: data.avatar,
+        //   citedByCount: data.cited_by_count,
+        //   name: data.display_name,
+        //   worksCount: data.works_count,
+        //   impactFactor: data.summary_stats['2yr_mean_citedness'],
+        //   hIndex: data.summary_stats['h_index'],
+        //   i10Index: data.summary_stats['i10_index'],
+        //   oaPercent: data.summary_stats['oa_percent']
+        // })
       }
     })
 })
@@ -76,13 +78,7 @@ onMounted(() => {
 
 <template>
   <div class="scholars-outer">
-    <div v-for="scholar in allScholars" class="single-scholar-outer">
-      <div class="single-scholar">
-        <div class="scholar-avatar-outer">
-          <img class="scholar-avatar" :src="scholar.avatar" alt="" />
-        </div>
-      </div>
-    </div>
+    <ScholarDisplay :scholars="allScholars" />
   </div>
 </template>
 
@@ -91,16 +87,5 @@ onMounted(() => {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  .single-scholar-outer {
-    height: 8vh;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .single-scholar {
-      width: 90%;
-      height: 90%;
-    }
-  }
 }
 </style>

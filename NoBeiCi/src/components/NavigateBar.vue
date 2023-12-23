@@ -9,7 +9,7 @@ import { User, Lock, Message } from "@element-plus/icons-vue";
 import English from '../assets/i18n/EN-UK.svg'
 import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
-import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons-vue";
+import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined, AuditOutlined} from "@ant-design/icons-vue";
 import router from "../routes/index.js";
 import sunUrl from '../assets/sun.png';
 import moonUrl from '../assets/moon.png'
@@ -17,6 +17,7 @@ import {
   enable as enableDarkMode,
   disable as disableDarkMode
 } from "darkreader";
+import {useStateOfPriorDialog} from "../stores/stateOfPriorDialog.js";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -27,6 +28,7 @@ const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
 const isDark = ref(false)
+const isManager = ref(false)
 
 if (localStorage.getItem('theme') === null) {
   localStorage.setItem('theme', 'light')
@@ -47,6 +49,26 @@ watch(
 )
 
 onMounted(() => {
+  if (localStorage.getItem(('manager'))) {
+    isManager.value = true
+  }
+  else {
+    isManager.value = false
+  }
+})
+watch(
+  () => localStorage.getItem('manager'),
+  (newValue) => {
+    if (newValue !== null) {
+      isManager.value = true
+    }
+    else {
+      isManager.value = false
+    }
+  }
+)
+
+onMounted(() => {
   if (localStorage.getItem('theme') === 'light') {
     isDark.value = false
     disableDarkMode()
@@ -63,6 +85,8 @@ const handleToUserPage = () => {
 
 const handleLogout = () => {
   localStorage.clear()
+  const stateOfPriorDialog = useStateOfPriorDialog()
+  stateOfPriorDialog.openDialog()
   router.push('/')
 }
 
@@ -82,6 +106,10 @@ const handleTurnDark = () => {
   localStorage.setItem('theme', 'dark')
 }
 
+const handleToManagerCenter = () => {
+  router.push('/admin')
+}
+
 </script>
 
 <template>
@@ -91,16 +119,16 @@ const handleTurnDark = () => {
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="flex justify-around" style="height: 100%; width: 75%">
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/')">
           {{ i18n.t("navigateBar.homePage") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/conf')">
           {{ i18n.t("navigateBar.conferences") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/institution')">
           {{ i18n.t("navigateBar.institution") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/field')">
           {{ i18n.t("navigateBar.field") }}
         </div>
         <div class="single-navigate-outer" @click="router.push('/scholar')">
@@ -145,6 +173,14 @@ const handleTurnDark = () => {
                 </div>
                 <div class="user-menu-item-text">
                   {{ i18n.t('navigateBar.toUserPage') }}
+                </div>
+              </el-menu-item>
+              <el-menu-item v-if="isManager" class="user-menu-item" @click="handleToManagerCenter">
+                <div class="user-menu-item-icon">
+                  <audit-outlined style="font-size: 145%" />
+                </div>
+                <div class="user-menu-item-text">
+                  {{ i18n.t('navigateBar.managerCenter') }}
                 </div>
               </el-menu-item>
               <el-menu-item class="user-menu-item" @click="handleLogout">

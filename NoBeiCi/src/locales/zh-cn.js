@@ -4,6 +4,7 @@ export default {
     search: "搜索学者、论文、期刊",
     logout: "退出登录",
     toUserPage: "个人中心",
+    managerCenter: "管理员",
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
@@ -78,6 +79,8 @@ export default {
       inputPassword: "密码",
       loginButton: "登录",
       registerButton: "去注册",
+      isManager: "我是管理员",
+      managerName: "管理员名"
     },
     registerMode: {
       inputUsername: "用户名",
@@ -118,6 +121,9 @@ export default {
       titleOfAncestorsTree: "父领域关系",
       titleOfChildrenTree: "子领域关系",
       titleOfRelatedGraph: "相关领域关系"
+    },
+    paperTab: {
+      noPaper: "暂未收录当前领域下的论文，敬请期待"
     }
   },
   thesisDetail:{

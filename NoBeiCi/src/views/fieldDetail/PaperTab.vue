@@ -4,6 +4,7 @@ import ArticleDisplay from "../../components/search/ArticleDisplay.vue";
 import {onMounted, ref} from "vue";
 import get from '../../functions/Get.js'
 import {ElMessage} from "element-plus";
+import i18n from "../../locales/index.js";
 
 const props = defineProps([
   'currentFieldId'
@@ -73,9 +74,13 @@ onMounted(() => {
 
 <template>
   <div class="paper-outer">
-    <el-row v-for="data in allPaperData">
+    <el-row v-if="allPaperData.length !== 0" v-for="data in allPaperData">
       <ArticleDisplay style="width: 100vw; margin-top: 4vh" :data="data" type="" />
     </el-row>
+    <a-empty
+      v-if="allPaperData.length === 0"
+      :description="i18n.t('fieldDetail.paperTab.noPaper')"
+    ></a-empty>
   </div>
 </template>
 

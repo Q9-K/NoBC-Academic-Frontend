@@ -4,6 +4,7 @@ export default {
     search: "Search",
     logout: "Logout",
     toUserPage: "Personal Center",
+    managerCenter: "Manager",
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",
@@ -45,6 +46,8 @@ export default {
       inputPassword: "Password",
       loginButton: "Sign in",
       registerButton: "Register",
+      isManager: "I am the Manager",
+      managerName: "Manager Name"
     },
     registerMode: {
       inputUsername: "Username",
@@ -85,6 +88,9 @@ export default {
       titleOfAncestorsTree: "Parent Fields",
       titleOfChildrenTree: "Children Fields",
       titleOfRelatedGraph: "Related Fields"
+    },
+    paperTab: {
+      noPaper: "Sorry, no papers in this field yet. Stay tuned for updates!"
     }
   },
   thesisDetail:{
