@@ -11,6 +11,10 @@ import {LineChartOutlined, ApartmentOutlined, FileTextOutlined, TeamOutlined} fr
 import TrendTab from "./TrendTab.vue";
 import RelationTab from "./RelationTab.vue";
 import PaperTab from "./PaperTab.vue";
+import ScholarTab from "./ScholarTab.vue";
+import request from '../../functions/Request.js'
+import get from '../../functions/Get.js'
+import {ElMessage} from "element-plus";
 
 const {params} = useRoute();
 console.log(params)
@@ -153,20 +157,159 @@ function adjustFontSize() {
 }
 
 const handleStarField = () => {
-  hasStared.value = true
+
+  const handleStar = async () => {
+    try {
+
+      console.log(fFullId)
+
+      const apiUrl = 'http://100.117.229.168:8000' + '/user/add_focus_concept/'
+      const params = {
+        concept_id: fFullId
+      }
+
+      const response = await request({
+        url: apiUrl,
+        params: params,
+        dataType: 'json', // Specify the data type as JSON (if required by your backend)
+        showLoading: true, // Show loading indicator
+        addToken: true, // Whether to add a token to the request headers (if required by your backend)
+        errorCallback: null, // Callback function for error handling (if needed)
+        showError: true
+      })
+
+      // 处理响应数据
+      if (response) {
+        // 在此处处理响应数据
+        return response
+      }
+      else {
+        // 处理空响应（发生错误）
+        console.error('接收到空响应。');
+      }
+    }
+    catch (e) {
+      // 处理请求期间的任何意外错误
+      console.error('请求失败：', error);
+    }
+  }
+
+  handleStar()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: 'error',
+          message: 'Oh No!'
+        })
+      }
+      else {
+        ElMessage({
+          type: "success",
+          message: 'OK!'
+        })
+        hasStared.value = true
+      }
+    })
 }
 
 const handleCancelStarField = () => {
-  hasStared.value = false
+
+  const handleCancelStar = async () => {
+    try {
+      const apiUrl = 'http://100.117.229.168:8000' + '/user/remove_focus_concept/'
+      const params = {
+        concept_id: fFullId
+      }
+
+      const response = await request({
+        url: apiUrl,
+        params: params,
+        dataType: 'json', // Specify the data type as JSON (if required by your backend)
+        showLoading: true, // Show loading indicator
+        addToken: true, // Whether to add a token to the request headers (if required by your backend)
+        errorCallback: null, // Callback function for error handling (if needed)
+        showError: true
+      })
+
+      // 处理响应数据
+      if (response) {
+        // 在此处处理响应数据
+        return response
+      }
+      else {
+        // 处理空响应（发生错误）
+        console.error('接收到空响应。');
+      }
+    }
+    catch (e) {
+      // 处理请求期间的任何意外错误
+      console.error('请求失败：', error);
+    }
+  }
+
+  handleCancelStar()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: 'error',
+          message: 'Oh No!'
+        })
+      }
+      else {
+        ElMessage({
+          type: "success",
+          message: 'OK!'
+        })
+        hasStared.value = false
+      }
+    })
 }
-
-
 
 console.log(showIndexes.value)
 
-// onMounted(() => {
-//
-// })
+onMounted(() => {
+
+  const getIsStar = async () => {
+    try {
+
+      console.log(fFullId)
+
+      const apiUrl = 'http://100.117.229.168:8000' + '/user/check_concept_focus/'
+      const params = {
+        concept_id: fFullId
+      }
+
+      const response = await get({
+        url: apiUrl,
+        params: params,
+        showLoading: false,
+        addToken: true,
+        errorCallback: (errorData) => {
+          // 如果需要，请处理错误回调
+          console.error('发生错误：', errorData);
+        },
+        showError: true
+      })
+
+      if (response) {
+        // 在此处处理响应数据
+        return response
+      }
+      else {
+        // 处理空响应（发生错误）
+        console.error('接收到空响应。');
+      }
+    }
+    catch (e) {
+      console.error('请求失败：', e);
+    }
+  }
+
+  getIsStar()
+    .then((response) => {
+      console.log(response)
+    })
+})
 
 onMounted(() => {
   adjustFontSize()
@@ -361,6 +504,9 @@ const handleSwitchIndexRange = (newShow) => {
                 </div>
               </div>
             </div>
+          </template>
+          <template #default>
+            <ScholarTab :current-field-id="fieldId" />
           </template>
         </el-tab-pane>
       </el-tabs>
