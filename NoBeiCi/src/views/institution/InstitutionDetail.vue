@@ -46,6 +46,12 @@ watch(route, (to, from) => {
   router.go(0)
 })
 const getDetail = async () => {
+  language.value = i18n.getLocale();
+  if(store.getId == "") {
+    let strs = window.location.href.split('/') 
+    strs[strs.length-1] = "https://openalex.org/"+strs[strs.length-1];
+    store.changeId(strs[strs.length-1]);
+  }
   const result = await get({
     url: "http://100.117.229.168:8000//institution/getInstitutionDetail",
     params: {

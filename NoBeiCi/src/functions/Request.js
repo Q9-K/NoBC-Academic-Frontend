@@ -23,6 +23,9 @@ instance.interceptors.request.use(
         if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
             config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
         }
+        if(config.addManagerToken && localStorage.getItem("manager")){
+            config.headers['token'] = localStorage.getItem("manager");
+        }
         return config;
     }, (error) => {
         if (error.config.showLoading && loading) {
@@ -61,7 +64,7 @@ instance.interceptors.response.use(
 
 
 const request = (config) => {
-    const { url, params, dataType, showLoading = true, addToken = false,errorCallback, showError = true } = config
+    const { url, params, dataType, showLoading = true, addToken = false,addManagerToken=false,errorCallback, showError = true } = config
     let contentType = contentTypeForm;
     let fromData = new FormData();
     for (let key in params) {
@@ -77,6 +80,7 @@ const request = (config) => {
     return instance.post(url, fromData, {
         headers: headers,
         addToken: addToken,
+        addManagerToken: addManagerToken, // 是否添加管理端token
         showLoading: showLoading,
         errorCallback: errorCallback,
         showError: showError

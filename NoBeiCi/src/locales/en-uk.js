@@ -20,7 +20,7 @@ export default {
   },
   admin:{
     reviewScholarCertification:"Review Scholar Certification",
-    handleScholarGrievances:"Handle Scholar Grievances",
+    handleScholarGrievances:"Review Scholar Complaint",
     detail:"Detail",
     applicantName:"Applicant",
     scholarName:"Scholar's Name",
@@ -36,6 +36,8 @@ export default {
     remark:"Remark",
     accept:"Accept",
     decline:"Decline",
+    opinion:"Review comment",
+    reason:"Reason",
   },
   priorDialog: {
     enter: "Enter",
