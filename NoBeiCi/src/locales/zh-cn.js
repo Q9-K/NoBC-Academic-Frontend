@@ -122,10 +122,11 @@ export default {
     journalStatistics: "统计信息",
     journalPapers: "论文",
     journalField: "领域",
+    journalCount: "论文总数",
     journalCreatedYear: "创立年份",
-    journal2021Number: "2021年论文数",
-    journal2021factors: "2021影响因子",
-    journalAverageCited: "近五年论文平均引用数",
+    journalTwoCount: "近两年论文数",
+    journalTwoIndex: "2yr_h_index",
+    journalAverageCited: "近两年论文平均引用数",
     journalTopic:"论文主题",
     journalArea: "国家或地区",
     journalCite: "论文引用量",
@@ -133,5 +134,8 @@ export default {
     journalHighAuthor: "高引作者",
     journalHighPaper: "高引论文",
     journalHighInstitution: "高引机构",
+  },
+  journalDisplay: {
+    paperCount: "论文数",
   }
 }

@@ -121,11 +121,13 @@ export default {
   journal: {
     journalStatistics: "Statistics",
     journalPapers: "Papers",
+    journalCount: "Total citations",
     journalField: "Field",
     journalCreatedYear: "CreatedYear",
-    journal2021Number: "Number of papers in 2021",
-    journal2021factors: "2021 Impact factors",
-    journalAverageCited: "The average number of citations in the last five years",
+    journalTotalPaper: "Total papers",
+    journalTwoCount: "2yr_works_count",
+    journalTwoIndex: "2yr_h_index",
+    journalAverageCited: "2yr_mean_citedness",
     journalTopic:"Topics",
     journalArea: "Countries or Areas",
     journalCite: "Paper citations",
@@ -133,5 +135,8 @@ export default {
     journalHighAuthor: "Highly Cited Author",
     journalHighPaper: "Highly Cited Paper",
     journalHighInstitution: "Highly Cited Institution",
+  },
+  journalDisplay: {
+    paperCount: "Papers",
   }
 }

@@ -16,7 +16,7 @@
                     </el-row>
                     <el-row style="margin-bottom: 3px;">
                         <el-button style="border: none; margin-right: 54vw">{{ i18n.t('conf.confJournalList') }}</el-button>
-                        <el-button>{{ i18n.t('conf.confUpdatedJournal') }}</el-button>
+                        <el-button @click="getLatestJournal">{{ i18n.t('conf.confUpdatedJournal') }}</el-button>
                     </el-row>
                         <el-row v-for="data in journalsData">
                             <JournalDisplay :data="data"/>
@@ -39,6 +39,7 @@ import { ref } from 'vue'
 import { onMounted } from 'vue'
 import axios from 'axios'
 import i18n from "../locales/index.js";
+import { debounce } from 'vue-debounce'
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')  
 
 const journalsData = ref([]);
@@ -47,8 +48,8 @@ const subject = ref("");
 onMounted(() => {
     getJournalsByInitial('A'); 
 });
-const getJournalsByInitial = (initial) => {
-    axios.get('http://100.96.145.140:8000/source/get_sources_by_initial/', {
+const getJournalsByInitial = debounce((initial) => {
+    axios.get('http://100.96.145.140:8000/source/get_source_list/', {
         params: {
             initial: initial,
             page_num: 1,
@@ -56,13 +57,28 @@ const getJournalsByInitial = (initial) => {
         }
         })
         .then(response => {
-          journalsData.value = response.data.sources;
-          console.log(journalsData.value)
+          journalsData.value = response.data.data;
         })
         .catch(error => {
           console.error('Error fetching journals:', error);
         });
-};
+}, "200ms");
+
+
+const getLatestJournal = debounce(() => {
+    axios.get('http://100.96.145.140:8000/source/get_latest_sources/', {
+        params: {
+            page_num: 1,
+            page_size: 10,
+        }
+        })
+        .then(response => {
+          journalsData.value = response.data.data;
+        })
+        .catch(error => {
+          console.error('Error fetching journals:', error);
+        });
+}, "200ms");
 </script>
 
 <style scoped>
