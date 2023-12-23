@@ -45,6 +45,8 @@ export default {
       inputPassword: "密码",
       loginButton: "登录",
       registerButton: "去注册",
+      isManager: "我是管理员",
+      managerName: "管理员名"
     },
     registerMode: {
       inputUsername: "用户名",

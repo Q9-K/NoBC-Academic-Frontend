@@ -45,6 +45,8 @@ export default {
       inputPassword: "Password",
       loginButton: "Sign in",
       registerButton: "Register",
+      isManager: "I am the Manager",
+      managerName: "Manager Name"
     },
     registerMode: {
       inputUsername: "Username",
