@@ -358,7 +358,7 @@ onMounted(async () => {
                                                     {{ abstract }}
                                                 </div>
                                                 <span v-if="ifShowMoreButton" class="abstract-morebtn">
-                                                    <span class="morebtn" @click="showAllAbstract">更多</span>
+                                                    <span class="morebtn" @click="showAllAbstract"> {{ i18n.t("thesisDetail.more") }} </span>
                                                 </span>
                                                 <span v-if="!ifShowMoreButton" class="abstract-morebtn2">
                                                     <span class="morebtn" @click="showAllAbstract">收起</span>
@@ -401,7 +401,7 @@ onMounted(async () => {
                                 <el-icon>
                                     <Promotion />
                                 </el-icon>
-                                <span>原文链接</span>
+                                <span> {{ i18n.t("thesisDetail.Link") }} </span>
                                 <el-icon>
                                     <ArrowDown />
                                 </el-icon>
@@ -428,25 +428,25 @@ onMounted(async () => {
                             <el-icon>
                                 <StarFilled />
                             </el-icon>
-                            <span>收藏</span>
+                            <span> {{ i18n.t("thesisDetail.collection") }} </span>
                         </div>
                     </div>
                 </div>
                 <div class="relation">
-                    <div class="relavant">相关论文</div>
+                    <div class="relavant"> {{ i18n.t("thesisDetail.related") }} </div>
                     <div class="relavantDetail">
                         <div class="relavantDetailHead">
                             <div class="first" @click="setRelated" :class="{ highlighted: isHighlighted1 }">
                                 <el-icon style="margin-right: 5px;font-size:20px">
                                     <Document />
                                 </el-icon>
-                                引用论文
+                                {{ i18n.t("thesisDetail.quoted") }}
                             </div>
                             <div class="second" @click="setRelavant" :class="{ highlighted: isHighlighted2 }">
                                 <el-icon style="margin-right: 5px;font-size:20px">
                                     <Document />
                                 </el-icon>
-                                相关论文
+                                {{ i18n.t("thesisDetail.relavant") }}
                             </div>
                         </div>
                         <div class="relavantDetailBody">
@@ -455,7 +455,7 @@ onMounted(async () => {
                                     <p>{{ work.title }}</p>
                                 </div>
                                 <div class="work_related">
-                                    被引用
+                                    {{ i18n.t("thesisDetail.beQuoted") }}
                                     {{ work.cited_by_count }}
                                 </div>
                                 <div class="more">
@@ -467,7 +467,7 @@ onMounted(async () => {
                         </div>
 
                     </div>
-                    <div class="relationHead">引文网络</div>
+                    <div class="relationHead"> {{ i18n.t("thesisDetail.net") }} </div>
                     <div id="containerOfTreemap" class="map"></div>
                 </div>
             </div>
@@ -997,7 +997,8 @@ onMounted(async () => {
                     display: flex;
                     align-items: center;
                     justify-content: flex-start;
-                    width: 100%;
+                    min-width: 100%;
+                    width: auto;
                     border: solid lightgray;
                     border-left: hidden;
                     border-right: hidden;
@@ -1006,7 +1007,8 @@ onMounted(async () => {
                     margin-bottom: 8px;
 
                     .first {
-                        width: 114px;
+                        min-width: 120px;
+                        width: auto;
                         height: 40px;
                         border: solid;
                         border-color: #979797;
@@ -1018,10 +1020,13 @@ onMounted(async () => {
                         justify-content: center;
                         font-weight: 600;
                         cursor: pointer;
+                        padding-left: 5px;
+                        padding-right: 5px;
                     }
 
                     .second {
-                        width: 114px;
+                        min-width: 120px;
+                        width: auto;
                         height: 40px;
                         border: solid;
                         border-color: #979797;
@@ -1033,6 +1038,8 @@ onMounted(async () => {
                         justify-content: center;
                         font-weight: 600;
                         cursor: pointer;
+                        padding-left: 5px;
+                        padding-right: 5px;
                     }
 
                     .highlighted {

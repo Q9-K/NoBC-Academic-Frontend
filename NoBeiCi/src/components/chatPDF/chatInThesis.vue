@@ -8,7 +8,7 @@
                 <el-icon style="font-size: 30px;">
                     <Orange />
                 </el-icon>
-                <p>一句话总结</p>
+                <p> {{ i18n.t("thesisDetail.summary") }} </p>
             </div>
         </div>
         <div class="Intro" ref="scrollContainer" v-loading="loading" element-loading-text="GPT正在生成论文介绍,请稍等"
@@ -38,7 +38,7 @@
         <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search"
             clearable></el-input>
         <div class="sendButton">
-            <p @click="getMessage" class="button">发送</p>
+            <p @click="getMessage" class="button">{{ i18n.t("thesisDetail.send") }}</p>
         </div>
     </div>
 </template>
@@ -49,6 +49,7 @@ import { ref, watch } from 'vue';
 import { Search } from "@element-plus/icons-vue";
 import request from "../../functions/Request";
 import { nextTick } from 'vue';
+import i18n from "../../locales/index.js";
 //对这篇文章的介绍
 const introduce = ref('')
 //第一条消息
@@ -88,6 +89,7 @@ watch(() => props.parentProp, (newVal) => {
 //初始加载介绍
 async function getIntroduction() {
     try {
+        console.log(props.pdf_url)
         if (props.pdf_url != null) {
             loading.value = true
             const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
@@ -100,7 +102,7 @@ async function getIntroduction() {
             messages.value.push(introduce.value)
         }
         else {
-            messages.value.push("该论文暂时没有pdf,无法进行对话")
+            messages.value.push(i18n.t("thesisDetail.introduce"))
             hasPDF.value = false
         }
     } catch (error) {
@@ -219,6 +221,9 @@ onMounted(async () => {
 .button {
     font-size: 15px;
     font-weight: 450;
+}
+.button:hover{
+    color: #87CEEB;
 }
 
 .left {

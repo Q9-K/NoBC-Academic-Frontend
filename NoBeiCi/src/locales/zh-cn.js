@@ -128,7 +128,20 @@ export default {
   },
   thesisDetail:{
     quote:"引用",
-    browse:"浏览"
+    browse:"浏览",
+    Link: "原文链接",
+    collection: "收藏",
+    related: "关联论文",
+    relavant: "相关论文",
+    quoted: "引用论文",
+    beQuoted: "被引用",
+    more: "更多",
+    net: "引文网络",
+    fold: "收起",
+    summary: "一句话总结",
+    introduce: "该论文暂时没有pdf,无法进行对话",
+    input: "请输入你的想法",
+    send: "发送"
   },
   field: {
     moreDetail: "更多"

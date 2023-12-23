@@ -15,7 +15,7 @@
                 <div class="H-index">
                     <div style="font-size:11px">
                         H-index:
-                        1
+                        {{ scholar.summary_stats.h_index }}
                     </div>
                 </div>
                 <div class="thesis">

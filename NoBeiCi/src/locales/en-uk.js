@@ -95,7 +95,20 @@ export default {
   },
   thesisDetail:{
     quote:"Quote",
-    browse:"Browse"
+    browse:"Browse",
+    Link: "Link",
+    collection: "collection",
+    related: "Related Papers",
+    relavant: "Relavant Papers",
+    quoted: "Quoted Papers",
+    beQuoted: "Quoted Number",
+    more: "more" ,
+    net: "Quoted Network",
+    fold: "fold",
+    summary: "Summarize in a sentence",
+    introduce: "Sorry, The paper does not have a PDF",
+    input: "Message ChatPDF",
+    send: "send"
   },
   field: {
     moreDetail: "More"
