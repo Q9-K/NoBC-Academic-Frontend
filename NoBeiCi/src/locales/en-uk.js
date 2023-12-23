@@ -87,6 +87,9 @@ export default {
       titleOfAncestorsTree: "Parent Fields",
       titleOfChildrenTree: "Children Fields",
       titleOfRelatedGraph: "Related Fields"
+    },
+    paperTab: {
+      noPaper: "Sorry, no papers in this field yet. Stay tuned for updates!"
     }
   },
   thesisDetail:{

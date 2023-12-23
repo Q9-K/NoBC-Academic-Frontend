@@ -120,6 +120,9 @@ export default {
       titleOfAncestorsTree: "父领域关系",
       titleOfChildrenTree: "子领域关系",
       titleOfRelatedGraph: "相关领域关系"
+    },
+    paperTab: {
+      noPaper: "暂未收录当前领域下的论文，敬请期待"
     }
   },
   thesisDetail:{
