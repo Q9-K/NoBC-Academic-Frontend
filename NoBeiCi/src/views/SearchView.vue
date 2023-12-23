@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, watch } from 'vue'
     import NavBar from '../components/NavigateBar.vue'
     import 'element-plus/dist/index.css'
     import { Search } from '@element-plus/icons-vue'
@@ -13,7 +13,9 @@
     import Subject from '../components/search/Subject.vue'
     import i18n from '../locales'
     import axios from 'axios'
-
+    import {debounce} from "vue-debounce";
+    const showAriticle = ref([true]);
+    const key = ref(Date.now());
     const input = ref('');
     const startTime = ref('');
     const endTime = ref('');
@@ -40,7 +42,7 @@
         orderWay.value = 'cited_by_count';
         search();
     };
-    const search = async () => {
+    const search = debounce( async () => {
         try {
             const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
             params: {
@@ -54,18 +56,32 @@
                 page_number: pageNum.value || undefined,
             },
             });
-            data.value = response.data;
-            articleData.value = data.value.data.data;
+            console.log(response.data.data.count);
+            if(response.data.data.count > 0) {
+                showAriticle.value = true;
+                data.value = response.data;
+                articleData.value = data.value.data.data;
+                console.log(2);
+                key.value = Date.now();
+            } else{
+                showAriticle.value = false;
+                window.alert("无结果");
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
+    }, "300ms");
+
+    const receiveTime = (start_time, end_time) => {
+        startTime.value = start_time;
+        endTime.value = end_time;
+        console.log(startTime.value);
+        console.log(endTime.value);
     }
 
-    const receiveTime = (data) => {
-        startTime.value = data.startTime;
-        endTime.value = data.endTime;
-        console.log(startTime.value);
-    }
+    watch([startTime, endTime], () => {
+        search();
+    });
 </script>
 
 <template>
@@ -90,7 +106,7 @@
             <el-row class="classify">
                 <div>
                 <!-- 选择日期 -->
-                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;" @sendData="receiveTime"/>
+                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;" @changeTime="receiveTime"/>
                 </div>
             </el-row>
             <el-row class="classify">
@@ -119,8 +135,8 @@
                     <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchCitations' }" style="border:none; font-size: large;" @click="searchCitations">{{ i18n.t('search.searchCitations') }}</el-button></el-col>
                 </el-row>
                 <div>
-                <el-row v-for="data in articleData">
-                    <ArticleDispaly :data="data" type="highlight"/>
+                <el-row v-for="data in articleData" v-if="showAriticle">
+                    <ArticleDispaly :data="data" type="highlight" :key="key"/>
                 </el-row>
                 <el-pagination style="margin-top: 10px;" layout="prev, pager, next" :total="1000" />
                 </div>

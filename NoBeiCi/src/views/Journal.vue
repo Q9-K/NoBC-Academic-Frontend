@@ -19,10 +19,28 @@
            <el-main>
                 <div v-if="showPaper">
                 <table class="basic-message">
-                    <tr v-for="(row, rowIndex) in tableData" :key="rowIndex">
+                    <!-- <tr v-for="(row, rowIndex) in tableData" :key="rowIndex">
                         <td v-for="(column, columnIndex) in row" :key="columnIndex">
                             {{ column }}
                         </td>
+                    </tr> -->
+                    <tr>
+                        <td>{{ i18n.t('journal.journalCount') }}</td>
+                        <td>{{ works_count }}</td>
+                        <td>{{ i18n.t('journal.journalTwoCount') }}</td>
+                        <td>{{ works2_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ i18n.t('journal.journalCreatedYear') }}</td>
+                        <td>{{ created_year }}</td>
+                        <td>{{ i18n.t('journal.journalAverageCited') }}</td>
+                        <td>{{ mean_citedness }}</td>
+                    </tr>
+                    <tr>
+                        <td>h-index</td>
+                        <td>{{ h_index }}</td>
+                        <td>{{ i18n.t('journal.journalTwoIndex') }}</td>
+                        <td>{{ h2_index }}</td>
                     </tr>
                 </table>
 
@@ -30,16 +48,16 @@
                     <div>
                         <el-row type="flex" justify="center">
                             <el-col :span="12">
-                                <!-- <el-button style="margin-top: 1vh;">论文主题</el-button> -->
+                                <!-- <el-button style="margin-top: 1vh;">论文领域</el-button> -->
                                 <div class="card">
-                                    <p>{{i18n.t('journal.journalTopic')}}</p>
-                                    <JournalWord :data="word" />
+                                    <p>{{i18n.t('journal.journalField')}}</p>
+                                    <AsyncJournalWord :data="word" :key="key"/>
                                 </div>
                             </el-col>
                             <el-col :span="12">   
                                 <div class="card">
                                     <h3>{{i18n.t('journal.journalArea')}}</h3>
-                                    <JournalCountry :data="country"></JournalCountry>
+                                    <AsyncJournalCountry :data="country" :key="key1"/>
                                 </div>
                             </el-col>
                         </el-row>
@@ -50,34 +68,17 @@
                             <el-col :span="12">
                                 <div class="card">
                                     <h3>{{i18n.t('journal.journalCite')}}</h3>
-                                    <JournalCite :data="cite"></JournalCite>
+                                    <AsyncJournalCite :data="cite" :key="key" />
                                 </div>
                             </el-col>
                             <el-col :span="12">
                                 <div class="card">
                                     <h3>{{i18n.t('journal.journalDistribution')}}</h3>
-                                    <JournalInstitute :data="institute"></JournalInstitute>
+                                    <AsyncJournalInstitution :data="institute" :key="key1"/>
                                 </div>
                             </el-col>
                         </el-row>
                     </div>
-                </div>
-
-                <div>
-                    <el-row style="border:  groove rgb(100, 2, 255);">
-                        <el-col>
-                            <div>
-                                <h3>{{i18n.t('journal.journalHighAuthor')}}</h3>
-                                <el-table :data="thesisData" stripe style="width: 100%">
-                                    <el-table-column prop="2019" label="2019" width="280" />
-                                    <el-table-column prop="2020" label="2020" width="280" />
-                                    <el-table-column prop="2021" label="2021" width="280" />
-                                    <el-table-column prop="2022" label="2022" width="280" />
-                                    <el-table-column prop="2023" label="2023" />
-                                </el-table>
-                            </div>
-                        </el-col>
-                    </el-row>
                 </div>
 
                 <div>
@@ -89,7 +90,7 @@
 
                     <el-row type="flex" justify="center">
                         <div v-if="showAuthor">
-                            <el-table :data="authorData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
+                            <el-table :key="key" :data="authorData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
                                 <el-table-column prop="author" label="Author" sortable width="450" />
                                 <el-table-column prop="thesisnumber" label="ThesisNumber"  sortable width="450" />
                                 <el-table-column prop="citenumber" label="CiteNumber" sortable width="450" />
@@ -117,67 +118,38 @@
 
 <script setup>
 import NavigateBar from '../components/NavigateBar.vue';
-import JournalCountry from '../components/conf/Country.vue'
-import JournalWord from '../components/conf/JournalWord.vue';
-import JournalCite from '../components/conf/JournalCite.vue';
-import JournalInstitute from '../components/conf/JournalInstitute.vue'
+//import JournalCountry from '../components/conf/Country.vue'
+// import JournalWord from '../components/conf/JournalWord.vue';
+// import JournalCite from '../components/conf/JournalCite.vue';
+//import JournalInstitute from '../components/conf/JournalInstitute.vue'
 import JournalPaper from '../components/conf/JournalPaper.vue'
-import { onMounted, ref, getCurrentInstance } from 'vue';
+import { onMounted, ref, getCurrentInstance, watch } from 'vue';
 import i18n from '../locales/index.js'
 import axios from 'axios';
-
+import { defineAsyncComponent } from 'vue';
+const AsyncJournalWord = defineAsyncComponent(() => import('../components/conf/JournalWord.vue'));
+const AsyncJournalCite = defineAsyncComponent(() => import('../components/conf/JournalCite.vue'));
+const AsyncJournalCountry = defineAsyncComponent(() => import('../components/conf/Country.vue'));
+const AsyncJournalInstitution = defineAsyncComponent(() => import('../components/conf/JournalInstitute.vue'));
 const data = ref();
 const showPaper = ref(true);
 const showAuthor = ref(true);
 const showInstitution = ref(false);
 const showThesis = ref(false);
-const tableData = [  
-        [i18n.t('journal.journalField'), '计算机体系结构/并行与分布计算/存储系统', i18n.t('journal.journal2021Number'), '54'],
-        [i18n.t('journal.journalCreatedYear'), '2005', i18n.t('journal.journal2021factors'), '2.04'],
-        ['h5-index', '25', i18n.t('journal.journalAverageCited'), '10.28'],
-];  
+const display_name = ref("");
+const works_count = ref("");
+const works2_count = ref("");
+const h_index = ref("");
+const h2_index = ref("");
+const created_year = ref("");
+const mean_citedness = ref("");
 
-const country = ref( [
-        { type: '中国', value: 27 },
-        { type: '日本', value: 25 },
-        { type: '英国', value: 18 },
-        { type: '美国', value: 15 },
-        { type: '西班牙', value: 10 },
-        { type: '德国', value: 15 },
-        { type: '法国', value: 10 },
-        { type: '其他', value: 5 },
-]);
-
-const word = ref([
-        {"value": 9, "name": "AntV"},
-        { "value": 8, "name": "F2"},
-        {"value": 8, "name": "G2"},
-        {"value": 8, "name": "G6"},
-        {"value": 8, "name": "DataSet"},
-        {"value": 8, "name": "墨者学院"},
-]);
-
-const cite = ref([
-        { time: '2019-03', value: 350, count: 800 },
-        { time: '2019-04', value: 900, count: 600 },
-        { time: '2019-05', value: 300, count: 400 },
-        { time: '2019-06', value: 450, count: 380 },
-        { time: '2019-07', value: 470, count: 220 },
-]);
-
-const institute = ref([
-        { type: '清华', value: 27 },
-        { type: '北大', value: 25 },
-        { type: '人大', value: 18 },
-        { type: '南大', value: 15 },
-        { type: '中科大', value: 10 },
-        { type: '哈工大', value: 15 },
-        { type: '武大', value: 10 },
-        { type: '华科', value: 5 },
-        { type: '南大', value: 15 },
-        { type: '中科大', value: 10 },
-        { type: '哈工大', value: 15 },
-]);
+let key = 0;
+let key1 = 0;
+const country = ref([]);
+const word = ref([]);
+const cite = ref([]);
+const institute = ref([]);
 
 const thesisData =ref([
   {
@@ -210,45 +182,75 @@ const thesisData =ref([
   },
 ]);
 
-const authorData = ref([
-    {author: 'Tom', thesisnumber: 123, citenumber: 23},
-    {author: 'Tom', thesisnumber: 123, citenumber: 23},
-    {author: 'Tom', thesisnumber: 223, citenumber: 23},
-    {author: 'Tom', thesisnumber: 123, citenumber: 33},
-    {author: 'Tom', thesisnumber: 123, citenumber: 23},
-]);
+const authorData = ref([]);
 
 const toShowPaper=() => {
     showPaper.value = !showPaper.value;
 };
 
 const toShowInstitution = () => {
-    showInstitution.value = !showInstitution.value;
+    showThesis.value = false;
+    showAuthor.value = false;
+    showInstitution.value = true;
 };
 
 const toShowThesis= () => {
-    showThesis.value = !showThesis.value;
+    showThesis.value = true;
+    showAuthor.value = false;
+    showInstitution.value = false;
 }
 
 const toShowAuthor = () => {
-    showAuthor.value = !showAuthor.value;
+    showThesis.value = false;
+    showAuthor.value = true;
+    showInstitution.value = false;
 }
 
 const getAllInfo = async () => {
     try {   
             const instance = getCurrentInstance();
-            const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
-            const response = await axios.get('http://100.96.145.140:8000/source/get_source_by_id', {
+            // const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
+            const ident = instance.proxy.$route.params.id;
+            const response1 = await axios.get('http://100.96.145.140:8000/source/get_source_by_id', {
                 params: {
                 source_id: ident,
                 },
             });
-            data.value = response.data;
-            console.log(data);
+            const response2 = await axios.get('http://100.96.145.140:8000/source/get_authors_distribution', {
+                params: {
+                    source_id: ident,
+                },
+            });
+            const response3 = await axios.get('http://100.96.145.140:8000/source/get_authors_by_cited/', {
+                params: {
+                    source_id: ident,
+                }
+            });
+            data.value = response1.data;
+            country.value = response2.data.data[1];
+            institute.value = response2.data.data[0];
+            word.value = data.value.data.x_concepts;
+            cite.value =data.value.data.counts_by_year;
+            display_name.value = data.value.data.display_name;
+            works_count.value = data.value.data.works_count;
+            h_index.value = data.value.data.summary_stats.h_index;
+            works2_count.value = data.value.data.summary_stats['2yr_works_count'];
+            h2_index.value = data.value.data.summary_stats['2yr_h_index'];
+            mean_citedness.value = data.value.data.summary_stats['2yr_mean_citedness'];
+            created_year.value = data.value.data.summary_stats['created_date'];
+            console.log(response3.data);
+            authorData.value =response3.data.data.map(item => ({
+                author: item.key.display_name,
+                thesisnumber: item.doc_count,
+                citenumber: item.reverse_nested_cited_by_count.total_cited_by_count.value,
+            }));
+            key = 1;
+            key1 = 1;
         } catch (error) {
             console.error('Error fetching data:', error);
         }
 };
+
 onMounted(() =>{
     getAllInfo();
 });

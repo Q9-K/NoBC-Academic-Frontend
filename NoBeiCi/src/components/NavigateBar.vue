@@ -1,15 +1,19 @@
 <script setup>
 import logoUrl from '../assets/logo/logo.png'
-import userProfileUrl from '../assets/other/kawaiiFish.jpg'
-import i18nIcon from '../assets/i18n/i18n.svg'
 import {onMounted, ref, watch} from "vue";
 import {Search} from "@element-plus/icons-vue";
 import defaultUserProfile from '../assets/user/defaultUserProfile.png'
-import { User, Lock, Message } from "@element-plus/icons-vue";
 import English from '../assets/i18n/EN-UK.svg'
 import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
-import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined, AuditOutlined} from "@ant-design/icons-vue";
+import {GlobalOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  AuditOutlined,
+  MailOutlined,
+  ExclamationCircleOutlined
+} from "@ant-design/icons-vue";
 import router from "../routes/index.js";
 import sunUrl from '../assets/sun.png';
 import moonUrl from '../assets/moon.png'
@@ -18,6 +22,9 @@ import {
   disable as disableDarkMode
 } from "darkreader";
 import {useStateOfPriorDialog} from "../stores/stateOfPriorDialog.js";
+import {useSearchContentStore} from "../stores/searchContent.js";
+import get from '../functions/Get.js'
+import {ElMessage} from "element-plus";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -29,6 +36,9 @@ const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
 const isDark = ref(false)
 const isManager = ref(false)
+const whetherShowMailDrawer = ref(false)
+const whetherShowDot = ref(0)
+const allMailData = ref([])
 
 if (localStorage.getItem('theme') === null) {
   localStorage.setItem('theme', 'light')
@@ -110,6 +120,61 @@ const handleToManagerCenter = () => {
   router.push('/admin')
 }
 
+const handleSearch = () => {
+  const searchContent = useSearchContentStore()
+  searchContent.setContent(searchInputValue.value)
+  router.push('/search')
+}
+
+const handleOpenMailDrawer = () => {
+
+  const fetchAllMails = async () => {
+    try {
+      const apiUrl = 'http://100.117.229.168:8000' + '/user/get_messages/'
+
+      const response = await get({
+        url: apiUrl,
+        showLoading: true, // Show loading indicator
+        addToken: true,
+      })
+
+      if (response) {
+        return response
+      }
+      else {
+        console.log("空响应")
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+
+  }
+
+  fetchAllMails()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: "Oh No!"
+        })
+      }
+      else {
+        allMailData.value = response.data
+        whetherShowDot.value = 0
+        whetherShowMailDrawer.value = true
+      }
+    })
+
+}
+
+const email = JSON.parse(localStorage.getItem('userInformation')).email
+const idEmail = email.split('@')[0]
+const mailWebSocket = new WebSocket('ws://100.117.229.168:8000/' + idEmail + '/message')
+mailWebSocket.onmessage = (event) => {
+  whetherShowDot.value = 1
+}
+
 </script>
 
 <template>
@@ -137,13 +202,16 @@ const handleToManagerCenter = () => {
       </div>
     </div>
     <div class="search-input-outer">
-      <div class="animate__animated animate__zoomInDown" v-if="isSearchInputVisible">
+      <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center" class="animate__animated animate__zoomInDown" v-if="isSearchInputVisible">
         <el-input
           v-model="searchInputValue"
           :placeholder="i18n.t('navigateBar.search')"
           class="search-input"
-        />
-        <el-button class="search-input-button" :icon="Search" />
+        >
+          <template #append>
+            <el-button @click="handleSearch" :icon="Search" />
+          </template>
+        </el-input>
       </div>
     </div>
     <div class="user-set-outer">
@@ -196,6 +264,14 @@ const handleToManagerCenter = () => {
         </template>
       </el-popover>
     </div>
+    <div class="mail-box-outer">
+      <a-badge
+        :count="whetherShowDot"
+        :dot="true"
+      >
+        <mail-outlined @click="handleOpenMailDrawer" style="font-size: 180%" />
+      </a-badge>
+    </div>
     <div class="i18n-config-outer">
       <el-popover trigger="click" popper-style="width: fit-content" placement="bottom-end">
         <template #reference>
@@ -235,6 +311,37 @@ const handleToManagerCenter = () => {
       <img @click="handleTurnLight" v-if="isDark" :src="moonUrl" class="mode-button" alt="dark" />
     </div>
   </div>
+  <el-drawer
+    v-model="whetherShowMailDrawer"
+  >
+    <template #header>
+      {{ i18n.t('navigateBar.messageBoxTitle') }}
+    </template>
+    <div v-if="allMailData.length !== 0" class="mail-drawer-outer">
+      <el-card v-for="mailData in allMailData" class="single-mail-card">
+        <template #header>
+          <div class="single-mail-card-header">
+            <div v-if="mailData.status === '未读'" class="new-mail-icon-outer">
+              <exclamation-circle-outlined style="font-size: 130%" />
+            </div>
+            <div class="mail-title">
+              {{ mailData.title }}
+            </div>
+          </div>
+        </template>
+        <template #default>
+          <div class="mail-content">
+            {{ mailData.content }}
+          </div>
+        </template>
+      </el-card>
+    </div>
+    <a-empty
+      v-if="allMailData.length === 0"
+      :description="i18n.t('navigateBar.noMessage')"
+    >
+    </a-empty>
+  </el-drawer>
 </template>
 
 <style scoped lang="scss">
@@ -261,7 +368,7 @@ const handleToManagerCenter = () => {
   }
   .navigate-outer {
     height: 100%;
-    width: 48%;
+    width: 44%;
     .single-navigate-outer {
       color: #000;
       height: 100%;
@@ -279,13 +386,8 @@ const handleToManagerCenter = () => {
     justify-content: center;
     align-items: center;
     .search-input {
-      width: 70%;
-      height: 60%;
-    }
-    .search-input-button {
-      height: 60%;
-      margin-left: 1vw;
-      background-color: #f5f7fa;
+      width: 80%;
+      height: 50%;
     }
   }
   .user-set-outer {
@@ -298,6 +400,13 @@ const handleToManagerCenter = () => {
       height: 60%;
       border-radius: 50%;
     }
+  }
+  .mail-box-outer {
+    height: 100%;
+    width: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .i18n-config-outer {
     height: 100%;
@@ -379,6 +488,44 @@ const handleToManagerCenter = () => {
       padding-left: 6.5%;
       justify-content: start;
       align-items: center;
+    }
+  }
+}
+
+.mail-drawer-outer {
+  width: 100%;
+  height: fit-content;
+  position: relative;
+  bottom: 20.6px;
+  display: flex;
+  flex-wrap: wrap;
+  .single-mail-card {
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 4vh;
+    .single-mail-card-header {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: left;
+      .new-mail-icon-outer {
+        height: 100%;
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .new-mail-icon {
+          width: 80%;
+        }
+      }
+      .mail-title {
+        width: 90%;
+        text-align: left;
+        font-size: 135%;
+      }
+    }
+    .mail-content {
+      text-align: left;
+      font-size: 80%;
     }
   }
 }

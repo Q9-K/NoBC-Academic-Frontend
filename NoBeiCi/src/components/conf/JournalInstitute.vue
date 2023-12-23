@@ -21,10 +21,14 @@
     },
 
     setup(props) {
+        const formattedData = props.data.map(item => ({
+          type: item.key.display_name,
+          value: item.doc_count,
+        }));
         const buildCountryChart = () => {
         const piePlot = new Pie(chart.value, {
             appendPadding: 10,
-            data: countryData,
+            data: formattedData,
             angleField: 'value',
             colorField: 'type',
             radius: 0.8,

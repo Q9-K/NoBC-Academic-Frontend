@@ -1,14 +1,16 @@
 export default {
   navigateBar: {
     homePage: "主页",
-    search: "搜索学者、论文、期刊",
+    search: "搜索论文",
     logout: "退出登录",
     toUserPage: "个人中心",
     managerCenter: "管理员",
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
-    researcher: "权威学者"
+    researcher: "权威学者",
+    messageBoxTitle: "站内消息",
+    noMessage: "暂无消息"
   },
   homePage: {
     search: "搜索学者、论文、期刊",
@@ -36,6 +38,8 @@ export default {
     remark:"备注",
     accept:"通过申请",
     decline:"拒绝申请",
+    opinion:"审核意见",
+    reason:"申诉理由",
   },
   personInfo:{
     homePageManage:"主页管理",
@@ -174,10 +178,11 @@ export default {
     journalStatistics: "统计信息",
     journalPapers: "论文",
     journalField: "领域",
+    journalCount: "论文总数",
     journalCreatedYear: "创立年份",
-    journal2021Number: "2021年论文数",
-    journal2021factors: "2021影响因子",
-    journalAverageCited: "近五年论文平均引用数",
+    journalTwoCount: "近两年论文数",
+    journalTwoIndex: "2yr_h_index",
+    journalAverageCited: "近两年论文平均引用数",
     journalTopic:"论文主题",
     journalArea: "国家或地区",
     journalCite: "论文引用量",
@@ -195,5 +200,8 @@ export default {
     relatedInstitution:"关联机构",
     worksCount:"发表学术成果数量",
     citedCount:"学术成果被引次数",
+  },
+  journalDisplay: {
+    paperCount: "论文数",
   }
 }

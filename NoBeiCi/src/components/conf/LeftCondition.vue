@@ -2,7 +2,6 @@
     <div class="condition">
         <p> {{ i18n.t('conf.confConditions')}} </p>
         <el-cascader-panel :options="subject" filterable close />
-        <el-cascader-panel :options="publish" clearable />
     </div>
 </template>
 
@@ -40,27 +39,6 @@ const subject = [
             },
         ]
     },
-]
-
-const publish = [
-    {
-        value: 'Publish',
-        label: i18n.t('conf.confPublish'),
-        children: [
-            {
-                value: 'Springer',
-                label: 'Springer'
-            },
-            {
-                value: 'Elsevier',
-                label: 'Elsevier'
-            },
-            {
-                value: 'Wiley',
-                label: 'Wiley'
-            }
-        ]
-    }
 ]
 </script>
 

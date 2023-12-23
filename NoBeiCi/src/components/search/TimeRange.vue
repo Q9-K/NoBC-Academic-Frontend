@@ -22,8 +22,10 @@
   
   <script setup>
   import { ref, watch } from 'vue';
+  import { defineEmits } from 'vue';
   import i18n from "../../locales/index.js";
-  
+  import {debounce} from "vue-debounce";
+  const emit = defineEmits(['changeTime']);
   const currentYear = new Date().getFullYear();
   const years = [...Array(50).keys()].map(i => currentYear - i);
   const showDrawer = ref(false);
@@ -34,17 +36,17 @@
     showDrawer.value = !showDrawer.value;
   };
   
-  const sendDataToParent = () => {
+  const sendDataToParent =  debounce(() => {
     if (startYear.value !== null && endYear.value !== null) {
-      this.$emit('sendData', { startYear: startYear.value, endYear: endYear.value });
+      emit('changeTime', startYear, endYear);
     }
-  };
+  },"300ms");
 
-  const setTimeRange = (years) => {
+  const setTimeRange = debounce((yearsNum) => {
     endYear.value = currentYear;
-    startYear.value = currentYear - years + 1;
+    startYear.value = currentYear - yearsNum + 1;
     sendDataToParent();
-  };
+  }, "300ms");
   
   watch([startYear, endYear], () => {
     sendDataToParent();
