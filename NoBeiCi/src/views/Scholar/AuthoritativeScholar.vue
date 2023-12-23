@@ -103,51 +103,14 @@
                     <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">论文数</div>
                     <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
                 </div>
-                <div v-for="scholar in scholars" class="author_block">
-                    <div class="avatar">
-                        <img style="padding: 20px" src="../../assets/vouzenus/vouzenus.jpg">
-                    </div>
-                    <div class="info">
-                        <div class="scholar_head">{{ scholar.name }}</div>
-                        <div class="scholar_makes">
-                            <div class="H-index">
-                                <div style="font-size:11px">
-                                    H-index:
-                                    {{ scholar.makes.H_index }}
-                                </div>
-                            </div>
-                            <div class="thesis">
-                                <div style="font-size:11px">
-                                    论文数:
-                                    {{ scholar.makes.thesis }}
-                                </div>
-                            </div>
-                            <div class="icon">
-                                <el-icon style="background-color: #adbbdc;font-size:24px">
-                                    <Connection />
-                                </el-icon>
-                            </div>
-                            <div class="used">
-                                <div style="font-size:11px">
-                                    引用数:
-                                    {{ scholar.makes.used }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="scholar_field">
-                            <div v-for="field in fields">
-                                {{ field }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ScholarDisplay :scholars="scholars"/>
             </div>
         </div>
     </div>
 </template>
 <script setup>
 import NavigateBar from '../../components/NavigateBar.vue';
-import SearchBar from '../../components/SearchBar.vue';
+import ScholarDisplay from '../../components/ScholarDisplay.vue';
 import { reactive, ref, watch, h, toRaw } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import request from "../../functions/Request"
@@ -203,11 +166,11 @@ function select4() {
 }
 var isfilterHighlight = ref(false)
 // 搜索结果，学者列表
-var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] }
+var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] , avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
+    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
 ])
 // 过滤条件层
 var layers = ref([{ name: "h指数:", options: [1, 2, 3, 4], highlight: -1 },
@@ -526,88 +489,6 @@ h2 {
 
 .usedNum {
     width: 100px;
-}
-
-.author_block {
-    width: 95%;
-    display: flex;
-    flex-direction: row;
-    border: solid #f2f4f7;
-}
-
-.avatar {
-    align-self: flex-start;
-    flex: 1;
-}
-
-.info {
-    margin-left: auto;
-    margin-right: auto;
-    height: 150px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 10;
-}
-
-.scholar_head {
-    margin-top: 10px;
-    margin-left: 20px;
-    height: 30px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.scholar_makes {
-    margin-left: 20px;
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-
-    .H-index {
-        border: solid #ccc;
-        border-width: 1px;
-        margin-right: 20px;
-        height: 50%;
-        width: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .thesis {
-        border: solid #ccc;
-        border-width: 1px;
-        margin-right: 20px;
-        height: 50%;
-        width: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon {
-        height: 50%;
-    }
-
-    .used {
-        border: solid #ccc;
-        border-width: 1px;
-        margin-right: 20px;
-        height: 50%;
-        width: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-.scholar_field {
-    margin-left: 20px;
-    height: 50px;
 }
 
 .highlighted {

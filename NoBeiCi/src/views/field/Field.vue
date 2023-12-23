@@ -3,7 +3,7 @@
 import * as echarts from 'echarts'
 import NavigateBar from "../../components/NavigateBar.vue";
 import DividerLine from "../../components/DividerLine.vue";
-import {onMounted, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 import i18n from "../../locales/index.js";
 import {handleResponse} from "../../functions/handleResponse.js";
@@ -11,59 +11,390 @@ import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 import SearchBar from "../../components/SearchBar.vue";
 import {checkIsChinese} from "../../functions/checkIsChinese.js";
 import router from "../../routes/index.js";
+import get from '../../functions/Get.js'
+import {ElMessage} from "element-plus";
+import {debounce} from "vue-debounce";
 
-onMounted(() => {
-  const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
-  const data = {
-    name: "计算机科学",
-    children: [
-      {
-        name: "人工智能",
-        children: [
-          {
-            name: "计算机视觉",
-          },{
-            name: "自然语言处理"
-          }
-        ]
-      },{
-        name: "软件工程",
-        children: [
-          {
-            name: "面向对象软件工程",
-          },{
-            name: "智能化软件工程"
-          }
-        ]
+const level0Fields = ref([])
+const selectedLevel0Id = ref('https://openalex.org/C71924100')
+const selectedLevel0CnName = ref('医学')
+const selectedLevel0EnName = ref('Medicine')
+const selectedFieldName = ref('')
+const selectedFieldDescription = ref('')
+
+let cnTreemapData = []
+let enTreemapData = []
+const idNodeMap = new Map()
+let treemapOfBigField = null
+let selectedFieldCnName = ''
+let selectedFieldEnName = ''
+let selectedFieldCnDescription = ''
+let selectedFieldEnDescription = ''
+let selectedFieldId = ''
+const updateLevel0Treemap = () => {
+  const getSubFields = async (parentFieldId) => {
+    try {
+      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_subdomains/'
+      const params = {
+        id: parentFieldId
       }
-    ]
+
+      const response = await get({
+        url: apiUrl,
+        params: params,
+        showLoading: true, // 如果要显示加载指示器，请设置为 true
+        errorCallback: (errorData) => {
+          // 如果需要，请处理错误回调
+          console.error('发生错误：', errorData);
+        },
+      })
+
+      // 处理响应数据
+      if (response) {
+        // 在此处处理响应数据
+        return response
+      }
+      else {
+        // 处理空响应（发生错误）
+        console.error('接收到空响应。');
+      }
+    }
+    catch (error) {
+      // 处理请求期间的任何意外错误
+      console.error('请求失败：', error);
+    }
+
   }
-  const options = {
-    tooltip: {
-      trigger: 'item',
-      triggerOn: 'mousemove'
-    },
-    series: [
-      {
-        type: 'tree',
-        data: [data],
-        top: '18%',
-        bottom: '14%',
-        layout: 'radial',
-        symbol: 'emptyCircle',
-        symbolSize: 7,
-        initialTreeDepth: 1,
-        animationDurationUpdate: 750,
-        emphasis: {
-          focus: 'descendant'
+
+  getSubFields(selectedLevel0Id.value)
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: 'Oh No!'
+        })
+      }
+      else {
+        enTreemapData.length = 0
+        cnTreemapData.length = 0
+        idNodeMap.clear()
+
+        enTreemapData.push({
+          id: selectedLevel0Id.value,
+          name: selectedLevel0EnName.value,
+          children: []
+        })
+        cnTreemapData.push({
+          id: selectedLevel0Id.value,
+          name: selectedLevel0CnName.value,
+          children: []
+        })
+
+        idNodeMap.set(selectedLevel0Id.value, {
+          cnNode: cnTreemapData[0],
+          enNode: enTreemapData[0]
+        })
+
+        for (let {id, display_name, chinese_display_name} of response.data) {
+
+          let enNode = {
+            id: id,
+            name: display_name,
+            children: []
+          }
+          enTreemapData[0].children.push(enNode)
+
+          let cnNode = {
+            id: id,
+            name: chinese_display_name,
+            children: []
+          }
+          cnTreemapData[0].children.push(cnNode)
+
+          idNodeMap.set(id, {
+            enNode: enNode,
+            cnNode: cnNode
+          })
         }
       }
-    ]
+    })
+    .then(() => {
+
+      let dataOfTreemap
+      if (i18n.getLocale() === 'en') {
+        dataOfTreemap = enTreemapData
+      }
+      else {
+        dataOfTreemap = cnTreemapData
+      }
+
+      if (treemapOfBigField !== null) {
+        treemapOfBigField = null
+      }
+
+      treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
+      treemapOfBigField.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
+        series: [
+          {
+            type: 'tree',
+            data: dataOfTreemap,
+            top: '18%',
+            bottom: '14%',
+            layout: 'radial',
+            symbol: 'emptyCircle',
+            symbolSize: 7,
+            initialTreeDepth: 100,
+            animationDurationUpdate: 750,
+            emphasis: {
+              focus: 'descendant'
+            }
+          }
+        ]
+      })
+    })
+    .then(() => {
+      treemapOfBigField.on('click', debounce((value) => {
+
+        console.log(value)
+
+        const clickedFieldId = value.data.id
+
+        if (value.data.children.length === 0) {
+          getSubFields(clickedFieldId)
+            .then((response) => {
+
+              console.log(response)
+
+              if (response.code !== 200) {
+                ElMessage({
+                  type: "error",
+                  message: "Oh No!"
+                })
+              }
+              else {
+                const parent = idNodeMap.get(clickedFieldId)
+                parent.cnNode.children.length = 0
+                parent.enNode.children.length = 0
+
+                for (let {display_name, chinese_display_name, id} of response.data) {
+
+                  const cnNode = {
+                    name: chinese_display_name,
+                    id: id,
+                    children: []
+                  }
+
+                  const enNode = {
+                    name: display_name,
+                    id: id,
+                    children: []
+                  }
+
+                  parent.cnNode.children.push(cnNode)
+                  parent.enNode.children.push(enNode)
+
+                  idNodeMap.set(id, {
+                    cnNode: cnNode,
+                    enNode: enNode
+                  })
+                }
+              }
+            })
+            .then(() => {
+
+              console.log(cnTreemapData)
+
+              if (i18n.getLocale() === 'en') {
+                treemapOfBigField.setOption({
+                  series: {
+                    data: enTreemapData
+                  }
+                })
+              }
+              else {
+                treemapOfBigField.setOption({
+                  series: {
+                    data: cnTreemapData
+                  }
+                })
+              }
+            })
+        }
+        else {
+          const parent = idNodeMap.get(clickedFieldId)
+          parent.cnNode.children.length = 0
+          parent.enNode.children.length = 0
+        }
+      }), "1000ms")
+
+      treemapOfBigField.on('contextmenu', debounce((value) => {
+        const dblId = value.data.id
+
+        const getFieldInformation = async (fieldId) => {
+          try {
+            const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_concept_by_id/'
+            const params = {
+              id: fieldId
+            }
+
+            const response = await get({
+              url: apiUrl,
+              params: params,
+              errorCallback: (errorData) => {
+                // 如果需要，请处理错误回调
+                console.error('发生错误：', errorData);
+              },
+            })
+
+            // 处理响应数据
+            if (response) {
+              // 在此处处理响应数据
+              return response
+            }
+            else {
+              // 处理空响应（发生错误）
+              console.error('接收到空响应。');
+            }
+          }
+          catch (e) {
+            console.log(e)
+          }
+
+        }
+
+        getFieldInformation(dblId)
+          .then((response) => {
+            if (response.code !== 200) {
+              ElMessage({
+                type: 'error',
+                message: 'Oh No!'
+              })
+            }
+            else {
+              selectedFieldId = dblId
+              selectedFieldCnName = response.data[0].chinese_display_name
+              selectedFieldEnName = response.data[0].display_name
+              selectedFieldCnDescription = response.data[0].chinese_description
+              selectedFieldEnDescription = response.data[0].description
+            }
+          })
+          .then(() => {
+            if (i18n.getLocale() === 'en') {
+              selectedFieldName.value = selectedFieldEnName
+              selectedFieldDescription.value = selectedFieldEnDescription
+            }
+            else {
+              selectedFieldName.value = selectedFieldCnName
+              selectedFieldDescription.value = selectedFieldCnDescription
+            }
+          })
+      }), "1000ms")
+    })
+}
+
+onMounted(() => {
+  updateLevel0Treemap()
+})
+
+let level0FieldsCn = []
+let level0FieldsEn = []
+const idNameLevel0Map = new Map()
+onMounted(() => {
+
+  const getAllLevel0Fields = async () => {
+    try {
+      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_level_0/'
+
+      const response = await get({
+        url: apiUrl,
+        showLoading: true, // 如果要显示加载指示器，请设置为 true
+        errorCallback: (errorData) => {
+          // 如果需要，请处理错误回调
+          console.error('发生错误：', errorData);
+        },
+        showError: true // 设置为 true 以显示错误消息
+      })
+
+      // 处理响应数据
+      if (response) {
+        // 在此处处理响应数据
+        return response
+      }
+      else {
+        // 处理空响应（发生错误）
+        console.error('接收到空响应。');
+      }
+    }
+    catch (error) {
+      // 处理请求期间的任何意外错误
+      console.error('请求失败：', error);
+    }
   }
 
-  treemapOfBigField.hideLoading();
-  treemapOfBigField.setOption(options)
+  getAllLevel0Fields()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: 'Oh No!'
+        })
+      }
+      else {
+        for (let {id, display_name, chinese_display_name} of response.data) {
+          level0FieldsCn.push({
+            id: id,
+            name: chinese_display_name
+          })
+          level0FieldsEn.push({
+            id: id,
+            name: display_name
+          })
+
+          idNameLevel0Map.set(id, {
+            enName: display_name,
+            cnName: chinese_display_name
+          })
+        }
+
+        if (i18n.getLocale() === 'en') {
+          level0Fields.value = level0FieldsEn
+        }
+        else {
+          level0Fields.value = level0FieldsCn
+        }
+      }
+    })
 })
+
+watch(
+  () => i18n.getLocale(),
+  (newValue) => {
+    if (newValue === 'en') {
+      level0Fields.value = level0FieldsEn
+      treemapOfBigField.setOption({
+        series: {
+          data: enTreemapData
+        }
+      })
+      selectedFieldName.value = selectedFieldEnName
+      selectedFieldDescription.value = selectedFieldEnDescription
+    }
+    else {
+      level0Fields.value = level0FieldsCn
+      treemapOfBigField.setOption({
+        series: {
+          data: cnTreemapData
+        }
+      })
+      selectedFieldName.value = selectedFieldCnName
+      selectedFieldDescription.value = selectedFieldCnDescription
+    }
+  }
+)
 
 const handleSearchField = (value) => {
 
@@ -101,6 +432,34 @@ const handleSelectField = (value) => {
   let id = depart.at(depart.length - 1)
   router.push('/fieldDetail/' + id)
 }
+
+const handleSelectLevel0 = (field) => {
+
+  console.log(field)
+  console.log(idNameLevel0Map)
+
+  selectedLevel0Id.value = field.id
+  selectedLevel0CnName.value = idNameLevel0Map.get(field.id).cnName
+  selectedLevel0EnName.value = idNameLevel0Map.get(field.id).enName
+
+
+
+  updateLevel0Treemap()
+}
+
+const handleToMore = () => {
+  const depart = selectedFieldId.split('/')
+  let id = depart.at(depart.length - 1)
+  router.push('/fieldDetail/' + id)
+}
+
+watch(
+  () => selectedLevel0Id.value,
+  () => {
+    console.log("can u see me")
+    updateLevel0Treemap()
+  }
+)
 </script>
 
 <template>
@@ -118,105 +477,9 @@ const handleSelectField = (value) => {
         default-active="1"
         class="big-field-menu"
       >
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            数学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            医学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
-          </div>
-          <DividerLine width="100%" />
-        </el-menu-item>
-        <el-menu-item class="big-field-item">
-          <div class="big-field-item-text">
-            计算机科学
+        <el-menu-item v-for="field in level0Fields" :index="field.id" :key="field.id" class="big-field-item">
+          <div @click="() => handleSelectLevel0(field)" class="big-field-item-text">
+            {{ field.name }}
           </div>
           <DividerLine width="100%" />
         </el-menu-item>
@@ -224,17 +487,17 @@ const handleSelectField = (value) => {
     </div>
     <div class="simple-information-of-big-field-outer">
       <div id="containerOfTreemap" class="treemap-of-big-field"></div>
-      <div class="simple-information-card-outer">
+      <div v-if="selectedFieldName !== ''" class="simple-information-card-outer">
         <el-card class="simple-information-card">
           <template #header>
             <div class="simple-information-card-header">
               <div class="information-title-outer">
                 <div class="information-title">
-                  计算机科学
+                  {{ selectedFieldName }}
                 </div>
               </div>
               <div class="link-to-page-button-outer grow">
-                <el-button color="#1e3a8a" class="link-to-page-button">
+                <el-button @click="handleToMore" color="#1e3a8a" class="link-to-page-button">
                   {{ i18n.t('field.moreDetail') }}
                 </el-button>
               </div>
@@ -243,7 +506,7 @@ const handleSelectField = (value) => {
           <template #default>
             <div class="simple-information-card-body">
               <div class="information-description">
-                field of computer science and engineering practices for intelligence demonstrated by machines and intelligent agents
+                {{ selectedFieldDescription }}
               </div>
             </div>
           </template>

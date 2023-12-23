@@ -26,6 +26,7 @@ instance.interceptors.request.use(
         if(config.addManagerToken && localStorage.getItem("manager")){
             config.headers['token'] = localStorage.getItem("manager");
         }
+        console.log("config",config)
         return config;
     }, (error) => {
         if (error.config.showLoading && loading) {

@@ -47,7 +47,7 @@ const getInstitutions =async (page_size,page_num)=>{
             params:{
                 page_size:page_size,
                 page_num:page_num
-            }
+            },
         }
     );
     institutions.value = result.data.institutions;

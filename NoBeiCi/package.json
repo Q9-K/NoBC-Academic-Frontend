@@ -21,7 +21,6 @@
     "ant-design-vue": "^4.0.7",
     "axios": "^1.6.2",
     "clipboard": "^2.0.11",
-    "echarts": "^5.4.3",
     "darkreader": "^4.9.73",
     "element-plus": "^2.3.14",
     "langchain": "^0.0.203",

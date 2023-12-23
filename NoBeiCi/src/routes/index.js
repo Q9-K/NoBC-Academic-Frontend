@@ -13,13 +13,17 @@ const router = createRouter({
       component: () => import('../views/personinfoView.vue'),
     },
     {
-      path: '/thesisDetail',
+      path: '/authorhome/:id',
+      name: "authorhome",
+      component: () => import('../views/authorHomeView.vue'),
+    },
+    {
+      path: '/thesisDetail/:thesisId',
       name: 'thesisDetail',
       component: () => import('../views/thesisDetail.vue')
     },
     {
       path: '/chat',
-      name: 'chatPDF',
       name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
     },

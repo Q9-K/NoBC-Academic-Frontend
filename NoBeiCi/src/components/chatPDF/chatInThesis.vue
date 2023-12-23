@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="box" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="top">
             <div class="head">
                 <h2>Chat Paper</h2>
@@ -11,23 +11,27 @@
                 <p>一句话总结</p>
             </div>
         </div>
-        <div class="Intro" ref="scrollContainer">
-            <div v-for="(message, index) in messages" :key="index">
-                <div v-if="index % 2 === 0" class="left">
-                    <div class="topHead">
-                        <img src="../../assets/vouzenus/vouzenus.jpg" style="width:25px;height:25px;margin-right: 2%">
-                        <div class="name">vouzenus</div>
+        <div class="Intro" ref="scrollContainer" v-loading="loading" element-loading-text="GPT正在生成论文介绍,请稍等"
+            :element-loading-spinner="svg" element-loading-svg-view-box="-10, -10, 50, 50">
+            <div v-loading="loading1" element-loading-text="GPT正在思考,请稍等" :element-loading-spinner="svg"
+                element-loading-svg-view-box="-10, -10, 50, 50">
+                <div v-for="(message, index) in messages" :key="index">
+                    <div v-if="index % 2 === 0" class="left">
+                        <div class="topHead">
+                            <img src="../../assets/vouzenus/vouzenus.jpg" style="width:25px;height:25px;margin-right: 2%">
+                            <div class="name">vouzenus</div>
+                        </div>
+                        <div class="message">{{ message }}</div>
                     </div>
-                    <div class="message">{{ message }}</div>
-                </div>
-                <div v-if="index % 2 === 1" class="right">
-                    <div class="topHead">
-                        <el-icon style="font-size: 20px;margin-left: 2%">
-                            <UserFilled />
-                        </el-icon>
-                        <div class="name">用户</div>
+                    <div v-if="index % 2 === 1" class="right">
+                        <div class="topHead">
+                            <el-icon style="font-size: 20px;margin-left: 2%">
+                                <UserFilled />
+                            </el-icon>
+                            <div class="name">用户</div>
+                        </div>
+                        <div class="message">{{ message }}</div>
                     </div>
-                    <div class="message">{{ message }}</div>
                 </div>
             </div>
         </div>
@@ -41,8 +45,10 @@
 <script setup>
 import axios from 'axios';
 import { onMounted } from 'vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Search } from "@element-plus/icons-vue";
+import request from "../../functions/Request";
+import { nextTick } from 'vue';
 //对这篇文章的介绍
 const introduce = ref('')
 //第一条消息
@@ -55,43 +61,75 @@ const content = ref('请输入你的想法')
 const textarea = ref('')
 // 所有的消息
 const messages = ref([])
+//存放是否全局加载
+var fullscreenLoading = ref(false)
+//加载局部
+var loading = ref(false)
+var loading1 = ref(false)
+// 滑动器
+const scrollContainer = ref(null);
+// 接收父组件的参数,pdf_url
+const props = defineProps({
+    pdf_url: String
+})
+// 能否进行对话
+var hasPDF = ref(true)
+// 定义 setData 方法
+const setData = (data) => {
+    dataForChild.value = data;
+};
+
+// 监听 props.parentProp 的变化
+watch(() => props.parentProp, (newVal) => {
+    // 在 props.parentProp 变化时，执行相应逻辑
+    // 可以在这里调用 setData 方法
+    setData(newVal);
+});
+//初始加载介绍
 async function getIntroduction() {
     try {
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
-            {
-                params: { msg: message.value, pdf_url: pdf_url.value }
-            }
-        );
-        introduce.value = res.data.reply.result
-        messages.value.push(introduce.value)
+        if (props.pdf_url != null) {
+            loading.value = true
+            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
+                {
+                    params: { msg: message.value, pdf_url: props.pdf_url }
+                }
+            );
+            loading.value = false
+            introduce.value = res.data.reply.result
+            messages.value.push(introduce.value)
+        }
+        else {
+            messages.value.push("该论文暂时没有pdf,无法进行对话")
+            hasPDF.value = false
+        }
     } catch (error) {
         console.error(error);
     }
 }
 async function getMessage() {
     try {
-        console.log(textarea.value)
-        messages.value.push(textarea.value)
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
-            {
-                params: { msg: textarea.value, pdf_url: pdf_url.value }
-            }
-        );
-        introduce.value = res.data.reply.result
-        messages.value.push(introduce.value)
-        textarea.value = ''
-        // 滚动到最底部
-        // const container = this.$refs.scrollContainer;
-        // container.scrollTo({
-        //     top: container.scrollHeight,
-        //     behavior: 'smooth'
-        // });
+        if (hasPDF.value == true) {
+            messages.value.push(textarea.value)
+            loading1.value = true
+            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_quick_reply/",
+                {
+                    params: { msg: textarea.value }
+                }
+            );
+            loading1.value = false
+            introduce.value = res.data.reply.result
+            messages.value.push(introduce.value)
+            textarea.value = ''
+            await nextTick();
+            scrollContainer.value.scrollTo({ top: scrollContainer.value.scrollHeight, behavior: 'smooth' })
+        }
     } catch (error) {
         console.error(error.response.data);
     }
 }
-onMounted(() => {
-    getIntroduction();
+onMounted(async () => {
+    await getIntroduction();
 })
 </script>
 <style scoped>
