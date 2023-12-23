@@ -91,16 +91,16 @@ const handleTurnDark = () => {
     </div>
     <div class="navigate-outer flex justify-start">
       <div class="flex justify-around" style="height: 100%; width: 75%">
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/')">
           {{ i18n.t("navigateBar.homePage") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/conf')">
           {{ i18n.t("navigateBar.conferences") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/institution')">
           {{ i18n.t("navigateBar.institution") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/field')">
           {{ i18n.t("navigateBar.field") }}
         </div>
         <div class="single-navigate-outer" @click="router.push('/scholar')">

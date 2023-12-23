@@ -25,7 +25,6 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chatPDF',
-      name: 'chatPDF',
       component: () => import('../views/chatPDF.vue')
     },
     {
