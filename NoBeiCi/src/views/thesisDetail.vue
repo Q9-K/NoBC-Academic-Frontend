@@ -19,14 +19,14 @@ const authorShips = ref([])
 var isShowLink = ref(false)
 
 //原文链接开关
-function changeShowLink(){
+function changeShowLink() {
     isShowLink.value = !isShowLink.value
     console.log(isShowLink.value)
 }
 //原文链接列表
 var links = ref([])
 
-function openLink(link){
+function openLink(link) {
     console.log(1)
     window.open(link, '_blank')
 }
@@ -39,6 +39,9 @@ var data = ref({ name: '', children: [] })
 var visit_count = ref('')
 var cited_by_count = ref('')
 var work_id = ref('')
+
+//存放是否全局加载
+var fullscreenLoading = ref(false)
 
 const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
@@ -100,12 +103,14 @@ async function collection() {
 //获取数据
 async function getThesis() {
     try {
+        fullscreenLoading.value = true
         const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
             params: {
                 id: "W2900586920",
                 user_id: "1592295057@qq.com"
             }
         });
+        fullscreenLoading.value = false
         abstract.value = res.data.data.abstract
         title.value = res.data.data.title
         authorShips.value = res.data.data.authorships
@@ -253,7 +258,7 @@ onMounted(async () => {
 
 <template>
     <NavigateBar></NavigateBar>
-    <div class="main">
+    <div class="main" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="indexArticle">
             <div class="indexContent">
                 <div class="background">
@@ -334,12 +339,12 @@ onMounted(async () => {
                                                 </span>
                                             </div>
                                             <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
-                                                查看译文</div>
-                                            <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">
-                                                收起译文</div>
-                                            <div style="margin-top: 5px;line-height: 22px" v-if="!ifShowTranslate">
-                                                <p style="text-align: left;">{{ translate }}</p>
-                                            </div> -->
+                                                    查看译文</div>
+                                                <div class="abstract-tranText" v-if="!ifShowTranslate" @click="showTranslate">
+                                                    收起译文</div>
+                                                <div style="margin-top: 5px;line-height: 22px" v-if="!ifShowTranslate">
+                                                    <p style="text-align: left;">{{ translate }}</p>
+                                                </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -376,8 +381,8 @@ onMounted(async () => {
                                 </el-icon>
                             </div>
                             <div v-if="isShowLink" class="Link">
-                                <div v-for="link,index in links" class="link" @click="openLink(link)">
-                                    <div> {{link}} </div>
+                                <div v-for="link, index in links" class="link" @click="openLink(link)">
+                                    <div> {{ link }} </div>
                                 </div>
                             </div>
                         </div>
@@ -458,6 +463,7 @@ onMounted(async () => {
     background-color: #f2f4f7;
     overflow-x: hidden;
 }
+
 .indexArticle {
     width: 100%;
     color: #333;
@@ -828,6 +834,7 @@ onMounted(async () => {
                             fill: currentColor;
                         }
                     }
+
                     .Link {
                         margin-top: 5px;
                         height: auto;
@@ -838,7 +845,8 @@ onMounted(async () => {
                         display: flex;
                         flex-direction: column;
                         z-index: 9999;
-                        .link{
+
+                        .link {
                             padding-top: 8px;
                             padding-bottom: 8px;
                             padding-left: 5px;
@@ -847,7 +855,8 @@ onMounted(async () => {
                             cursor: pointer;
                             opacity: 1;
                         }
-                        .link:hover{
+
+                        .link:hover {
                             background-color: lightblue;
                             color: #4759c5;
                         }
@@ -1100,5 +1109,4 @@ onMounted(async () => {
             height: 70vh;
         }
     }
-}
-</style>
+}</style>
