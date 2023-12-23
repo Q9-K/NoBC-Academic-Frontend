@@ -18,6 +18,7 @@ import {
   disable as disableDarkMode
 } from "darkreader";
 import {useStateOfPriorDialog} from "../stores/stateOfPriorDialog.js";
+import {useSearchContentStore} from "../stores/searchContent.js";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -110,6 +111,11 @@ const handleToManagerCenter = () => {
   router.push('/admin')
 }
 
+const handleSearch = () => {
+  const searchContent = useSearchContentStore()
+  searchContent.setContent(searchInputValue.value)
+  router.push('/search')
+}
 </script>
 
 <template>
@@ -144,7 +150,7 @@ const handleToManagerCenter = () => {
           class="search-input"
         >
           <template #append>
-            <el-button :icon="Search" />
+            <el-button @click="handleSearch" :icon="Search" />
           </template>
         </el-input>
       </div>

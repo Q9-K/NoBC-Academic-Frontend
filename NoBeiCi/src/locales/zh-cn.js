@@ -1,7 +1,7 @@
 export default {
   navigateBar: {
     homePage: "主页",
-    search: "搜索学者、论文、期刊",
+    search: "搜索论文",
     logout: "退出登录",
     toUserPage: "个人中心",
     managerCenter: "管理员",
