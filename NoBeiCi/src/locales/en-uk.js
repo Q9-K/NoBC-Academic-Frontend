@@ -4,6 +4,7 @@ export default {
     search: "Search",
     logout: "Logout",
     toUserPage: "Personal Center",
+    managerCenter: "Manager",
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",

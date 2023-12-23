@@ -9,7 +9,7 @@ import { User, Lock, Message } from "@element-plus/icons-vue";
 import English from '../assets/i18n/EN-UK.svg'
 import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
-import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons-vue";
+import {GlobalOutlined, UserOutlined, LogoutOutlined, MenuOutlined, AuditOutlined} from "@ant-design/icons-vue";
 import router from "../routes/index.js";
 import sunUrl from '../assets/sun.png';
 import moonUrl from '../assets/moon.png'
@@ -27,6 +27,7 @@ const searchInputValue = ref("");
 const isLoginRegisterModeOpen = ref(false)
 const isLoginOrRegister = ref(isLogin)
 const isDark = ref(false)
+const isManager = ref(false)
 
 if (localStorage.getItem('theme') === null) {
   localStorage.setItem('theme', 'light')
@@ -43,6 +44,26 @@ watch(
   () => props.whetherSearchInputVisible,
   (newValue, oldValue) => {
     isSearchInputVisible.value = !!newValue;
+  }
+)
+
+onMounted(() => {
+  if (localStorage.getItem(('manager'))) {
+    isManager.value = true
+  }
+  else {
+    isManager.value = false
+  }
+})
+watch(
+  () => localStorage.getItem('manager'),
+  (newValue) => {
+    if (newValue !== null) {
+      isManager.value = true
+    }
+    else {
+      isManager.value = false
+    }
   }
 )
 
@@ -80,6 +101,10 @@ const handleTurnDark = () => {
   enableDarkMode()
   isDark.value = true
   localStorage.setItem('theme', 'dark')
+}
+
+const handleToManagerCenter = () => {
+  router.push('/admin')
 }
 
 </script>
@@ -145,6 +170,14 @@ const handleTurnDark = () => {
                 </div>
                 <div class="user-menu-item-text">
                   {{ i18n.t('navigateBar.toUserPage') }}
+                </div>
+              </el-menu-item>
+              <el-menu-item v-if="isManager" class="user-menu-item" @click="handleToManagerCenter">
+                <div class="user-menu-item-icon">
+                  <audit-outlined style="font-size: 145%" />
+                </div>
+                <div class="user-menu-item-text">
+                  {{ i18n.t('navigateBar.managerCenter') }}
                 </div>
               </el-menu-item>
               <el-menu-item class="user-menu-item" @click="handleLogout">

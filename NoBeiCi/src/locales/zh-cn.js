@@ -4,6 +4,7 @@ export default {
     search: "搜索学者、论文、期刊",
     logout: "退出登录",
     toUserPage: "个人中心",
+    managerCenter: "管理员",
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
