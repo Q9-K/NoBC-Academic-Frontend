@@ -8,7 +8,9 @@ export default {
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
-    researcher: "权威学者"
+    researcher: "权威学者",
+    messageBoxTitle: "站内消息",
+    noMessage: "暂无消息"
   },
   homePage: {
     search: "搜索学者、论文、期刊",

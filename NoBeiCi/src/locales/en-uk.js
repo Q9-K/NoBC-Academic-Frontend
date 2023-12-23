@@ -8,7 +8,9 @@ export default {
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",
-    researcher: "Researcher"
+    researcher: "Researcher",
+    messageBoxTitle: "Platform Message",
+    noMessage: "No Message"
   },
   homePage: {
     search: "Search for scholars, papers and journals",
