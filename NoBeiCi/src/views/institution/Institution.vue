@@ -64,6 +64,7 @@ const getInstitutions =async (page_size,page_num)=>{
 
 }
 onMounted(()=>{
+    language.value = i18n.getLocale();
     getInstitutions(20,1);
 })
 

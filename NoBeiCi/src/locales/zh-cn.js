@@ -35,6 +35,8 @@ export default {
     remark:"备注",
     accept:"通过申请",
     decline:"拒绝申请",
+    opinion:"审核意见",
+    reason:"申诉理由",
   },
   thesisDetail:{
     quote:"引用",

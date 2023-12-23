@@ -20,8 +20,11 @@ instance.interceptors.request.use(
                 background: 'rgba(0,0,0,0.7)'
             })
         }
-        if (config.addToken && localStorage.getItem('token')) {
-            config.headers['token'] = JSON.parse(localStorage.getItem('token'));//这里应该为获取Token的方法
+        if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
+            config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
+        }
+        if(config.addManagerToken && localStorage.getItem("manager")){
+            config.headers['token'] = localStorage.getItem("manager");
         }
         return config;
     }, (error) => {
@@ -40,7 +43,6 @@ instance.interceptors.response.use(
         if (showLoading && loading) {
             loading.close();
         }
-        console.log(response)
         const responseData = response.data;
         if (responseData.code == 200) {
             return responseData;
@@ -63,7 +65,7 @@ instance.interceptors.response.use(
 
 
 const get=(config)=>{
-    const { url, params, showLoading = true, addToken = false,errorCallback, showError = true } = config
+    const { url, params, showLoading = true, addToken = false,addManagerToken=false,errorCallback, showError = true } = config
     let contentType = contentTypeJson;
     let headers = {
         'Content-Type': contentType,
@@ -72,6 +74,7 @@ const get=(config)=>{
     return instance.get(url, {
         headers: headers,
         addToken: addToken,
+        addManagerToken: addManagerToken,
         params: params,
         showLoading: showLoading,
         errorCallback: errorCallback,
