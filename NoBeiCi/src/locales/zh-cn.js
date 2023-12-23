@@ -20,8 +20,6 @@ export default {
   admin:{
     reviewScholarCertification:"审核学者认证",
     handleScholarGrievances:"处理学者申诉",
-    handleAchievementCertification:"处理学术成果认证",
-    handleAchievementGrievances:"处理学术成果申诉",
     detail:"详细信息",
     applicantName:"申请者",
     scholarName:"认证学者",
@@ -29,6 +27,14 @@ export default {
     sortLatest:"按时间最晚排序",
     sortEarliest:"按时间最早排序",
     backToList:"返回列表",
+    status:"审核状态",
+    tobecertified:"只显示待审核",
+    showall:"显示全部",
+    certification:"认证材料",
+    scholar:"学者",
+    remark:"备注",
+    accept:"通过申请",
+    decline:"拒绝申请",
   },
   thesisDetail:{
     quote:"引用",
@@ -87,5 +93,61 @@ export default {
       titleOfChildrenTree: "子领域关系",
       titleOfRelatedGraph: "相关领域关系"
     }
+  },
+  thesisDetail:{
+    quote:"引用",
+    browse:"浏览"
+  },
+  field: {
+    moreDetail: "更多"
+  },
+  search: {
+    searchLatest: "最新",
+    searchSynthesis: "综合",
+    searchCitations: "引用量",
+  },
+  conf: {
+    confConditions: "筛选",
+    confField: "覆盖领域",
+    confPublish: "出版社",
+    confInitial: "首字母",
+    confJournalList: "期刊列表",
+    confUpdatedJournal: "查看更新期刊",
+    confSubject: "学科",
+  },
+  timeRanges: {
+    timeRangesTime: "时间",
+  },
+  articleDisplay: {
+    articleDisplayCite: "引用",
+    articleDisplayCollect: "收藏",
+    articleDisplayCitations: "引用",
+    articleDisplayViews: "浏览",
+  },
+  journal: {
+    journalStatistics: "统计信息",
+    journalPapers: "论文",
+    journalField: "领域",
+    journalCreatedYear: "创立年份",
+    journal2021Number: "2021年论文数",
+    journal2021factors: "2021影响因子",
+    journalAverageCited: "近五年论文平均引用数",
+    journalTopic:"论文主题",
+    journalArea: "国家或地区",
+    journalCite: "论文引用量",
+    journalDistribution: "作者机构分布",
+    journalHighAuthor: "高引作者",
+    journalHighPaper: "高引论文",
+    journalHighInstitution: "高引机构",
+  },
+  institution: {
+    detail:"详细信息",
+    homepage:"机构官网",
+    type:'机构类别',
+    location:"地理位置",
+    relatedJournal:"相关期刊",
+    relatedInstitution:"关联机构",
+    worksCount:"发表学术成果数量",
+    citedCount:"学术成果被引次数",
   }
 }

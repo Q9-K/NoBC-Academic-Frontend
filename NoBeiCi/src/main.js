@@ -18,10 +18,12 @@ import Antd from 'ant-design-vue';
 import { anyType } from 'ant-design-vue/es/_util/type.js';
 import {vue3Debounce} from "vue-debounce";
 import {createPinia} from "pinia";
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import message from './functions/Message'
 import request from './functions/Request'
 const app = createApp(App)
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate)
 app.directive('debounce', vue3Debounce({ lock: true }))
 app.use(router)
 app.use(ElementPlus)

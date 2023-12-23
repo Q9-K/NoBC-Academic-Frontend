@@ -20,8 +20,8 @@ instance.interceptors.request.use(
                 background: 'rgba(0,0,0,0.7)'
             })
         }
-        if (config.addToken && store.getters.token) {
-            config.headers['X-Token'] = store.getters.token;//这里应该为获取Token的方法
+        if (config.addToken && localStorage.getItem('token')) {
+            config.headers['token'] = JSON.parse(localStorage.getItem('token'));//这里应该为获取Token的方法
         }
         return config;
     }, (error) => {
@@ -40,6 +40,7 @@ instance.interceptors.response.use(
         if (showLoading && loading) {
             loading.close();
         }
+        console.log(response)
         const responseData = response.data;
         if (responseData.code == 200) {
             return responseData;
