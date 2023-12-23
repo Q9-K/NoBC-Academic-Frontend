@@ -59,9 +59,9 @@
       
       <el-divider border-style="double" />
       <div class="bottom-part">
-        <div class="collection-time" v-if="paper.collected">
+        <!-- <div class="collection-time" v-if="paper.collected">
         {{ paper.collectionTime }} 收藏
-      </div>
+      </div> -->
       </div>
       
     </div>
