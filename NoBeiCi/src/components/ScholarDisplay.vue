@@ -10,7 +10,13 @@
             <img style="padding: 15px;width:100px;height:100px" :src= scholar.avatar>
         </div>
         <div class="info">
-            <div class="scholar_head">{{ scholar.display_name }}</div>
+            <div class="scholar_head">
+                <div class="name"> {{ scholar.display_name }} </div>
+                <div class="follow">
+                    <el-icon style="font-size: 20px;"><Plus /></el-icon>
+                    <div>关注</div>
+                </div>
+            </div>
             <div class="scholar_makes">
                 <div class="H-index">
                     <div style="font-size:11px">
@@ -37,14 +43,18 @@
                 </div>
             </div>
             <div class="scholar_field">
-                <div v-for="field in scholars.x_concepts">
+                <div class="fieldHead">研究领域</div>
+                <div v-for="field in scholar.x_concepts" class="field">
                     {{ field.display_name }}
                 </div>
+            </div>
+            <div class="more">
+                <div class="page"> 学者主页 </div>
             </div>
         </div>
     </div>
 </template>
-<style>
+<style scoped lang="scss">
 .author_block {
     width: 95%;
     display: flex;
@@ -74,8 +84,29 @@
     height: 30px;
     font-size: 18px;
     font-weight: 700;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
-
+.name{
+    margin-left: 10px;
+    width: auto;
+    flex-wrap: nowrap;
+}
+.follow{
+    margin-left: 10px;
+    margin-right: 100px;
+    font-size: 16px;
+    font-weight: 300;
+    border: solid #ccc;
+    border-width: 1px;
+    padding: 3px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    }
 .scholar_makes {
     margin-left: 20px;
     height: 50px;
@@ -124,7 +155,42 @@
 
 .scholar_field {
     margin-left: 20px;
-    height: 50px;
+    height: auto;
+    display: flex;
+    margin-left: 30px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
 }
-
+.fieldHead{
+    margin-right: 30px;
+    font-size: 15px;
+}
+.field{
+    width: auto;
+    margin-right: 10px;
+    font-size: 12px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.field:hover{
+    color: burlywood;
+    cursor: pointer;
+}
+.more{
+    margin-top: 4px;
+    height: 30px;
+    display: flex;
+    margin-left: 30px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.page {
+    font-size: 13px;
+}
+.page:hover{
+    color: burlywood;
+    cursor: pointer;
+}
 </style>

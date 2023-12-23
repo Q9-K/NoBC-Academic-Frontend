@@ -140,6 +140,8 @@ const showResult = ref(false)
 // const handleOptionSelect = (value) => {
 //     props.selectFunction(value)
 // }
+const h_index_up = ref('')
+const h_index_down = ref('')
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
 // 搜索的学者名字
 const scholar_name = ref()
@@ -337,13 +339,35 @@ const handleClick2 = async e => {
 //     console.log('openKeys', val);
 // });
 // 点击之后高亮，并取消同层的其他高亮,再次点击取消高亮
-function chooseFilter(layerIndex, index) {
-    if (layers.value[layerIndex].highlight == index) {
-        layers.value[layerIndex].highlight = -1
+async function chooseFilter(layerIndex, index) {
+    console.log(layers)
+    if (layers[layerIndex].highlight == index) {
+        layers[layerIndex].highlight = -1
     }
     else {
-        layers.value[layerIndex].highlight = index
+        layers[layerIndex].highlight = index
     }
+    fullscreenLoading.value = true
+    const startTime = performance.now();
+    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        params: {
+            author_name: final_name.value,
+            page_num: "1",
+            page_size: "20",
+            institution: selectedInstitution.value,
+            h_index_up: (index+1) * 10,
+            h_index_down: index * 10
+        }
+    })
+    const endTime = performance.now();
+        const elapsedTime = endTime - startTime;
+
+        // 输出时间
+        time.value = elapsedTime
+    h_index_up.value = (index+1) * 10
+    h_index_down.value = index*10
+    fullscreenLoading.value = false
+    scholars.value = res.data.authors
 }
 
 //搜索学者
