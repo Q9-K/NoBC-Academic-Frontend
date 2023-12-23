@@ -144,7 +144,7 @@
         console.log(result.data)
         this.scholars = result.data
 
-        if(this.scholars.length === 0)
+        if(this.scholars[0]=== null ||this.scholars.length === 0 )
           this.hasScholars = false
 
     },

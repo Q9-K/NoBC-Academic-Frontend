@@ -302,7 +302,7 @@
         <transition name="el-fade-in-linear">
             <div v-if="chosenIndex == 3">
 
-            <FollowTopics></FollowTopics>
+            <FollowTopics :dynamic-tags="person.interested_concepts"></FollowTopics>
 
             <div class="follow-list">
 
@@ -441,7 +441,8 @@ export default {
                 gender: '男',
                 position: '教授',
                 subject: '',
-                organization: ''
+                organization: '',
+                interested_concepts: [],
             },
             informIndex: 1,
             followIndex: 1,
@@ -490,16 +491,19 @@ export default {
     },
 
     async loadscholarMetrics(){
-        return axios.get('http://100.92.186.118:8000'+'/author/get_scholar_metrics/',{
-          params:{
-            author_id: this.author_id
-          }
-        }).then((response)=>{
-          handleResponse(response,true,(data)=>{
-            console.log(data)
-            this.scholarMetrics = data
-          })
-        })
+
+        const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            params:{
+                author_id: this.author_id
+            },
+        }
+        );
+        console.log(result.data)
+        this.scholarMetrics = result.data;
+        
+
     },
 
 
@@ -514,7 +518,7 @@ export default {
             addToken: true,
         }
         );
-        console.log(result.data)
+        console.log("UserInfo",result.data)
         this.person = result.data;
         this.person.nickName = result.data.name;
         this.person.realName = result.data.real_name;
@@ -611,6 +615,9 @@ export default {
     console.log("email:",this.email)
 
     this.loadUserInfo()
+    this.$nextTick(()=>{
+        console.log("author_id:",this.author_id)
+    })
     this.loadscholarMetrics()
   },
 }

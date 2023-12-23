@@ -76,9 +76,12 @@
 import i18n from "../../locales/index.js";
 
 </script>
+
   
   <script>
   import axios from 'axios';
+  import get from "../../functions/Get";
+
   export default {
     name: 'PersonalInfo',
 
@@ -122,24 +125,40 @@ import i18n from "../../locales/index.js";
         this.editing[item] = false;
       },
 
-      loadprofile(){
-        return axios.get('http://100.92.186.118:8000'+'/personInfo/get_scholar_basic_information',{
-          params:{
-            author_id: this.author_id
-          }
-        }).then((response)=>{
-          handleResponse(response,true,(data)=>{
-            console.log(data)
-            this.profile = data
-          })
-        })
-    },
+      async loadprofile(){
+        const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_scholar_intro_information',
+            params:{
+              author_id: this.scholarId
+            },
+            // addToken: true,
+        }
+        );
+        
+        
+        console.log(result)
+        this.profile = result.data
+        if(this.profile.educationBackground == null)
+          this.profile.educationBackground = '暂无内容'
+        
+        if(this.profile.workExperience == null)
+          this.profile.workExperience = '暂无内容'
+
+        if(this.profile.personalSummary == null)
+          this.profile.personalSummary = '暂无内容'
+      },
+
+
     },
 
 
     mounted(){
-      console.log("ScholarId:",this.scholarId)
-      this.loadprofile();
+      this.$nextTick(()=>{
+        console.log("ScholarId:",this.scholarId)
+        this.loadprofile();
+      })
+      
       
     }
   }

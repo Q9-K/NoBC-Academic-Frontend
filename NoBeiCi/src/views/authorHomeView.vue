@@ -71,7 +71,7 @@ import ScholarCardView from '../components/authorhomeView/ScholarCardView.vue';
 import CooperationAgencyVue from "../components/personInfoView/CooperationAgency.vue";
 
 import ColumnPlot from "../components/authorhomeView/ColumnPlot.vue";
-
+import get from "../functions/Get";
 
 
 
@@ -111,12 +111,48 @@ export default {
     // localStorage.setItem('activeIndex:',this.activeIndex)
 
       },
+
+      async loadscholarMetrics(){
+
+        const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            params:{
+                author_id: this.author_id
+            },
+        }
+        );
+        console.log("scholarMetrics:",result)
+        this.scholarMetrics = result.data;
+
+
+        },
+
+
+
+      async loadScholarInfo(){
+        const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_author_by_id',
+            params:{
+                    author_id:this.author_id
+            },
+            //addToken: true,
+        }
+        );
+        console.log(result.data)
+        this.scholar = result.data
+
+    },
     },
 
     mounted(){
         this.author_id = 'https://openalex.org/'+this.$route.params.id;
         console.log("id:",this.author_id)
         this.scholar.scholar_id = this.author_id
+
+        this.loadScholarInfo()
+        this.loadscholarMetrics()
 
         // bus.$emit('scholar-id-updated', this.author_id);
     },

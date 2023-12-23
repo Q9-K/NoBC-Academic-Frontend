@@ -17,7 +17,9 @@
             <div class="title"><el-image src="https://t9.baidu.com/it/u=3917977667,2615684315&fm=193" style="width: 30px; height: 30px" fit="cover"/>{{ paper.title }}</div>
             <div class="author">
               <span v-for="(author, authorIndex) in paper.authors" :key="authorIndex">
-                <a :href="author.homepage" @click="goToHomepage(author)"  style="color: #067C08;">{{ author.name }}</a>
+                <!-- <a :href="author.homepage" @click="goToHomepage(author)"  style="color: #067C08;">{{ author.name }}</a>
+                 -->
+                 <el-link type="success" @click="goToHomepage(author)" style="color: #067C08;font-size: 12.5px;"  >{{ author.name }}</el-link>
                 <span v-if="authorIndex !== paper.authors.length - 1">, </span>
               </span>
             </div>
@@ -27,7 +29,7 @@
                 <el-button
                 type="primary"
                 size="mini"
-                @click="toggleCollection(paper)"
+                @click="unCollect(paper)"
                 color="#626aef"
                 v-if="paper.collected"
               >
@@ -37,7 +39,7 @@
               <el-button
                 type="primary"
                 size="mini"
-                @click="toggleCollection(paper)"
+                @click="collect(paper)"
                 color="#626aef"
                 v-else
                 plain
@@ -57,7 +59,7 @@
       
       <el-divider border-style="double" />
       <div class="bottom-part">
-        <div class="collection-time">
+        <div class="collection-time" v-if="paper.collected">
         {{ paper.collectionTime }} 收藏
       </div>
       </div>
@@ -70,6 +72,10 @@
 </template>
 
 <script>
+import get from '../../functions/Get';
+import router from '../../routes';
+import request from '../../functions/Request';
+
 export default {
     name: 'PaperCollectionList',
   data() {
@@ -106,6 +112,84 @@ export default {
       // 处理查看引用逻辑
       console.log('查看引用', paper);
     },
+
+    async collect(paper){
+      
+      const result = await request(
+        {
+            url: 'http://100.117.229.168:8000/user/add_favorite/',
+            params:{
+              work_id: paper.id
+            },
+            addToken: true,
+        }
+        );
+       
+        console.log(result)
+        if(result){
+           paper.collected = true;
+           ElMessage({
+            message: "收藏成功",
+            type: 'success',
+          })
+        }
+        
+    },
+
+    async unCollect(paper){
+      const result = await request(
+        {
+            url: 'http://100.117.229.168:8000/user/remove_favorite/',
+            params:{
+              work_id: paper.id
+            },
+            addToken: true,
+        }
+        );
+
+        
+        console.log(result)
+        if(result){
+          paper.collected = false;
+          ElMessage({
+          message: "取消收藏成功",
+          type: 'success',
+          })
+        }
+
+        
+    },
+
+    goToHomepage(author){
+
+      const parts = author.id.split("/");
+      const desiredId = parts[parts.length - 1];
+      console.log("goto: ",'/authorhome/'+desiredId)
+      router.push(`/authorhome/${desiredId}`);
+
+      },
+
+
+    async loadPaper(){
+      const result = await get(
+        {
+            url: 'http://100.117.229.168:8000//user/get_histories/',
+            params:{
+              // author_id: this.scholar.scholar_id
+            },
+            addToken: true,
+        }
+        );
+        
+        
+        console.log(result)
+        this.paperCollection = result.data
+    }
+
+  },
+
+  mounted(){
+    this.loadPaper()
   },
 
   computed: {

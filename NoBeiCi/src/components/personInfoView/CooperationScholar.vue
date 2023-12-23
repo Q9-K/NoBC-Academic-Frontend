@@ -78,11 +78,30 @@
             //     window.open(homepageUrl, '_blank');
             // }
         },
+
+
+      async loadCollaborators(){
+      const result = await get(
+        {
+            url: 'http://100.117.229.168:8000/user/check_author_follow/',
+            params:{
+              author_id: this.scholarId
+            },
+            // addToken: true,
+        }
+        );
+        
+        
+        console.log(result)
+        this.collaborators = result.data
+    }
     },
 
     mounted(){
+        this.$nextTick(()=>{
+          console.log("ScholarId:",this.scholarId)
+        })
         
-        console.log("ScholarId:",this.scholarId)
     },
   };
   </script>

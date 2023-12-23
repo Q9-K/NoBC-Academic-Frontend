@@ -55,8 +55,19 @@
     import { nextTick, ref } from 'vue'
     import { ElInput } from 'element-plus'
 
+    import { defineProps } from 'vue';
+
+    const props = defineProps({
+    dynamicTags: {
+        type: Array,
+        required: true,
+    },
+    });
+
     const inputValue = ref('')
-    const dynamicTags = ref(['Tag 1', 'Tag 2', 'Tag 3'])
+    const dynamicTags = ref(props.dynamicTags)
+
+    
     const inputVisible = ref(false)
     const InputRef = ref<InstanceType<typeof ElInput>>()
 
