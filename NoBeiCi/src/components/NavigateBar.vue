@@ -137,13 +137,16 @@ const handleToManagerCenter = () => {
       </div>
     </div>
     <div class="search-input-outer">
-      <div class="animate__animated animate__zoomInDown" v-if="isSearchInputVisible">
+      <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center" class="animate__animated animate__zoomInDown" v-if="isSearchInputVisible">
         <el-input
           v-model="searchInputValue"
           :placeholder="i18n.t('navigateBar.search')"
           class="search-input"
-        />
-        <el-button class="search-input-button" :icon="Search" />
+        >
+          <template #append>
+            <el-button :icon="Search" />
+          </template>
+        </el-input>
       </div>
     </div>
     <div class="user-set-outer">
@@ -279,13 +282,8 @@ const handleToManagerCenter = () => {
     justify-content: center;
     align-items: center;
     .search-input {
-      width: 70%;
-      height: 60%;
-    }
-    .search-input-button {
-      height: 60%;
-      margin-left: 1vw;
-      background-color: #f5f7fa;
+      width: 80%;
+      height: 50%;
     }
   }
   .user-set-outer {
