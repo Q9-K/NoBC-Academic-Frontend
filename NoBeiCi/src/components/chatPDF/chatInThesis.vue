@@ -61,15 +61,20 @@ const messages = ref([])
 var fullscreenLoading = ref(false)
 //加载局部
 var loading = ref(false)
-//
+// 滑动器
 const scrollContainer = ref(null);
+// 接收父组件的参数
+const props = defineProps({
+    pdf_url: String
+})
 //初始加载介绍
 async function getIntroduction() {
     try {
         loading.value = true
+        // console.log(props.pdf_url)
         const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
             {
-                params: { msg: message.value, pdf_url: pdf_url.value }
+                params: { msg: message.value, pdf_url: "http://www.cell.com/article/S0092867414000099/pdf" }
             }
         );
         loading.value = false

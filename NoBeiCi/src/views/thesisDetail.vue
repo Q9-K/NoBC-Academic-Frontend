@@ -8,13 +8,19 @@ import i18n from "../locales/index.js";
 import chatInThesis from "../components/chatPDF/chatInThesis.vue"
 import request from "../functions/Request"
 import { ElMessage } from 'element-plus';
+import router from "../routes/index.js";
+import { onBeforeRouteUpdate, useRoute } from "vue-router";
+import { nextTick } from 'vue';
 
 var title = ref('')
-var abstract = ref('Although audio generation shares commonalities across different types of audio, such as speech, music, and sound effects, designing models for each type requires careful consideration of specific objectives and biases that can significantly differ from those of other types. To bring us closer to a unified perspective of audio generation, this paper proposes a framework that utilizes the same learning method for speech, music, and sound effect generation. Our framework introduces a general representation of audio, called language of audio (LOA). Any audio can be translated into LOA based on AudioMAE, a self-supervised pre-trained representation learning model. In the generation process, we translate any modalities into LOA by using a GPT-2 model, and we perform self-supervised audio generation learning with a latent diffusion model conditioned on LOA. The proposed framework naturally brings advantages such as in-context learning abilities and reusable self-supervised pretrained AudioMAE and latent diffusion models. Experiments on the major benchmarks of text-to-audio, text-to-music, and text-to-speech demonstrate new state-of-the-art or competitive performance to previous approaches. Our demo and code are available at https://audioldm.github.io ')
-const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
+var abstract = ref('')
+//const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
 const authorShips = ref([])
 
+
+// 当前论文id
+var currentId = ref('')
 // 是否打开链接
 var isShowLink = ref(false)
 
@@ -47,11 +53,7 @@ const allAbstractStyles = computed(() => {
     return { 'max-height': ifShowMoreButton.value ? '88px' : 'initial' };
 });
 const ifShowTranslate = ref(true)
-var works = ref([
-    { work_name: 'DGI', authors: ["ab", "baa"], related: 3 },
-    { work_name: 'GSLB', authors: ["a", "b"], related: 6 },
-    { work_name: 'MVGRL', authors: ["a", "b"], related: 7 }
-])
+var works = ref([])
 var relavantWork = ref([])
 var relatedWork = ref([])
 var isHighlighted1 = ref(true)
@@ -100,13 +102,24 @@ async function collection() {
         })
     }
 }
+// 跳转到其他的论文
+async function LookThesis(id) {
+    console.log(id)
+    await router.push('/thesisDetail/' + id);
+
+    // 等待下一次 DOM 更新
+    await nextTick();
+
+    // 在 router.push 的回调函数中执行 router.go(0) 刷新页面
+    router.go(0);
+}
 //获取数据
 async function getThesis() {
     try {
         fullscreenLoading.value = true
         const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
             params: {
-                id: "W2900586920",
+                id: currentId.value,
                 user_id: "1592295057@qq.com"
             }
         });
@@ -165,6 +178,8 @@ function findChildren(data, name, referenced_works) {
 
 onMounted(async () => {
     // getThesisData();
+    const { params } = useRoute();
+    currentId.value = params.thesisId
     await getThesis()
     const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
     const options = {
@@ -433,7 +448,7 @@ onMounted(async () => {
                                     {{ work.cited_by_count }}
                                 </div>
                                 <div class="more">
-                                    <div class="jump" @click="LookThesis">查看</div>
+                                    <div class="jump" @click="LookThesis(work.id)">查看</div>
                                     <div class="pdf" @click="openPDF(work.pdf_url)">PDF</div>
                                 </div>
                             </div>
@@ -446,7 +461,7 @@ onMounted(async () => {
             </div>
             <div class="chat">
                 <div>
-                    <chatInThesis class="rightBar"></chatInThesis>
+                    <chatInThesis :pdf_url="pdf_url" class="rightBar"></chatInThesis>
                 </div>
             </div>
         </div>
@@ -505,6 +520,7 @@ onMounted(async () => {
                     font-weight: 700;
 
                     .text {
+                        text-align: left;
                         font-size: 22px;
                         font-family: TimesNewRomanPS-BoldMT, TimesNewRomanPS;
                         font-weight: 700;
@@ -1109,4 +1125,5 @@ onMounted(async () => {
             height: 70vh;
         }
     }
-}</style>
+}
+</style>

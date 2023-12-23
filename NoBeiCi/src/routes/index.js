@@ -13,7 +13,7 @@ const router = createRouter({
       component: () => import('../views/personinfoView.vue'),
     },
     {
-      path: '/thesisDetail',
+      path: '/thesisDetail/:thesisId',
       name: 'thesisDetail',
       component: () => import('../views/thesisDetail.vue')
     },
