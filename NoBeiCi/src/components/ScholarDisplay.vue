@@ -3,26 +3,25 @@
     const props = defineProps({
         scholars: []
     })
-    var scholars = props.scholars
 </script>
 <template>
-    <div v-for="scholar in scholars" class="author_block">
+    <div v-for="scholar in props.scholars" class="author_block">
         <div class="avatar">
             <img style="padding: 15px;width:100px;height:100px" :src= scholar.avatar>
         </div>
         <div class="info">
-            <div class="scholar_head">{{ scholar.name }}</div>
+            <div class="scholar_head">{{ scholar.display_name }}</div>
             <div class="scholar_makes">
                 <div class="H-index">
                     <div style="font-size:11px">
                         H-index:
-                        {{ scholar.makes.H_index }}
+                        1
                     </div>
                 </div>
                 <div class="thesis">
                     <div style="font-size:11px">
                         论文数:
-                        {{ scholar.makes.thesis }}
+                        {{ scholar.works_count }}
                     </div>
                 </div>
                 <div class="icon">
@@ -33,13 +32,13 @@
                 <div class="used">
                     <div style="font-size:11px">
                         引用数:
-                        {{ scholar.makes.used }}
+                        {{ scholar.cited_by_count }}
                     </div>
                 </div>
             </div>
             <div class="scholar_field">
-                <div v-for="field in fields">
-                    {{ field }}
+                <div v-for="field in scholars.x_concepts">
+                    {{ field.display_name }}
                 </div>
             </div>
         </div>

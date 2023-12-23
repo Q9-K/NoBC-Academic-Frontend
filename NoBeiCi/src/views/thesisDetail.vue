@@ -90,7 +90,7 @@ function openPDF(url) {
 }
 function NavigateToScholar(id){
     console.log(id)
-    router.push('/author/'+id)
+    router.push('/authorhome/'+id)
 }
 // 收藏论文
 async function collection() {

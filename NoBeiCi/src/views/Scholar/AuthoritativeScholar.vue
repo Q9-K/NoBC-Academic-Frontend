@@ -10,7 +10,7 @@
                     </el-icon>
                 </div>
             </div>
-            <a-select v-model:value="scholar_name" show-search size='large' placeholder="Select" :options="options" class="select"
+            <a-select v-model:value="value" show-search size='large' placeholder="Select" :options="options" class="select"
                 :filter-option="false" @focus="handleFocus" @blur="handleBlur" @search="handleSearch"
                 @select="handleOptionSelect"></a-select>
         </div>
@@ -89,12 +89,17 @@
                 </div>
             </div>
         </div>
+        <div class="result" v-if="showResult">
+            <p>查询结果包含&nbsp;&nbsp;&nbsp;'</p>
+            <p style="font-size: 20px;color:blue"> {{ final_name }} </p>
+            <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }})结果</p>
+        </div>
         <div class="author">
             <div class="leftNavigate">
                 <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys1" style="width: 213px"
-                    mode="inline" :items="items1" @click="handleClick1"></a-menu>
+                    mode="inline" :items="h_index" @click="handleClick1"></a-menu>
                 <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 213px"
-                    mode="inline" :items="items2" @click="handleClick2"></a-menu>
+                    mode="inline" :items="instituion" @click="handleClick2"></a-menu>
             </div>
             <div class="detail">
                 <div class="search">
@@ -103,7 +108,7 @@
                     <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">论文数</div>
                     <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
                 </div>
-                <ScholarDisplay :scholars="scholars"/>
+                <ScholarDisplay :scholars="scholars" />
             </div>
         </div>
     </div>
@@ -114,22 +119,29 @@ import ScholarDisplay from '../../components/ScholarDisplay.vue';
 import { reactive, ref, watch, h, toRaw } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import request from "../../functions/Request"
+import { debounce } from "vue-debounce";
+import axios from 'axios';
 // 选择的选项
-const options = ref([{value: 1},{value: 2}]);
+const options = ref([{ value: 1 }, { value: 2 }]);
 // 搜索的名字
-const scholar_name = ref();
-
+const value = ref();
+// 学者的数量
+const scholar_num = ref(0)
+// 是否展示搜索结果
+const showResult = ref(false)
 // const handleOptionSelect = (value) => {
 //     props.selectFunction(value)
 // }
-
-const handleBlur = () => {
-    console.log('blur');
-};
-
-const handleFocus = () => {
-    console.log('focus');
-};
+const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
+// 搜索的学者名字
+const scholar_name = ref()
+// 最终的学者名
+const final_name = ref()
+const handleSearch = debounce((value) => {
+    if (isNonEmptyString(value)) {
+        scholar_name.value = value
+    }
+}, "10ms")
 //左侧聚类选择选项1
 var selectedKeys1 = ref();
 //左侧聚类选择选项2
@@ -166,12 +178,13 @@ function select4() {
 }
 var isfilterHighlight = ref(false)
 // 搜索结果，学者列表
-var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] , avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
-    , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"] ,avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg"}
-])
+// var scholars = ref([{ name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"], avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg" }
+//     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"], avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg" }
+//     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"], avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg" }
+//     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"], avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg" }
+//     , { name: 'vouzenus', makes: { H_index: 999, thesis: 25, used: 50 }, fields: ["co", "os"], avatar: "https://img.zcool.cn/community/019bf45ad58a97a8012040290778f1.jpg@3000w_1l_2o_100sh.jpg" }
+// ])
+const scholars = ref(null)
 // 过滤条件层
 var layers = ref([{ name: "h指数:", options: [1, 2, 3, 4], highlight: -1 },
 { name: "性别:", options: ['男', '女'], highlight: -1 },
@@ -187,13 +200,13 @@ function getItem(label, key, icon, children, type) {
         type,
     };
 }
-const items1 = reactive([
+const h_index = reactive([
     getItem('职称 (2)', 'sub1', () => h(MailOutlined), [
         getItem('Professor (12)', 1),
         getItem('Research (13)', 2),
     ]),
 ]);
-const items2 = reactive([
+const instituion = reactive([
     getItem('机构 (13)', 'sub2', () => h(AppstoreOutlined), [
         getItem('北航大专 (15)', 1),
         getItem('清华大学 (16)', 2),
@@ -242,24 +255,23 @@ function chooseFilter(layerIndex, index) {
 }
 
 //搜索学者
-async function searchScholar(){
-    console.log(value.value)
-    const result = await request(
-        {
-            url: "http://100.99.200.37:8000/user/add_favorite/",
+async function searchScholar() {
+    try {
+        final_name.value = scholar_name.value
+        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
             params: {
-                author_name: value
-            },
-            addToken: false
-        }
-    )
-    if (result) {
-        ElMessage({
-            message: "关注成功",
-            type: 'success',
+                author_name: final_name.value,
+                page_num: "1",
+                page_size: "10"
+            }
         })
+        showResult.value = true
+        scholar_num.value = res.data.total
+        scholars.value = res.data.authors
+        console.log(scholars.value)
+    } catch (error) {
+        console.log(error)
     }
-    console.log(result)
 }
 </script>
 <style scoped>
@@ -381,6 +393,15 @@ h2 {
     justify-content: flex-start;
 }
 
+.result {
+    height: 30px;
+    text-align: left;
+    margin-left: 16vw;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
 .filter {
     width: 70vw;
     margin-left: 15vw;
@@ -477,22 +498,27 @@ h2 {
 
 .all {
     width: 100px;
+    cursor: pointer;
 }
 
 .hNum {
     width: 100px;
+    cursor: pointer;
 }
 
 .thesisNum {
     width: 100px;
+    cursor: pointer;
 }
 
 .usedNum {
     width: 100px;
+    cursor: pointer;
 }
 
 .highlighted {
     color: #4759c5;
     background-color: #fafafa;
     border-bottom: hidden;
-}</style>
+}
+</style>
