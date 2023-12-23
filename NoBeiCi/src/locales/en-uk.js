@@ -36,13 +36,6 @@ export default {
     accept:"Accept",
     decline:"Decline",
   },
-  thesisDetail:{
-    quote:"Quote",
-    browse:"Browse"
-  },
-  field: {
-    moreDetail: "More"
-  },
   priorDialog: {
     enter: "Enter",
     selectField: "Select Interests",

@@ -36,13 +36,6 @@ export default {
     accept:"通过申请",
     decline:"拒绝申请",
   },
-  thesisDetail:{
-    quote:"引用",
-    browse:"浏览"
-  },
-  field: {
-    moreDetail: "更多"
-  },
   priorDialog: {
     enter: "登录注册",
     selectField: "选择关注领域",
