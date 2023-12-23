@@ -103,7 +103,7 @@ const handleTurnDark = () => {
         <div class="single-navigate-outer">
           {{ i18n.t("navigateBar.field") }}
         </div>
-        <div class="single-navigate-outer">
+        <div class="single-navigate-outer" @click="router.push('/scholar')">
           {{ i18n.t("navigateBar.researcher") }}
         </div>
       </div>
