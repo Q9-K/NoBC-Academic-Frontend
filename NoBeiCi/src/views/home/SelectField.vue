@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 import i18n from "../../locales/index.js";
 import {handleResponse} from "../../functions/handleResponse.js";
@@ -8,40 +8,36 @@ import * as echarts from 'echarts'
 import {FINISH, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 
 const stateOfPriorDialog = useStateOfPriorDialog()
-const fields = []
 
+let fields = []
+const cnFieldsData = []
+const enFieldsData = []
+const idFieldMap = new Map()
+let rectangleTree
 onMounted(() => {
 
-  let currentLanguage = 0
-  if (i18n.getLocale() === 'cn') {
-    currentLanguage = 1
-  }
-
-  const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/', {
-    params: {
-      language: currentLanguage
-    }
-  }).then((response) => {
+  const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/').then((response) => {
     handleResponse(response, false, (data) => {
-      if (currentLanguage === 1) {
-        for (let {chinese_display_name, id} of data) {
-          fields.push({
-            name: chinese_display_name,
-            value: 1,
-            children: [],
-            id: id
-          })
-        }
-      }
-      else {
-        for (let {display_name, id} of data) {
-          fields.push({
-            name: display_name,
-            value: 1,
-            children: [],
-            id: id
-          })
-        }
+
+      for (let {display_name, chinese_display_name, id} of data) {
+        cnFieldsData.push({
+          name: chinese_display_name,
+          value: 1,
+          children: [],
+          id: id
+        })
+
+        enFieldsData.push({
+          name: display_name,
+          value: 1,
+          children: [],
+          id: id
+        })
+
+        idFieldMap.set(id, {
+          cnFields: cnFieldsData,
+          enFields: enFieldsData
+        })
       }
     })
   })
@@ -49,11 +45,10 @@ onMounted(() => {
   let getLevel1
   Promise.all([getLevel0])
     .then(() => {
-      for (let {id, children} of fields) {
+      for (let {parentId} of cnFieldsData) {
         getLevel1 = axios.get('http://100.92.185.118:8000' + '/concept/get_subdomains/', {
           params: {
-            language: currentLanguage,
-            id: id
+            id: parentId
           }
         }).then((response) => {
 
@@ -61,33 +56,41 @@ onMounted(() => {
 
           handleResponse(response, false, (data) => {
 
-            if (currentLanguage === 1) {
-              for (let {chinese_display_name, id} of data) {
-                children.push({
-                  name: chinese_display_name,
-                  value: 1,
-                  children: [],
-                  id: id
-                })
-              }
-            }
-            else {
-              for (let {display_name, id} of data) {
-                children.push({
-                  name: display_name,
-                  value: 1,
-                  children: [],
-                  id: id
-                })
-              }
+            for (let {display_name, chinese_display_name, id} of data) {
+              console.log(cnFieldsData)
+              console.log(idFieldMap)
+              console.log(id)
+              const {cnParentField, enParentField} = idFieldMap.get(parentId)
+
+              cnParentField.children.push({
+                name: chinese_display_name,
+                value: 1,
+                children: [],
+                id: id
+              })
+
+              enParentField.children.push({
+                name: display_name,
+                value: 1,
+                children: [],
+                id: id
+              })
             }
           })
         })
           .then(() => {
 
-            console.log("2")
+            rectangleTree = echarts.init(document.getElementById('containerOfRectangleTree'), null, {
+              width: '600px',
+              height: '275px',
+            })
 
-            const rectangleTree = echarts.init(document.getElementById('containerOfRectangleTree'))
+            if (i18n.getLocale() === 'en') {
+              fields = enFieldsData
+            }
+            else {
+              fields = cnFieldsData
+            }
 
             const options = {
               title: {
@@ -139,6 +142,23 @@ onMounted(() => {
   })
 })
 
+watch(
+  () => i18n.getLocale(),
+  (newValue) => {
+    if (newValue === 'en') {
+      fields = enFieldsData
+    }
+    else {
+      fields = cnFieldsData
+    }
+    rectangleTree.setOption({
+      series: {
+        data: fields
+      }
+    })
+  }
+)
+
 const handleFinishSelect = () => {
 
   const formData = new FormData()
@@ -177,20 +197,20 @@ const handleFinishSelect = () => {
     height: 90%;
     width: 100%;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     .select-field-title-outer {
-      height: 100%;
-      width: 20%;
+      width: 100%;
+      height: 15%;
     }
     .select-field-rectangle-tree-outer {
-      height: 100%;
-      width: 80%;
+      width: 100%;
+      height: 85%;
       display: flex;
       justify-content: center;
       align-items: center;
       .select-field-rectangle-tree {
-        height: 80%;
-        width: 80%;
+        height: 120%;
+        width: 120%;
       }
     }
   }
