@@ -17,6 +17,7 @@ import {
   enable as enableDarkMode,
   disable as disableDarkMode
 } from "darkreader";
+import {useStateOfPriorDialog} from "../stores/stateOfPriorDialog.js";
 
 const props = defineProps(['whetherSearchInputVisible'])
 const isLogin = 1
@@ -84,6 +85,8 @@ const handleToUserPage = () => {
 
 const handleLogout = () => {
   localStorage.clear()
+  const stateOfPriorDialog = useStateOfPriorDialog()
+  stateOfPriorDialog.openDialog()
   router.push('/')
 }
 
