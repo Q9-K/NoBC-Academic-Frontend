@@ -171,7 +171,6 @@ const handleStarField = () => {
       const response = await request({
         url: apiUrl,
         params: params,
-        dataType: 'json', // Specify the data type as JSON (if required by your backend)
         showLoading: true, // Show loading indicator
         addToken: true, // Whether to add a token to the request headers (if required by your backend)
         errorCallback: null, // Callback function for error handling (if needed)
@@ -224,7 +223,6 @@ const handleCancelStarField = () => {
       const response = await request({
         url: apiUrl,
         params: params,
-        dataType: 'json', // Specify the data type as JSON (if required by your backend)
         showLoading: true, // Show loading indicator
         addToken: true, // Whether to add a token to the request headers (if required by your backend)
         errorCallback: null, // Callback function for error handling (if needed)
@@ -279,6 +277,8 @@ onMounted(() => {
         concept_id: fFullId
       }
 
+      console.log(JSON.parse(localStorage.getItem('userInformation')))
+
       const response = await get({
         url: apiUrl,
         params: params,
@@ -307,7 +307,15 @@ onMounted(() => {
 
   getIsStar()
     .then((response) => {
-      console.log(response)
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: "Oh No"
+        })
+      }
+      else {
+        hasStared.value = response.data.focus
+      }
     })
 })
 
