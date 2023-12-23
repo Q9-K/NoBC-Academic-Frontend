@@ -8,15 +8,27 @@ import axios from 'axios';
 const {data, type} = defineProps(['data', 'type']);
 const title = ref(data.other.title);
 const authors = ref(data.other.authorships.map(authorship => authorship.author.display_name));
-const abstract =computed(() => {
-    if(type === "highlight") {
-        return data.highlight.abstract.join('').replace(/<em>/g, '<em style="color:red;">');
-    } else {
-        return data.other.abstract;
-    }
-})
+// const abstract =computed(() => {
+//     if(type === "highlight" && data.highlight.abstract !== null) {
+//         return data.highlight.abstract.map(fragment => fragment.replace(/<em>/g, '<em style="color:red;">')).join('');
+//     } else {
+//         return data.other.abstract;
+//     }
+// })
+const abstract = computed(() => {
+  if (type!==undefined && type === "highlight" && data.highlight && data.highlight.abstract !== null) {
+    return (
+      data.highlight.abstract
+        ?.filter(fragment => fragment !== null && fragment !== undefined) // 过滤掉 null 和 undefined
+        .map(fragment => fragment.replace(/<em>/g, '<em style="color:red;">'))
+        .join('') || ''
+    );
+  } else {
+    return data.other?.abstract || '';
+  }
+});
 const issue = computed(() => {
-    if (data.other.locations && data.other.locations.length > 0) {
+    if (data.other.locations && data.other.locations.length > 0 && data.other.locations[0].source !== null && data.other.locations[0].source.host_organization_name !== null) {
         return data.other.locations[0].source.host_organization_name + '(' + data.other.publication_date+ ')';
     } else {
         return "";
