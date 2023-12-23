@@ -23,6 +23,7 @@ instance.interceptors.request.use(
         if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
             config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
         }
+        console.log("config",config)
         return config;
     }, (error) => {
         if (error.config.showLoading && loading) {

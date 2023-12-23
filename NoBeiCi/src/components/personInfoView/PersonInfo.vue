@@ -2,7 +2,8 @@
     <div class="personal-info">
       <div class="item">
         <div class="header">
-          <span class="title">·工作经历</span>
+          <!--工作经历  -->
+          <span class="title">·{{ i18n.t("personInfo.workExperience") }}</span>
           <el-button v-if="!editing.workExperience"  @click="editItem('workExperience')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
@@ -22,9 +23,10 @@
 
       <!-- <el-divider /> -->
 
+      <!-- 教育背景 -->
       <div class="item">
         <div class="header">
-          <span class="title">·教育背景</span>
+          <span class="title">·{{ i18n.t("personInfo.educationBackground") }}</span>
           
             <el-button v-if="!editing.educationBackground"  @click="editItem('educationBackground')" circle>
             <el-icon><EditPen /></el-icon>
@@ -46,9 +48,10 @@
 
       <!-- <el-divider /> -->
 
+      <!-- 个人简介 -->
       <div class="item" style="margin-bottom: 2vh;">
         <div class="header">
-          <span class="title">·个人简介</span>
+          <span class="title">·{{ i18n.t("personInfo.personProfile") }}</span>
             <el-button v-if="!editing.personalSummary" @click="editItem('personalSummary')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
@@ -68,10 +71,26 @@
       </div>
     </div>
   </template>
+
+<script setup>
+import i18n from "../../locales/index.js";
+
+</script>
+
   
   <script>
+  import axios from 'axios';
+  import get from "../../functions/Get";
+
   export default {
     name: 'PersonalInfo',
+
+    props: {
+      scholarId: {
+      type: Number,
+      required: true
+    }
+    },
     data() {
       return {
         profile: {
@@ -104,7 +123,43 @@
       },
       cancelEdit(item){
         this.editing[item] = false;
-      }
+      },
+
+      async loadprofile(){
+        const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_scholar_intro_information',
+            params:{
+              author_id: this.scholarId
+            },
+            // addToken: true,
+        }
+        );
+        
+        
+        console.log(result)
+        this.profile = result.data
+        if(this.profile.educationBackground == null)
+          this.profile.educationBackground = '暂无内容'
+        
+        if(this.profile.workExperience == null)
+          this.profile.workExperience = '暂无内容'
+
+        if(this.profile.personalSummary == null)
+          this.profile.personalSummary = '暂无内容'
+      },
+
+
+    },
+
+
+    mounted(){
+      this.$nextTick(()=>{
+        console.log("ScholarId:",this.scholarId)
+        this.loadprofile();
+      })
+      
+      
     }
   }
   </script>
