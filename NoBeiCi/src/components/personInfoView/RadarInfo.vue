@@ -4,7 +4,9 @@
         <!-- 上方栏 -->
         <div style="display: flex;">
             
-            <p class="inherited-styles-for-exported-element">作者统计</p>
+           <!-- 作者统计 -->
+           <!-- {{ t("personInfo.authorStatistics")}} -->
+            <p class="inherited-styles-for-exported-element">{{ $t("personInfo.authorStatistics")}}</p>
             <div style="margin-left: auto;">
                 <el-tooltip placement="bottom"  effect="light">
                 <template #content> 1.Citation（引用量）：该学者所有出版物的被引用次数。<br />
@@ -29,21 +31,22 @@
             </el-tooltip>
         </div>
         
+        <!-- 雷达图 列表 -->
         <el-button-group style="margin-right:1vw">
       <el-button 
         type="primary" color="#626aef"
         v-if="viewMode === 'chart'" 
-        >雷达图</el-button>
+        >{{ $t("personInfo.radar")}}</el-button>
       <el-button 
         v-else 
-        @click="switchToChart">雷达图</el-button>
+        @click="switchToChart()">{{ $t("personInfo.radar")}}</el-button>
       <el-button 
         type="primary" color="#626aef"
         v-if="viewMode === 'list'" 
-        @click="viewMode = 'list'">列表</el-button>
+        @click="this.switchToList()">{{ $t("personInfo.list")}}</el-button>
       <el-button 
         v-else 
-        @click="viewMode = 'list'">列表</el-button>
+        @click="this.switchToList()">{{ $t("personInfo.list")}}</el-button>
     </el-button-group>
             
         </div>
@@ -52,17 +55,21 @@
       <div class="chart-container" v-if="viewMode=='chart'">
         <div ref="chart"></div>
       </div>
-      <el-table :data="scholarData" border style="width: 80%; margin-left: 1vw; margin-bottom: 2vh;" v-else>
+      <el-table :data="this.scholarData" border style="width: 80%; margin-left: 1vw; margin-bottom: 2vh;" v-else>
         <el-table-column prop="label" label="Metrics" ></el-table-column>
         <el-table-column prop="value" label="Value" w></el-table-column>
       </el-table>
     </div>
   </template>
+
+
   
   <script>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted,watch,reactive } from 'vue';
   import { Radar } from '@antv/g2plot';
   import {  nextTick } from 'vue';
+
+  import i18n  from '../../locales/index.js'; 
   
   export default {
 
@@ -76,7 +83,7 @@
       },
     },
     setup(props) {
-
+        
         const buildRadarChart = () => {
         const radarPlot = new Radar(chart.value, {
             data: scholarData,
@@ -100,11 +107,19 @@
             buildRadarChart();
         });
         };  
+
+      const switchToList = () =>{
+        
+        console.log("list data",scholarData)
+        viewMode.value = 'list';
+        
+        
+      }
       const chart = ref(null);
 
       const viewMode = ref('chart'); // 默认显示雷达图
   
-      const scholarData = [
+      let scholarData = reactive([
         { label: 'Papers', value: props.data.Papers },
         { label: 'Citation', value: props.data.Citation },
         { label: 'H-Index', value: props.data['H-Index'] },
@@ -112,9 +127,34 @@
         { label: 'Sociability', value: props.data.Sociability },
         { label: 'Diversity', value: props.data.Diversity },
         { label: 'Activity', value: props.data.Activity },
-      ];
+      ]);
   
       onMounted(() => {
+        nextTick(() => {
+          console.log("radar：",props.data)
+        })
+          
+          //buildRadarChart();
+        
+        
+      });
+
+      watch(props, (newVal, oldVal) => {
+        console.log('data changed',props.data);
+        while (scholarData.length) {
+          scholarData.shift();
+        }
+        // 给 scholarData 赋新值
+        scholarData.push(
+          { label: 'Papers', value: props.data.Papers },
+          { label: 'Citation', value: props.data.Citation },
+          { label: 'H-Index', value: props.data['H-Index'] },
+          { label: 'G-Index', value: props.data['G-Index'] },
+          { label: 'Sociability', value: props.data.Sociability },
+          { label: 'Diversity', value: props.data.Diversity },
+          { label: 'Activity', value: props.data.Activity },
+        );
+        console.log("scholarData",scholarData)
         buildRadarChart();
       });
   
@@ -123,9 +163,14 @@
         chart,
         viewMode,
         switchToChart,
-        buildRadarChart
+        buildRadarChart,
+        switchToList
       };
+
+      
     },
+
+    
 
     
   };
