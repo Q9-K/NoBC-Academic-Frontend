@@ -30,6 +30,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "pinyin": "^3.0.0-alpha.5",
     "qs": "^6.11.2",
+    "querystring": "^0.2.1",
     "TagCloud": "^2.4.0",
     "vue": "^3.3.4",
     "vue-debounce": "^4.0.1",

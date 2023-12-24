@@ -18,9 +18,23 @@
                         <el-button style="border: none; margin-right: 54vw">{{ i18n.t('conf.confJournalList') }}</el-button>
                         <el-button @click="getLatestJournal">{{ i18n.t('conf.confUpdatedJournal') }}</el-button>
                     </el-row>
+                    <div>
                         <el-row v-for="data in journalsData">
                             <JournalDisplay :data="data"/>
                         </el-row>
+                        <el-pagination
+                            v-model:current-page="currentPage3"
+                            v-model:page-size="pageSize3"
+                            :small="false"
+                            :disabled="disabled"
+                            :background="true"
+                            layout="prev, pager, next, jumper"
+                            :total="totalPage"
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            style="margin-top: 10px; margin-left: 6vw"
+                        />
+                    </div>
                 </el-main>
             </el-container>
         </el-container>
@@ -31,10 +45,10 @@
 </template>
 
 <script setup>
-import NavBar from '../components/NavigateBar.vue'
-import SearchBar from '../components/SearchBar.vue'
-import LeftCondition from '../components/conf/LeftCondition.vue'
-import JournalDisplay from '../components/conf/JournalDisplay.vue'
+import NavBar from '../components/NavigateBar.vue';
+import SearchBar from '../components/SearchBar.vue';
+import LeftCondition from '../components/conf/LeftCondition.vue';
+import JournalDisplay from '../components/conf/JournalDisplay.vue';
 import {checkIsChinese} from "../functions/checkIsChinese.js";
 import {handleResponse} from "../functions/handleResponse.js";
 import {useUpperSearchBarStore} from "../stores/upperSearchBar.js";
@@ -44,24 +58,28 @@ import { onMounted } from 'vue'
 import axios from 'axios'
 import i18n from "../locales/index.js";
 import { debounce } from 'vue-debounce'
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')  
-
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const type = ref(0);
+const tempLetter = ref('');
 const journalsData = ref([]);
+const pageNum = ref(1);
 const subject = ref("");
 // 在组件加载完成后发起请求,默认是A
 onMounted(() => {
     getJournalsByInitial('A'); 
 });
 const getJournalsByInitial = debounce((initial) => {
+    tempLetter.value = initial;
     axios.get('http://100.96.145.140:8000/source/get_source_list/', {
         params: {
             initial: initial,
-            page_num: 1,
+            page_num: pageNum,
             page_size: 10,
         }
         })
         .then(response => {
           journalsData.value = response.data.data;
+          type.value = 0;
         })
         .catch(error => {
           console.error('Error fetching journals:', error);
@@ -72,17 +90,18 @@ const getJournalsByInitial = debounce((initial) => {
 const getLatestJournal = debounce(() => {
     axios.get('http://100.96.145.140:8000/source/get_latest_sources/', {
         params: {
-            page_num: 1,
+            page_num: pageNum,
             page_size: 10,
         }
         })
         .then(response => {
           journalsData.value = response.data.data;
+          type.value = 1;
         })
         .catch(error => {
           console.error('Error fetching journals:', error);
         });
-};
+},"300ms");
 
 const handleSearchJournal = (value) => {
     let codeOfLanguage = 0
@@ -116,6 +135,15 @@ const handleSelectJournal = (value) => {
     const depart = fullId.split('/')
     let id = depart.at(depart.length - 1)
     router.push('/journal/' + id+'/statics')
+}
+
+const handleCurrentChange = (number) => {
+      pageNum.value = number;
+      if(type === 0) {
+        getJournalsByInitial(tempLetter.value);
+      } else {
+        getLatestJournal();
+      }
 }
 </script>
 

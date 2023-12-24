@@ -1,21 +1,52 @@
 <template>
-    <el-card class="box-card">
-      <template #header>
-        <div class="card-header">
-          <span>发表相关论文最多的作者</span>
-        </div>
-      </template>
-      <div v-for="o in 4" :key="o" class="text item">作者{{  o }}  <span style="margin-left: 4vw;">文章数量 {{ 100+o }}</span></div>
-    </el-card>
+  <div class="author">
+    <div ref="container" style="padding: 0; margin: 0;"></div>
+  </div>
 </template>
 
-<script setup>
+<script>
+import { Pie } from '@antv/g2plot';
 
+export default {
+  props: {
+    data: {
+      type: Array,
+      required: true,
+    },
+  },
+  mounted() {
+    const piePlot = new Pie(this.$refs.container, {
+      appendPadding: 10,
+      data: this.data,
+      angleField: 'doc_count',
+      colorField: 'display_name',
+      radius: 0.9,
+      label: {
+        type: 'inner',
+        offset: '-50%',
+        content: ({ doc_count}) => `${doc_count}`,
+        style: {
+          fontSize: 14,
+          textAlign: 'center',
+        },
+      },
+      legend: {  
+        position: 'bottom', 
+        type: 'single'
+      },  
+      interactions: [{ type: 'element-active' }],
+    });
+
+    piePlot.render();
+    
+  },
+};
 </script>
 
-<style>
-  .card-header {
-    justify-content: center;
-    align-items: center;
-  }
+<style scoped>
+.author {
+  width: 300px;
+  padding: 0;
+  margin: 0;
+}
 </style>
