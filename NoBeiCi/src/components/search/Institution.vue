@@ -1,88 +1,109 @@
 <template>
-    <div>
-      <button @click="toggleDrawer" :class="{ active: showDrawer }" class="institution">机构</button>
-      <div v-if="showDrawer" class="drawer">
-        <el-input v-model="input" placeholder="搜素机构" class="input-with-select" size="small">
-            <template #append>
-                <el-button :icon="Search">Search</el-button>
-            </template>
-        </el-input>
-        <ul class="institution-list">
-          <li v-for="(organization, index) in displayedOrganizations" :key="organization.id">
-            <el-button style="width: 16vw;">{{ organization.name }}</el-button>
-          </li>
-        </ul>
-        <el-button v-if="organizations.length > 5" @click="toggleExpansion">
-          {{ isExpanded ? '收起-' : '展开+' }}
-        </el-button>
-      </div>
+  <div>
+    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="institution">机构</button>
+    <div v-if="showDrawer" class="drawer">
+      <ul style="list-style-type: none;" class="institution-list">
+        <li v-for="(institution, index) in displayedinstitutions" :key="institution.id">
+          <el-button class="institution-button"  @click="selectInstitution(institution)">{{ institution.display_name }}({{ institution.doc_count }})</el-button>
+        </li>
+      </ul>
+      <el-button v-if="organizations.length > 5" @click="toggleExpansion">
+        {{ isExpanded ? '收起-' : '展开+' }}
+      </el-button>
     </div>
-  </template>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+
+const props = defineProps(['institutions']);
+const emit = defineEmits(['selectInstitution']);
+const showDrawer = ref(false);
+const isExpanded = ref(false);
+const organizations = ref([
+  { id: 1, display_name: '北京大学', doc_count: "" },
+  { id: 2, display_name: '清华大学', doc_count: "" },
+  { id: 3, display_name: '中国科学院', doc_count: "" },
+  { id: 4, display_name: '悉尼大学', doc_count: "" },
+  { id: 5, display_name: '石溪大学', doc_count: "" },
+  { id: 6, display_name: '纽约大学', doc_count: "" },
+  { id: 1, display_name: '北京大学', doc_count: "" },
+  { id: 2, display_name: '清华大学', doc_count: "" },
+  { id: 3, display_name: '中国科学院', doc_count: "" },
+  { id: 4, display_name: '悉尼大学', doc_count: "" },
+  { id: 5, display_name: '石溪大学', doc_count: "" },
+  // 更多机构...
+]);
+const displayedinstitutions = computed(() => {
+  if (isExpanded.value) {
+    organizations.value = props.institutions;
+    return organizations.value;
+  } else {
+      organizations.value = props.institutions;
+      return organizations.value.slice(0, 5);
+  }
+});
+
+const toggleDrawer = () => {
+  showDrawer.value = !showDrawer.value;
+  isExpanded.value = false; // 关闭抽屉时重置展开状态
+};
+
+const toggleExpansion = () => {
+  isExpanded.value = !isExpanded.value;
+};
+const selectInstitution = (institution) => {
+  emit('selectInstitution', institution);
+};
+</script>
   
-  <script>
-  export default {
-    data() {
-      return {
-        showDrawer: false,
-        isExpanded: false,
-        organizations: [
-          { id: 1, name: '北京大学(357)' },
-          { id: 2, name: '清华大学(22)' },
-          { id: 3, name: '中国科学院(20)' },
-          { id: 4, name: '悉尼大学(232)' },
-          { id: 5, name: '石溪大学(43)' },
-          { id: 6, name: '纽约大学(2)' },
-          // 更多机构...
-        ]
-      };
-    },
-    computed: {
-      displayedOrganizations() {
-        if (this.isExpanded) {
-          return this.organizations;
-        } else {
-          return this.organizations.slice(0, 5);
-        }
-      }
-    },
-    methods: {
-      toggleDrawer() {
-        this.showDrawer = !this.showDrawer;
-        this.isExpanded = false; // 关闭抽屉时重置展开状态
-      },
-      toggleExpansion() {
-        this.isExpanded = !this.isExpanded;
-      },
-      updateOrganization() {
-        
-      }
-    }
-  };
-  </script>
-  
-  <style>
+  <style scoped>
   .institution {
     border: 0;
     border-top: 3px solid #f4081c;
-    background-color: #409EFF;
+    background-color: #708590;
     width: 16vw;
     height: 5vh;
   }
-
-  button.active {
-   background-color: rgb(17, 0, 255);
-   color: #fff;
+  
+  .button-group .el-button {
+    flex: 0 0 calc(50% - 5px);
+    margin-left: 0;
   }
-
+  
+  button.active {
+    background-color:  #fafafa;
+    color: #e61717;
+  }
+  
   .drawer {
     border: 1px solid #ccc;
-    padding: 10px;
+    width: 16vw;
+    padding: 0px;
     margin-top: 0px;
   }
-
-  .institution-list {
+  
+  .drawer button {
+    margin-right: 10px;
+  }
+  
+  .drawer ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
   }
+  
+  .drawer button:last-child {
+    margin-top: 10px;
+  }
+
+  .institution-button {
+  display: flex;
+  width: 16vw;
+  white-space: normal; /* Allow text to wrap to the next line */
+  word-wrap: break-word; /* Break long words and wrap them */
+  max-height: 3em; /* Set a maximum height; adjust as needed */
+  overflow: hidden; /* Hide overflow content */
+}
   </style>

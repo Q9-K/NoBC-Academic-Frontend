@@ -1,47 +1,53 @@
 <script setup>
 
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 import i18n from "../../locales/index.js";
 import {handleResponse} from "../../functions/handleResponse.js";
 import * as echarts from 'echarts'
 import {FINISH, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
+import {debounce} from "vue-debounce";
+import request from '../../functions/Request.js'
+import {ElMessage} from "element-plus";
+
+const currentSelectedFieldId = ref('')
+const currentSelectedFieldName = ref('')
+let currentSelectFieldEnName = ''
+let currentSelectFiledCnName = ''
 
 const stateOfPriorDialog = useStateOfPriorDialog()
-const fields = []
 
+let fields = []
+const cnFieldsData = []
+const enFieldsData = []
+const idFieldMap = new Map()
+let rectangleTree
 onMounted(() => {
 
-  let currentLanguage = 0
-  if (i18n.getLocale() === 'cn') {
-    currentLanguage = 1
-  }
-
-  const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/', {
-    params: {
-      language: currentLanguage
-    }
-  }).then((response) => {
+  const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/').then((response) => {
     handleResponse(response, false, (data) => {
-      if (currentLanguage === 1) {
-        for (let {chinese_display_name, id} of data) {
-          fields.push({
-            name: chinese_display_name,
-            value: 1,
-            children: [],
-            id: id
-          })
+
+      for (let {display_name, chinese_display_name, id} of data) {
+        const cnField = {
+          name: chinese_display_name,
+          value: 1,
+          children: [],
+          id: id
         }
-      }
-      else {
-        for (let {display_name, id} of data) {
-          fields.push({
-            name: display_name,
-            value: 1,
-            children: [],
-            id: id
-          })
+        cnFieldsData.push(cnField)
+
+        const enField = {
+          name: display_name,
+          value: 1,
+          children: [],
+          id: id
         }
+        enFieldsData.push(enField)
+
+        idFieldMap.set(id, {
+          cnField: cnField,
+          enField: enField
+        })
       }
     })
   })
@@ -49,45 +55,58 @@ onMounted(() => {
   let getLevel1
   Promise.all([getLevel0])
     .then(() => {
-      for (let {id, children} of fields) {
+      for (let {id} of cnFieldsData) {
+        let parentId = id
         getLevel1 = axios.get('http://100.92.185.118:8000' + '/concept/get_subdomains/', {
           params: {
-            language: currentLanguage,
             id: id
           }
-        }).then((response) => {
+        })
+          .then((response) => {
 
           console.log("1")
 
           handleResponse(response, false, (data) => {
 
-            if (currentLanguage === 1) {
-              for (let {chinese_display_name, id} of data) {
-                children.push({
-                  name: chinese_display_name,
-                  value: 1,
-                  children: [],
-                  id: id
-                })
+            for (let {display_name, chinese_display_name, id} of data) {
+              const {cnField, enField} = idFieldMap.get(parentId)
+
+              const cnChildField = {
+                name: chinese_display_name,
+                value: 1,
+                children: [],
+                id: id
               }
-            }
-            else {
-              for (let {display_name, id} of data) {
-                children.push({
-                  name: display_name,
-                  value: 1,
-                  children: [],
-                  id: id
-                })
+              cnField.children.push(cnChildField)
+
+              const enChildField = {
+                name: display_name,
+                value: 1,
+                children: [],
+                id: id
               }
+              enField.children.push(enChildField)
+
+              idFieldMap.set(id, {
+                cnField: cnChildField,
+                enField: enChildField
+              })
             }
           })
         })
           .then(() => {
 
-            console.log("2")
+            rectangleTree = echarts.init(document.getElementById('containerOfRectangleTree'), null, {
+              width: '600px',
+              height: '275px',
+            })
 
-            const rectangleTree = echarts.init(document.getElementById('containerOfRectangleTree'))
+            if (i18n.getLocale() === 'en') {
+              fields = enFieldsData
+            }
+            else {
+              fields = cnFieldsData
+            }
 
             const options = {
               title: {
@@ -134,10 +153,34 @@ onMounted(() => {
 
             rectangleTree.hideLoading()
             rectangleTree.setOption(options)
+
+            rectangleTree.on('click', debounce((params) => {
+              console.log(params)
+              currentSelectedFieldId.value = params.data.id
+            }, "100ms"))
           })
       }
   })
 })
+
+watch(
+  () => i18n.getLocale(),
+  (newValue) => {
+    if (newValue === 'en') {
+      fields = enFieldsData
+      currentSelectedFieldName.value = currentSelectFieldEnName
+    }
+    else {
+      fields = cnFieldsData
+      currentSelectedFieldName.value = currentSelectFiledCnName
+    }
+    rectangleTree.setOption({
+      series: {
+        data: fields
+      }
+    })
+  }
+)
 
 const handleFinishSelect = () => {
 
@@ -147,19 +190,95 @@ const handleFinishSelect = () => {
   stateOfPriorDialog.setStep(2)
   stateOfPriorDialog.setView(FINISH)
 }
+
+watch(
+  () => currentSelectedFieldId.value,
+  (newValue) => {
+    const {cnField, enField} = idFieldMap.get(newValue)
+    currentSelectFiledCnName = cnField.name
+    currentSelectFieldEnName = enField.name
+    if (i18n.getLocale() === 'en') {
+      currentSelectedFieldName.value = currentSelectFieldEnName
+    }
+    else {
+      currentSelectedFieldName.value = currentSelectFiledCnName
+    }
+  }
+)
+
+const handleSelectField = () => {
+
+  const selectField = (fieldId) => {
+    try {
+      const apiUrl = 'http://100.92.185.118:8000' + '/user/add_focus_concept/'
+      const params = {
+        concept_id: fieldId
+      }
+
+      const response = request({
+        url: apiUrl,
+        params: params,
+        showLoading: true,
+        addToken: true,
+        errorCallback: null,
+        showError: true
+      })
+
+      if (response) {
+        return response
+      }
+      else {
+        console.log("空")
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  selectField(currentSelectedFieldId.value)
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: "Oh No!"
+        })
+      }
+      else {
+        ElMessage({
+          type: "success",
+          message: "OK!"
+        })
+      }
+    })
+}
+
 </script>
 
 <template>
   <div class="select-field-outer">
     <div class="select-field">
       <div class="select-field-title-outer">
-        <el-select/>
+        <el-input
+          class="select-field-title"
+          v-model="currentSelectedFieldName"
+          disabled="disabled"
+        >
+          <template #append>
+            <el-button type="primary" @click="handleSelectField">
+              {{ i18n.t('priorDialog.selectFieldMode.selectButton') }}
+            </el-button>
+          </template>
+        </el-input>
       </div>
       <div class="select-field-rectangle-tree-outer">
         <div id="containerOfRectangleTree" class="select-field-rectangle-tree"></div>
       </div>
     </div>
     <div class="finish-select-outer">
+      <el-button class="skip-select" @click="handleFinishSelect">
+        {{ i18n.t('priorDialog.selectFieldMode.skipSelect') }}
+      </el-button>
       <el-button type="primary" class="finish-select" @click="handleFinishSelect">
         {{ i18n.t('priorDialog.selectFieldMode.finishSelect') }}
       </el-button>
@@ -177,20 +296,29 @@ const handleFinishSelect = () => {
     height: 90%;
     width: 100%;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     .select-field-title-outer {
-      height: 100%;
-      width: 20%;
+      width: 100%;
+      height: 15%;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      .select-field-title {
+        width: 50%;
+        height: 80%;
+        position: relative;
+        bottom: 14px;
+      }
     }
     .select-field-rectangle-tree-outer {
-      height: 100%;
-      width: 80%;
+      width: 100%;
+      height: 85%;
       display: flex;
       justify-content: center;
       align-items: center;
       .select-field-rectangle-tree {
-        height: 80%;
-        width: 80%;
+        height: 120%;
+        width: 120%;
       }
     }
   }
@@ -200,6 +328,11 @@ const handleFinishSelect = () => {
     display: flex;
     justify-content: end;
     align-items: center;
+    .skip-select {
+      height: 100%;
+      position: relative;
+      right: 50px;
+    }
     .finish-select {
       height: 100%;
       position: relative;

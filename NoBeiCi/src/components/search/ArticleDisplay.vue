@@ -4,19 +4,24 @@ import i18n from '../../locales/index.js'
 import Clipboard from 'clipboard';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios';
-
+import request from '../../functions/Request';
 const {data, type} = defineProps(['data', 'type']);
 const title = ref(data.other.title);
 const authors = ref(data.other.authorships.map(authorship => authorship.author.display_name));
-const abstract =computed(() => {
-    if(type === "highlight") {
-        return data.highlight.abstract.join('').replace(/<em>/g, '<em style="color:red;">');
-    } else {
-        return data.other.abstract;
-    }
-})
+const abstract = computed(() => {
+  if (type!==undefined && type === "highlight" && data.highlight && data.highlight.abstract !== null) {
+    return (
+      data.highlight.abstract
+        ?.filter(fragment => fragment !== null && fragment !== undefined) // 过滤掉 null 和 undefined
+        .map(fragment => fragment.replace(/<em>/g, '<em style="color:red;">'))
+        .join('') || ''
+    );
+  } else {
+    return data.other?.abstract || '';
+  }
+});
 const issue = computed(() => {
-    if (data.other.locations && data.other.locations.length > 0) {
+    if (data.other.locations && data.other.locations.length > 0 && data.other.locations[0].source !== null && data.other.locations[0].source.host_organization_name !== null) {
         return data.other.locations[0].source.host_organization_name + '(' + data.other.publication_date+ ')';
     } else {
         return "";
@@ -26,7 +31,7 @@ const numberCite = ref(data.other.cited_by_count);
 const numberViews = ref(data.other.visit_count);
 const word_id = data.other.id;
 const citeMessage = ref(data.other.citation);
-
+const thesisId = data.other.id
 const copyText = () => {
   const clipboard = new Clipboard(document.body, {
     text: () => citeMessage.value
@@ -53,36 +58,40 @@ const open = () => {
   })
 }
 
-const collectArticle = () => {
-    try {
-        const response = axios.post('http://100.99.200.37:8000/user/add_favorite/', {
-            params: {
-                word_id: word_id
-            }
-        });
-        if (response.status === 200) {  
-            ElMessage({
-                message: 'Collect successfully.',
-                type: 'success',
-            });
-        } else {
-            ElMessage({
-                message: 'Oops, fail to collect it.',
-                type: 'warning',
-            });
-            console.error('收藏失败:', response.error);  
-        }  
-    } catch(error) {
-        console.error('Error fetching data:', error);
+const collectArticle = async () => {
+  try {
+    const result = await request({
+      url: 'http://100.117.229.168:8000/user/add_favorite/',
+      params: {
+        work_id: word_id,
+      },
+      addToken: true,
+    });
+
+    console.log(result);
+
+    if (result) {
+      paper.collected = true;
+      ElMessage({
+        message: '收藏成功',
+        type: 'success',
+      });
     }
-}
+  } catch (error) {
+    console.error('Error collecting paper:', error);
+    ElMessage({
+      message: '收藏失败，请重试',
+      type: 'error',
+    });
+  }
+};
 
 </script>
 
 <template>
     <el-card class="box-card">
         <div class="title">
-            <p class="title-content" href="toPaperPage" >{{ title}}</p>
+            <router-link to="/thesisDetail/{{ word_id.value }}"><p class="title-content" href="toPaperPage" >{{ title }}</p></router-link>
         </div>
         <div class="author">
             <span v-for="(author, index) in authors">
@@ -108,6 +117,8 @@ const collectArticle = () => {
 <style scoped>
 .box-card {
     background-color: rgb(246, 250, 250);
+    height: 100%;
+    width: 100%;
 }
 
 .title {

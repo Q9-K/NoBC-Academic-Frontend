@@ -8,7 +8,9 @@ export default {
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",
-    researcher: "Researcher"
+    researcher: "Researcher",
+    messageBoxTitle: "Platform Message",
+    noMessage: "No Message"
   },
   homePage: {
     search: "Search for scholars, papers and journals",
@@ -61,7 +63,9 @@ export default {
     },
     selectFieldMode: {
       select: "Select your Interests",
-      finishSelect: "I've selected"
+      finishSelect: "I've selected",
+      selectButton: "Pick It!",
+      skipSelect: 'Skip Here'
     },
     finishMode: {
       finish: "OK! Welcome to NoBC Academic!"
@@ -97,7 +101,21 @@ export default {
   },
   thesisDetail:{
     quote:"Quote",
-    browse:"Browse"
+    browse:"Browse",
+    Link: "Link",
+    collection: "collection",
+    related: "Related Papers",
+    relavant: "Relavant Papers",
+    quoted: "Quoted Papers",
+    beQuoted: "Quoted Number",
+    more: "more" ,
+    net: "Quoted Network",
+    fold: "fold",
+    summary: "Summarize in a sentence",
+    introduce: "Sorry, The paper does not have a PDF",
+    input: "Message ChatPDF",
+    send: "send",
+    abstract: "abstract"
   },
   field: {
     moreDetail: "More"
@@ -128,11 +146,13 @@ export default {
   journal: {
     journalStatistics: "Statistics",
     journalPapers: "Papers",
+    journalCount: "Total citations",
     journalField: "Field",
     journalCreatedYear: "CreatedYear",
-    journal2021Number: "Number of papers in 2021",
-    journal2021factors: "2021 Impact factors",
-    journalAverageCited: "The average number of citations in the last five years",
+    journalTotalPaper: "Total papers",
+    journalTwoCount: "2yr_works_count",
+    journalTwoIndex: "2yr_h_index",
+    journalAverageCited: "2yr_mean_citedness",
     journalTopic:"Topics",
     journalArea: "Countries or Areas",
     journalCite: "Paper citations",
@@ -188,5 +208,8 @@ export default {
     intro3:"You have not yet completed the binding of the scholar. Please complete the binding on the corresponding scholar's homepage.",
     bindNotice: "Scholar Authentication Process:<br />1.Enter the Popular Scholars Page<br />2.Perform a search for the scholar.<br />3.Enter the corresponding scholar's homepage<br />4.Click the 'Claim' button to bind the scholar.<br /><br />",
     popularScholarPage: "popular Scholar page",
+  },
+  journalDisplay: {
+    paperCount: "Papers",
   }
 }

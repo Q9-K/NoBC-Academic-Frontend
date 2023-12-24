@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, watch, defineAsyncComponent } from 'vue'
     import NavBar from '../components/NavigateBar.vue'
     import 'element-plus/dist/index.css'
     import { Search } from '@element-plus/icons-vue'
@@ -10,21 +10,32 @@
     import TimeRange from '../components/search/TimeRange.vue'
     import Institution from '../components/search/Institution.vue'
     import SelectJournal from '../components/search/SelectJournal.vue'
-    import Subject from '../components/search/Subject.vue'
+    //import Subject from '../components/search/Subject.vue'
+    const AsyncSubject = defineAsyncComponent(() => import('../components/search/Subject.vue'));
     import i18n from '../locales'
     import axios from 'axios'
-
+    import {debounce} from "vue-debounce";
+    const showAriticle = ref([true]);
+    const key = ref(Date.now());
     const input = ref('');
     const startTime = ref('');
     const endTime = ref('');
-    const subject = ref('');
-    const journal = ref('');
-    const institution = ref('');
+    const subjects = ref([]);
+    const journals = ref([]);
+    const institutions = ref([]);
+    const selectedSubject = ref('');
+    const selectedJournal = ref('');
+    const selectedInstitution = ref('');
     const orderWay = ref('default');
     const data = ref([]);
     const articleData = ref([]);
     const pageNum = ref();
+    const statics = ref([]);
+    const authors = ref([]);
     const activeButton = ref('searchSynthesis');
+    const showPagination = ref(false);
+    const totalPage = ref(1);
+    const pageSize3 = ref(10);
     const searchLatest = () => {
         activeButton.value = 'searchLatest';
         orderWay.value = 'time';
@@ -40,31 +51,124 @@
         orderWay.value = 'cited_by_count';
         search();
     };
-    const search = async () => {
+    const search = debounce( async () => {
         try {
-            const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
-            params: {
-                content: input.value,
-                start_time: startTime.value || undefined,
-                end_time: endTime.value || undefined,
-                source: journal.value || undefined,
-                concept: subject.value || undefined,
-                institution: institution.value || undefined,
-                order_by: orderWay.value,
-                page_number: pageNum.value || undefined,
-            },
-            });
-            data.value = response.data;
-            articleData.value = data.value.data.data;
+            if(input.value != '') {
+              const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
+              params: {
+                  content: input.value,
+                  start_time: startTime.value || undefined,
+                  end_time: endTime.value || undefined,
+                  source: selectedJournal.value || undefined,
+                  concept: selectedSubject.value || undefined,
+                  institution: selectedInstitution.value || undefined,
+                  order_by: orderWay.value,
+                  page_number: pageNum.value || undefined,
+              },
+              });
+              console.log(input.value);
+              console.log(selectedJournal.value);
+              if(response.data.data.count > 0) {
+                  showAriticle.value = true;
+                  data.value = response.data;
+                  articleData.value = data.value.data.data;
+                  showPagination.value = true;
+                  statics.value = response.data.data.statistics.docs_by_year;
+                  authors.value = response.data.data.statistics.top_authors;
+                  subjects.value = response.data.data.statistics.top_concepts;
+                  journals.value = response.data.data.statistics.top_sources;
+                  institutions.value = response.data.data.statistics.top_institutions;
+                  totalPage.value = response.data.data.count / 10;
+                  key.value = Date.now();
+              } else{
+                  showAriticle.value = false;
+                  window.alert("无结果");
+              }
+          }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
+    }, "300ms");
+
+    const receiveTime = (start_time, end_time) => {
+        startTime.value = start_time.value+'-01-01';
+        endTime.value = end_time.value+'-12-31';
     }
 
-    const receiveTime = (data) => {
-        startTime.value = data.startTime;
-        endTime.value = data.endTime;
-        console.log(startTime.value);
+    watch([startTime, endTime], () => {
+        search();
+    });
+    watch(selectedSubject, () => {
+      search();
+    });
+    watch(selectedJournal, () => {
+      search();
+    });
+    watch(input, ()=>{
+
+    });
+    watch(selectedInstitution, () =>{
+      search();
+    });
+    const data1 = ref([]);
+    let timeout = null;
+    let showDropdown = ref(false);
+
+    const fetchData = async (value) => {
+      const response = await axios.get('http://100.96.145.140:8000/work/get_suggestion', {
+        params: {
+          content: value,
+        },
+      });
+      const result = await response.data.data;
+       return result.suggestions;
+    };
+
+    const handleInput = async () => {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+
+      timeout = setTimeout(async () => {
+        const suggestions = await fetchData(input.value);
+        data1.value = suggestions;
+        showDropdown.value = true;
+      }, 300);
+    };
+
+    const handleFocus = () => {
+      if(input.value !== null) {
+        showDropdown.value = true;
+      } else{
+        showDropdown.value = false;
+      }
+    };
+
+    const handleBlur = () => {
+      // Using setTimeout to delay hiding the dropdown
+      setTimeout(() => {
+        showDropdown.value = false;
+      }, 200);
+    };
+
+    const selectItem = (item) => {
+      input.value = item; // Adjust this based on your item structure
+      showDropdown.value = false;
+    };
+
+    const handleSelectSubject = (subject) => {
+      selectedSubject.value = subject.display_name;
+    };
+    const handleSelectJournal = (journal) => {
+      selectedJournal.value = journal.id;
+    };
+    const handleSelectInstitution = (institution) => {
+      selectedInstitution.value = institution.id;
+    }
+    const handleCurrentChange = (number) => {
+      pageNum.value = number;
+      search();
     }
 </script>
 
@@ -75,14 +179,24 @@
             <NavBar />
         </el-row>
         <el-row style="height: 6vh; margin-left: 25vw; margin-right: 27vw; margin-top: 2vh;">
-            <el-input v-model="input" placeholder="Search" class="input-with-select" size="small">
-                <!-- <template #>
-                    <el-button>高级搜索</el-button>
-                </template> -->
-                <template #append>
-                    <el-button :icon="Search" @click="searchSynthesis"/>
-                </template>
-            </el-input>
+            <div class="search-container">
+                <a-input-search
+                    v-model:value="input"
+                    placeholder="input search text"
+                    enter-button="Search"
+                    size="large"
+                    @input="handleInput"
+                    @focus="handleFocus"
+                    @blur="handleBlur"
+                    @search="search"
+                    style="background-color: #1890ff; border-color: #1890ff; color: #fff; width: 30vw;"
+                    />
+                <ul v-show="showDropdown" class="dropdown-list">
+                <li v-for="item in data1" :key="item.id" @click="selectItem(item)">
+                    {{ item }}
+                </li>
+                </ul>
+            </div>
         </el-row>
       </el-header>
       <el-container>
@@ -90,24 +204,24 @@
             <el-row class="classify">
                 <div>
                 <!-- 选择日期 -->
-                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;" @sendData="receiveTime"/>
+                <TimeRange style="margin-bottom: 1vh; margin-left: 2vw;" @changeTime="receiveTime"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <!-- 选择学科 -->
                 <div>
-                    <Subject style="margin-bottom: 1vh; margin-left: 2vw;"/>
+                    <AsyncSubject style="margin-bottom: 1vh; margin-left: 2vw;" :subjects="subjects" @selectSubject="handleSelectSubject"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
-                    <SelectJournal style="margin-bottom: 1vh; margin-left: 2vw;"/>
+                    <SelectJournal style="margin-bottom: 1vh; margin-left: 2vw;" :journals="journals" @selectJournal="handleSelectJournal"/>
                 </div>
             </el-row>
             <el-row class="classify">
                 <div>
                 <!-- 选择机构 -->
-                    <Institution style="margin-bottom: 1vh; margin-left: 2vw;"/>
+                    <Institution style="margin-bottom: 1vh; margin-left: 2vw;" :institutions="institutions" @selectInstitution="handleSelectInstitution"/>
                 </div>
             </el-row>
         </el-aside>
@@ -119,16 +233,28 @@
                     <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchCitations' }" style="border:none; font-size: large;" @click="searchCitations">{{ i18n.t('search.searchCitations') }}</el-button></el-col>
                 </el-row>
                 <div>
-                <el-row v-for="data in articleData">
-                    <ArticleDispaly :data="data" type="highlight"/>
+                <el-row v-for="data in articleData" v-if="showAriticle" >
+                    <ArticleDispaly :data="data" type="highlight" :key="key"/>
                 </el-row>
-                <el-pagination style="margin-top: 10px;" layout="prev, pager, next" :total="1000" />
+                <el-pagination
+                  v-model:current-page="currentPage3"
+                  v-model:page-size="pageSize3"
+                  :small="false"
+                  :disabled="disabled"
+                  :background="true"
+                  layout="prev, pager, next, jumper"
+                  :total="totalPage"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  style="margin-top: 10px; margin-left: 6vw"
+                />
                 </div>
             </el-main>
-            <el-aside style="margin-left: 0;">
-                <SearchResultStatics />
-                <p style="text-align: center; margin-bottom:30px">前1000条结果统计图</p>
-                <AuthorDisplay />
+            <el-aside v-if="showAriticle">
+                <SearchResultStatics :data="statics" :key="key" />
+                <p style="text-align: center;" v-if="showAriticle">前1000条结果统计图</p>
+                <AuthorDisplay :data="authors" :key="key" />
+                <p style="text-align: center;" v-if="showAriticle"><br/>发表数量最多的作者</p>
             </el-aside>
         </el-container>
       </el-container>
@@ -140,7 +266,7 @@
 
 <style scoped lang="less">
 .active-button {
-  background-color:rgb(11, 224, 47);
+  background-color:rgb(224, 46, 11);
 }
 .el-header {
     height: 20vh;
@@ -163,4 +289,41 @@
     padding: 0;
     background-color: white;
 }
+
+.search-container {
+    position: relative;
+    display: inline-block;
+    justify-content: center;
+    margin-left: 10vw;
+  }
+
+  .search-input {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .dropdown-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .dropdown-list li {
+    text-align: left;
+    padding: 10px;
+    background-color: #f5f5f5; /* Default background color */
+  }
+
+  .dropdown-list li:nth-child(odd) {
+    background-color: #e0e0e0; /* Background color for odd rows */
+  }
 </style>
