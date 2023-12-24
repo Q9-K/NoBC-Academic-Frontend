@@ -96,7 +96,9 @@ export default {
     },
     selectFieldMode: {
       select: "选择您的关注领域",
-      finishSelect: "选好了"
+      finishSelect: "选好了",
+      selectButton: "选择",
+      skipSelect: "跳过"
     },
     finishMode: {
       finish: "注册成功！欢迎使用NoBC学术搜索！"

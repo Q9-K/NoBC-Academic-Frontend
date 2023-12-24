@@ -63,7 +63,9 @@ export default {
     },
     selectFieldMode: {
       select: "Select your Interests",
-      finishSelect: "I've selected"
+      finishSelect: "I've selected",
+      selectButton: "Pick It!",
+      skipSelect: 'Skip Here'
     },
     finishMode: {
       finish: "OK! Welcome to NoBC Academic!"
