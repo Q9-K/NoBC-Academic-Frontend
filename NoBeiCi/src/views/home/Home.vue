@@ -19,6 +19,8 @@ import ArticleDisplay from "../../components/search/ArticleDisplay.vue";
 import {useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 import ScholarDisplay from "../../components/ScholarDisplay.vue";
 import { ReloadOutlined } from "@ant-design/icons-vue";
+import {useSearchContentStore} from "../../stores/searchContent.js";
+import router from "../../routes/index.js";
 
 const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
 
@@ -144,13 +146,9 @@ watch(
 )
 
 const handleSearchButtonClick = debounce(() => {
-  console.log("-----------------")
-  console.log(pinyin(searchValue.value, {
-    mode: "SURNAME",
-    group: true,
-    style: "normal",
-  }))
-  console.log("-----------------")
+  const searchContent = useSearchContentStore()
+  searchContent.setContent(searchValue.value)
+  router.push('/search')
 }, "300ms")
 
 const handleRefreshWork = () => {
