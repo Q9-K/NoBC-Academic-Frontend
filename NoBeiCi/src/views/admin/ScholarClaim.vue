@@ -12,7 +12,7 @@ const api = {
 }
 const showInfoList = ref(true);
 const detail = ref({
-  user_id:0,
+  id:1,
   user:"",
   author_id:"",
   author_name:"",

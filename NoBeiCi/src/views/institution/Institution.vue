@@ -11,6 +11,12 @@ import {checkIsChinese} from "../../functions/checkIsChinese.js";
 import {handleResponse} from "../../functions/handleResponse.js";
 import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
+const api = {
+  getInstitutions: 'http://100.117.229.168:8000/institution/getInstitutionList/',
+  getInstitutionByKeyword: 'http://100.117.229.168:8000/institution/getInstitutionByKeyword/',
+  reviewCertification:"http://100.117.229.168:8000/manager/check_certification/",
+}
+
 const language = ref("cn")
 const store = useInstitution();
 const page_num = ref(1);
@@ -43,7 +49,7 @@ const getInstitutions =async (page_size,page_num)=>{
     console.log(page_size,page_num)
     const result = await get(
         {
-            url: 'http://100.117.229.168:8000/institution/getInstitutionList/',
+            url: api.getInstitutions,
             params:{
                 page_size:page_size,
                 page_num:page_num
@@ -75,7 +81,7 @@ const handleSearchInstitution= (value) => {
     codeOfLanguage = 1
 }
 
-return axios.get('http://100.117.229.168:8000' + '/institution/getInstitutionByKeyword/', {
+return axios.get(api.getInstitutionByKeyword, {
     params: {
         keyword: value,
         language: codeOfLanguage
