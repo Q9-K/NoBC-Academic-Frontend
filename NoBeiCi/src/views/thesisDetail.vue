@@ -782,11 +782,12 @@ onMounted(async () => {
                         margin-right: 4px;
                         vertical-align: -0.15em;
                         fill: currentColor;
+                        color: blue;
                     }
 
                     .pdf {
-                        color: #e8edf4;
-
+                        /*color: #e8edf4;*/
+                        color: white;
                     }
 
                 }
