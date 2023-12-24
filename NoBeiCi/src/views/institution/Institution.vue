@@ -12,9 +12,8 @@ import {handleResponse} from "../../functions/handleResponse.js";
 import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
 const api = {
-  getInstitutions: 'http://100.117.229.168:8000/institution/getInstitutionList/',
-  getInstitutionByKeyword: 'http://100.117.229.168:8000/institution/getInstitutionByKeyword/',
-  reviewCertification:"http://100.117.229.168:8000/manager/check_certification/",
+  getInstitutions: '/institution/getInstitutionList/',
+  getInstitutionByKeyword: '/institution/getInstitutionByKeyword/',
 }
 
 const language = ref("cn")
@@ -54,6 +53,8 @@ const getInstitutions =async (page_size,page_num)=>{
                 page_size:page_size,
                 page_num:page_num
             },
+            useTestEnv:false,
+            // testEnv:"http://100.117.229.168:8000"
         }
     );
     institutions.value = result.data.institutions;

@@ -4,7 +4,8 @@ import get from "../../functions/Get.js";
 import i18n from "../../locales/index.js";
 import ImageViewer from "../../components/ImageViewer.vue";
 import request from "../../functions/Request.js";
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const api = {
   getcomplaints: "http://100.117.229.168:8000/manager/get_complaints_all/",
   getcomplaintDetail: "http://100.117.229.168:8000/manager/get_complaint_detail/",
@@ -14,8 +15,8 @@ const showInfoList = ref(true);
 const detail = ref({
   id:1,
   user:"",
-  author_id:"",
-  author_name:"",
+  author_id:"http://openalex.org/aaa123",
+  author_name:"aaa123",
   date_time:"",
   imgs:[]
 });
@@ -101,7 +102,11 @@ onMounted(()=>{
   getcomplaints();
 })
 
-
+const toAuthor = (id)=>{
+  let strs = id.split('/')
+  id = strs[strs.length-1];
+  window.open(router.resolve('/authorhome/'+id).href, '_blank')
+}
 
 const sortLatest = ()=>{
   sortEarliest();
@@ -211,7 +216,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
             <el-divider style="margin: 5px !important"></el-divider>
             <div class="info-info">
               <div class="info-name">{{item.user}}</div>
-              <div class="info-schName">{{item.author_name}}</div>
+              <div class="info-schName" >{{item.author_name}}</div>
               <div class="info-time">{{item.date_time}}</div>
               <div class="info-status">
                 {{item.status == "passed" ? (language=="cn" ? "已通过": "Passed") : 
@@ -262,7 +267,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
                 <div class="scholar-avater">
                   <el-avatar :size="100" :src="detail.author_avatar"></el-avatar>
                 </div>
-                <div class="scholar-name">{{ detail.author_name }}</div>
+                <div class="scholar-name" @click="toAuthor(detail.author_id)" >{{ detail.author_name }}</div>
               </div>
             </div>
           </div>
