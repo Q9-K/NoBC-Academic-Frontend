@@ -1,78 +1,68 @@
 <template>
-    <div>
-      <button @click="toggleDrawer" :class="{ active: showDrawer }" class="journal">期刊</button>
-  
-      <div class="drawer" v-show="showDrawer">
-        <div class="button-group">
-          <el-button
-            v-for="(zone, index) in sciZones"
-            :key="index"
-            @click="toggleZone(index)"
-            :class="{ active: activeZone === index }"
-            class="journal-kind"
-          >
-            {{ zone }}
-          </el-button>
-        </div>
-        <div v-for="(zone, index) in sciZones" :key="index" v-show="activeZone === index">
-          <ul>
-            <li v-for="(journal, jIndex) in journalList[zone]" :key="jIndex" v-show="!collapsed[index] || jIndex < 3">
-              <el-button style="width: 16vw;">{{ journal }}</el-button>
-            </li>
-          </ul>
-          <button @click="toggleCollapse(index)">
-            {{ collapsed[index] ? '展开+' : '折叠-' }}
-          </button>
-        </div>
-      </div>
+  <div>
+    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="journal">期刊</button>
+    <div v-if="showDrawer" class="drawer">
+      <ul style="list-style-type: none;" class="journal-list">
+        <li v-for="(journal, index) in displayedjournals" :key="journal.id">
+          <el-button class="journal-button"  @click="selectJournal(journal)">{{ journal.display_name }}({{ journal.doc_count }})</el-button>
+        </li>
+      </ul>
+      <el-button v-if="organizations.length > 5" @click="toggleExpansion">
+        {{ isExpanded ? '收起-' : '展开+' }}
+      </el-button>
     </div>
-  </template>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+
+const props = defineProps(['journals']);
+const emit = defineEmits(['selectJournal']);
+const showDrawer = ref(false);
+const isExpanded = ref(false);
+const organizations = ref([
+  { id: 1, display_name: '北京大学', doc_count: "" },
+  { id: 2, display_name: '清华大学', doc_count: "" },
+  { id: 3, display_name: '中国科学院', doc_count: "" },
+  { id: 4, display_name: '悉尼大学', doc_count: "" },
+  { id: 5, display_name: '石溪大学', doc_count: "" },
+  { id: 6, display_name: '纽约大学', doc_count: "" },
+  { id: 1, display_name: '北京大学', doc_count: "" },
+  { id: 2, display_name: '清华大学', doc_count: "" },
+  { id: 3, display_name: '中国科学院', doc_count: "" },
+  { id: 4, display_name: '悉尼大学', doc_count: "" },
+  { id: 5, display_name: '石溪大学', doc_count: "" },
+  // 更多机构...
+]);
+const displayedjournals = computed(() => {
+  if (isExpanded.value) {
+    organizations.value = props.journals;
+    return organizations.value;
+  } else {
+      organizations.value = props.journals;
+      return organizations.value.slice(0, 5);
+  }
+});
+
+const toggleDrawer = () => {
+  showDrawer.value = !showDrawer.value;
+  isExpanded.value = false; // 关闭抽屉时重置展开状态
+};
+
+const toggleExpansion = () => {
+  isExpanded.value = !isExpanded.value;
+};
+const selectJournal = (journal) => {
+  emit('selectJournal', journal);
+};
+</script>
   
-  <script>
-  export default {
-    data() {
-      return {
-        showDrawer: false,
-        activeZone: null,
-        collapsed: [true, true, true, true], // 初始化全部折叠
-        sciZones: ['SCI一区', 'SCI二区', 'SCI三区', 'SCI四区'],
-        journalList: {
-          'SCI一区': ['期刊1', '期刊2', '期刊3', '期刊4', '期刊5', '期刊6', '期刊7'],
-          'SCI二区': ['期刊8', '期刊9', '期刊10', '期刊11', '期刊12', '期刊13', '期刊14'],
-          'SCI三区': ['期刊15', '期刊16', '期刊17', '期刊18', '期刊19', '期刊20', '期刊21'],
-          'SCI四区': ['期刊22', '期刊23', '期刊24', '期刊25', '期刊26', '期刊27', '期刊28']
-        }
-      };
-    },
-    created() {
-      this.sciZones.forEach((zone) => {
-        // 判断期刊数量是否大于3，设置初始折叠状态
-        this.collapsed.push(this.journalList[zone].length > 3);
-      });
-    },
-    methods: {
-      toggleDrawer() {
-        this.showDrawer = !this.showDrawer;
-      },
-      toggleZone(index) {
-        if (this.activeZone === index) {
-          this.activeZone = null;
-        } else {
-          this.activeZone = index;
-        }
-      },
-      toggleCollapse(index) {
-        this.collapsed[index] = !this.collapsed[index];
-      }
-    }
-  };
-  </script>
-  
-  <style>
+  <style scoped>
   .journal {
     border: 0;
     border-top: 3px solid #f4081c;
-    background-color: #409EFF;
+    background-color: #ff8640;
     width: 16vw;
     height: 5vh;
   }
@@ -83,15 +73,15 @@
   }
   
   button.active {
-    background-color: #f00;
+    background-color: rgb(206, 67, 28);
     color: #fff;
   }
   
   .drawer {
-    background-color: #f5f5f5;
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 16vw;
+    padding: 0px;
+    margin-top: 0px;
   }
   
   .drawer button {
@@ -107,4 +97,13 @@
   .drawer button:last-child {
     margin-top: 10px;
   }
+
+  .journal-button {
+  display: flex;
+  width: 16vw;
+  white-space: normal; /* Allow text to wrap to the next line */
+  word-wrap: break-word; /* Break long words and wrap them */
+  max-height: 3em; /* Set a maximum height; adjust as needed */
+  overflow: hidden; /* Hide overflow content */
+}
   </style>

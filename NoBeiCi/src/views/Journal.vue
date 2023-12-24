@@ -209,8 +209,8 @@ const toShowAuthor = () => {
 const getAllInfo = async () => {
     try {   
             const instance = getCurrentInstance();
-            // const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
-            const ident = instance.proxy.$route.params.id;
+            const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
+            //const ident = instance.proxy.$route.params.id;
             const response1 = await axios.get('http://100.96.145.140:8000/source/get_source_by_id', {
                 params: {
                 source_id: ident,
@@ -238,7 +238,6 @@ const getAllInfo = async () => {
             h2_index.value = data.value.data.summary_stats['2yr_h_index'];
             mean_citedness.value = data.value.data.summary_stats['2yr_mean_citedness'];
             created_year.value = data.value.data.summary_stats['created_date'];
-            console.log(response3.data);
             authorData.value =response3.data.data.map(item => ({
                 author: item.key.display_name,
                 thesisnumber: item.doc_count,
