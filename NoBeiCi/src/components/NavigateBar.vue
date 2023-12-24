@@ -508,7 +508,6 @@ mailWebSocket.onmessage = (event) => {
       flex-wrap: nowrap;
       justify-content: left;
       .new-mail-icon-outer {
-        height: 100%;
         width: 10%;
         display: flex;
         justify-content: center;
