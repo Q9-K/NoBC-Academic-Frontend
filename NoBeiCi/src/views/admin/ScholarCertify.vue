@@ -4,7 +4,8 @@ import get from "../../functions/Get.js";
 import i18n from "../../locales/index.js";
 import ImageViewer from "../../components/ImageViewer.vue";
 import request from "../../functions/Request.js";
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const api = {
   getCertifications: "http://100.117.229.168:8000/manager/get_certifications_all/",
   getCertificationDetail: "http://100.117.229.168:8000/manager/get_certification_detail/",
@@ -14,8 +15,8 @@ const showInfoList = ref(true);
 const detail = ref({
   user_id:0,
   user:"",
-  author_id:"",
-  author_name:"",
+  author_id:"http://openalex.org/aaa123",
+  author_name:"aaa123",
   idcard_img_urlOne:"",
   idcard_img_urlTwo:"",
   idcard_img_urlThree:"",
@@ -95,7 +96,6 @@ const getDetail = async(id)=>{
      if(detail.value.idcard_img_urlThree!="") detail.value.imgs.push(detail.value.idcard_img_urlThree);
      if(detail.value.idcard_img_urlFour!="") detail.value.imgs.push(detail.value.idcard_img_urlFour);
      if(detail.value.remark=="") detail.value.remark = "申请者没有填写备注信息";
-     console.log(detail.value);
      nextTick(()=>{
        imagePreview();
      })
@@ -177,7 +177,11 @@ const filterTobecertified = ()=>{
 const showall = ()=>{
   certifications.value = certificationsCopy.value;
 }
-
+const toAuthor = (id)=>{
+  let strs = id.split('/')
+  id = strs[strs.length-1];
+  window.open(router.resolve('/authorhome/'+id).href, '_blank')
+}
 //图片预览
 const imageViewerRef = ref(null);
 const previewImgList = ref([]);
@@ -185,7 +189,6 @@ const imagePreview = () => {
     const imageNodeList = document
       .querySelector("#detail")
       .querySelectorAll("img");
-    console.log(imageNodeList);
     const imageList = [];
     imageNodeList.forEach((item, index) => {
       const src = item.getAttribute("src");
@@ -280,7 +283,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
                 <div class="scholar-avater">
                   <el-avatar :size="100" :src="detail.author_avatar"></el-avatar>
                 </div>
-                <div class="scholar-name">{{ detail.author_name }}</div>
+                <div class="scholar-name" @click="toAuthor(detail.author_id)">{{ detail.author_name }}</div>
               </div>
             </div>
           </div>

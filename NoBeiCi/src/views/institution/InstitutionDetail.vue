@@ -24,6 +24,10 @@ const institution = ref({
   homepage_url: "",
   type: "",
   repositories:[
+    {
+      id:"http://111/s13",
+      display_name:"111"
+    }
   ],
   associated_institutions:[
   ],
@@ -37,7 +41,7 @@ const backToList = () => {
 }
 const checkAssociatedInsititution = (id) => {
   store.changeId(id);
-  var strs = id.split('/');
+  let strs = id.split('/');
   console.log(strs[strs.length-1]);
   id = strs[strs.length-1];
   router.push({ name: 'institutionDetail', params: { institutionId: id },   query: {
@@ -128,7 +132,12 @@ onMounted(() => {
 });
 
 
-
+const goJournal= (id)=>{
+    let strs = id.split('/');
+    id = strs[strs.length-1];
+    console.log("id",id);
+    router.push("/journal/"+id+"/statics");
+}
 
 
 
@@ -170,7 +179,7 @@ onMounted(() => {
           <el-divider style="margin: 5px;"></el-divider>
           <div class="repositories">
             <div class="repositories-label">{{ i18n.t('institution.relatedJournal') }}</div>
-            <div class="repositories-content" v-for="item in institution.repositories">
+            <div class="repositories-content" v-for="item in institution.repositories" @click="goJournal(item.id)">
               {{item.display_name}}
             </div>
             <div class="repositories-content" v-if="institution.repositories.length==0">
