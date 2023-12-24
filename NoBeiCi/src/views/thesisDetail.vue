@@ -44,7 +44,7 @@ var data = ref({ name: '', children: [] })
 var visit_count = ref('')
 var cited_by_count = ref('')
 var work_id = ref('')
-
+var fields = ref('')
 //存放是否全局加载
 var fullscreenLoading = ref(false)
 
@@ -78,7 +78,7 @@ function setRelavant() {
 //打开当前论文的pdf
 function navigateToExternalURL() {
     console.log(pdf_url)
-    if (pdf_url!= null) {
+    if (pdf_url != null) {
         window.open(pdf_url, '_blank')
     }
 }
@@ -88,9 +88,9 @@ function openPDF(url) {
         window.open(url, '_blank')
     }
 }
-function NavigateToScholar(id){
+function NavigateToScholar(id) {
     console.log(id)
-    router.push('/authorhome/'+id)
+    router.push('/authorhome/' + id)
 }
 // 收藏论文
 async function collection() {
@@ -151,6 +151,7 @@ async function getThesis() {
         data.value.name = res.data.data.title.substring(0, 10) + ".."
         data.value.id = res.data.data.id
         work_id.value = res.data.data.id
+        fields.value = res.data.data.concepts
         //原文链接列表初值
         for (let i = 0; i < res.data.data.locations.length; i++) {
             links.value.push(res.data.data.locations[i].landing_page_url)
@@ -358,10 +359,12 @@ onMounted(async () => {
                                                     {{ abstract }}
                                                 </div>
                                                 <span v-if="ifShowMoreButton" class="abstract-morebtn">
-                                                    <span class="morebtn" @click="showAllAbstract"> {{ i18n.t("thesisDetail.more") }} </span>
+                                                    <span class="morebtn" @click="showAllAbstract"> {{
+                                                        i18n.t("thesisDetail.more") }} </span>
                                                 </span>
                                                 <span v-if="!ifShowMoreButton" class="abstract-morebtn2">
-                                                    <span class="morebtn" @click="showAllAbstract">{{ i18n.t("thesisDetail.fold") }}</span>
+                                                    <span class="morebtn" @click="showAllAbstract">{{
+                                                        i18n.t("thesisDetail.fold") }}</span>
                                                 </span>
                                             </div>
                                             <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
@@ -375,6 +378,15 @@ onMounted(async () => {
                                     </div>
                                 </div>
                             </span>
+                        </div>
+                    </div>
+                    <div class="fieldHead">
+                        相关领域
+                    </div>
+                    <div class="fields">
+                        <div v-for="field in fields" class="field">
+                            <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
+                            {{ field.display_name }}
                         </div>
                     </div>
                     <div class="actionButton">
@@ -513,6 +525,7 @@ onMounted(async () => {
         flex: 1 1;
         /*margin-right: 20px;*/
         margin-right: 400px;
+
         .background {
             background-color: #fff;
             border-radius: 10px;
@@ -569,7 +582,8 @@ onMounted(async () => {
                                     color: #6b6b6b;
                                     cursor: pointer;
                                 }
-                                .author_label:hover{
+
+                                .author_label:hover {
                                     color: yellow;
                                 }
                             }
@@ -626,7 +640,7 @@ onMounted(async () => {
             .abstract {
                 display: flex;
                 align-items: center;
-                margin-bottom: 15px;
+                margin-bottom: 7px;
                 flex-wrap: wrap;
 
                 .abstract-title {
@@ -967,6 +981,31 @@ onMounted(async () => {
                     cursor: pointer;
                 }
             }
+
+            .fieldHead {
+                height: 30px;
+                text-align: left;
+                margin-top: 0px;
+                font-size: 15px;
+                font-weight: 500;
+                color: #222;
+            }
+            .fields{
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+                .field{
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #6b6b6b;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                }
+            }
         }
 
         .relation {
@@ -1145,11 +1184,13 @@ onMounted(async () => {
             }
         }
     }
+
     .chat {
         display: block;
         position: fixed;
         /*right: 200px;*/
         left: 68vw;
+
         .rightBar {
             flex: 0 0 370px;
             max-width: 370px;
@@ -1158,7 +1199,8 @@ onMounted(async () => {
         }
     }
 }
+
 .indexArticle::-webkit-scrollbar {
-    width: 1px; /* 设置滚动条宽度 */
-}
-</style>
+    width: 1px;
+    /* 设置滚动条宽度 */
+}</style>

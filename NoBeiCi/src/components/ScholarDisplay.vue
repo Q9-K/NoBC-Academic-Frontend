@@ -13,8 +13,11 @@
             <div class="scholar_head">
                 <div class="name"> {{ scholar.display_name }} </div>
                 <div class="follow">
-                    <el-icon style="font-size: 20px;"><Plus /></el-icon>
-                    <div>关注</div>
+                    <div class="page"> 学者主页 </div>
+                    <div class="focus">
+                        <el-icon style="font-size: 13px;"><Message /></el-icon>
+                    <div style="font-family:fantasy;font-weight:600;font-size:12px;margin-left:5px">关注</div>
+                    </div>
                 </div>
             </div>
             <div class="scholar_makes">
@@ -45,12 +48,13 @@
             <div class="scholar_field">
                 <div class="fieldHead">研究领域</div>
                 <div v-for="field in scholar.x_concepts" class="field">
+                    <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
                     {{ field.display_name }}
                 </div>
             </div>
-            <div class="more">
+            <!-- <div class="more">
                 <div class="page"> 学者主页 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -70,7 +74,7 @@
 .info {
     margin-left: auto;
     margin-right: auto;
-    height: 150px;
+    height: auto;
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -97,16 +101,47 @@
 }
 .follow{
     margin-left: 10px;
-    margin-right: 100px;
+    margin-right: 30px;
     font-size: 16px;
     font-weight: 300;
-    border: solid #ccc;
-    border-width: 1px;
     padding: 3px;
+    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    }
+}
+
+.page {
+    margin-right: 20px;
+    font-family:fantasy;
+    font-weight:600;
+    font-size: 12px;
+    border: solid #ccc;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 3px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.focus{
+    height: 30px;
+    display: flex;
+    margin-left: 20px;
+    height: 20px;
+    padding: 5px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    border: solid #ccc;
+    border-width: 1px;
+}
+.focus:hover{
+    background-color: burlywood;
+}
 .scholar_makes {
     margin-left: 20px;
     height: 50px;
@@ -162,6 +197,7 @@
     justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
+    gap: 5px;
 }
 .fieldHead{
     margin-right: 30px;
@@ -172,6 +208,10 @@
     margin-right: 10px;
     font-size: 12px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 .field:hover{
     color: burlywood;
@@ -185,9 +225,6 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-}
-.page {
-    font-size: 13px;
 }
 .page:hover{
     color: burlywood;
