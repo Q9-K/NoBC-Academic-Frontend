@@ -89,8 +89,11 @@ function openPDF(url) {
     }
 }
 function NavigateToScholar(id) {
-    console.log(id)
     router.push('/authorhome/' + id)
+}
+function jumpToField(field){
+    console.log(1)
+    router.push('/fieldDetail/' + field.id.substring(field.id.indexOf("C")))
 }
 // 收藏论文
 async function collection() {
@@ -384,7 +387,7 @@ onMounted(async () => {
                         相关领域
                     </div>
                     <div class="fields">
-                        <div v-for="field in fields" class="field">
+                        <div v-for="field in fields" class="field" @click="jumpToField(field)">
                             <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
                             {{ field.display_name }}
                         </div>
@@ -1004,6 +1007,9 @@ onMounted(async () => {
                     justify-content: center;
                     align-items: center;
                     cursor: pointer;
+                }
+                .field:hover{
+                    color: burlywood;
                 }
             }
         }

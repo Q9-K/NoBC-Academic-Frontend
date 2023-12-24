@@ -80,8 +80,10 @@
     <div class="main" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="result" v-if="showResult">
             <p>查询结果包含&nbsp;&nbsp;&nbsp;'</p>
-            <p style="font-size: 20px;color:blue; font-size: 800"> {{ final_name }} </p>
-            <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }})结果</p>
+            <p style="font-size: 30px;color:blue; font-size: 800"> {{ final_name }} </p>
+            <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }}</p>
+            <p v-if="scholar_num == 10000">+</p>
+            <p>)结果</p>
             <div style="margin-left: 30px;font-size: 12px;width:auto;display:flex;flex-direction:row;text-align: left;">
                 <p>响应的时间为</p>
                 <p style="color: blue;font-weight: 800;"> {{ time }} </p> ms
@@ -103,7 +105,7 @@
                 <!-- <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys1" style="width: 213px"
                     mode="inline" :items="h_index" @click="handleClick1"></a-menu> -->
                 <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 213px"
-                    mode="inline" :items="institution" @click="handleClick2"></a-menu>
+                    mode="inline" :items="institution" @click="handleClick2" @hover="handleHover()"></a-menu>
             </div>
             <div class="detail">
                 <div class="search">
@@ -113,6 +115,10 @@
                     <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
                 </div>
                 <ScholarDisplay :scholars="scholars" />
+                <div class="page">
+                    <el-pagination :page-size="20" layout="prev, pager, next" :total=scholar_num :current-page=currentPage
+                        @current-change="changePage" v-if="showResult" />
+                </div>
             </div>
         </div>
     </div>
@@ -120,7 +126,7 @@
 <script setup>
 import NavigateBar from '../../components/NavigateBar.vue';
 import ScholarDisplay from '../../components/ScholarDisplay.vue';
-import { reactive, ref, watch, h, toRaw } from 'vue';
+import { reactive, ref, watch, h, toRaw, nextTick } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import request from "../../functions/Request"
 import { debounce } from "vue-debounce";
@@ -140,8 +146,8 @@ const showResult = ref(false)
 // const handleOptionSelect = (value) => {
 //     props.selectFunction(value)
 // }
-const h_index_up = ref('')
-const h_index_down = ref('')
+// 当前页数
+const currentPage = ref()
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
 // 搜索的学者名字
 const scholar_name = ref()
@@ -170,6 +176,10 @@ var selectedKeys1 = ref();
 var selectedKeys2 = ref();
 // 选定的机构
 const selectedInstitution = ref('')
+// 过滤条件
+const h_index_up = ref('')
+const h_index_down = ref('')
+const order_by = ref("")
 const openKeys = ref(['sub1']);
 // 选择order种类
 var isHighlighted1 = ref(true)
@@ -189,9 +199,12 @@ async function select1() {
             page_num: "1",
             page_size: "20",
             order_by: "default",
-            instituion: selectedInstitution.value
+            instituion: selectedInstitution.value,
+            h_index_up: h_index_up.value,
+            h_index_down: h_index_down.value
         }
     })
+    order_by.value = "default"
     fullscreenLoading.value = false
     scholars.value = res.data.authors
 }
@@ -204,15 +217,22 @@ async function select2() {
     fullscreenLoading.value = true
     const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
         params: {
-            author_name: "w",
+            author_name: final_name.value,
             page_num: "1",
             page_size: "20",
             order_by: "h-index",
-            instituion: "Jagiellonian University",
+            instituion: selectedInstitution.value,
+            h_index_up: h_index_up.value,
+            h_index_down: h_index_down.value
         }
     })
+    order_by.value = "h-index"
     fullscreenLoading.value = false
     scholars.value = res.data.authors
+    console.log(res)
+    console.log(selectedInstitution.value)
+    console.log(h_index_up.value)
+    console.log(h_index_down.value)
 }
 async function select3() {
     isHighlighted1.value = false
@@ -226,9 +246,12 @@ async function select3() {
             page_num: "1",
             page_size: "20",
             order_by: "work",
-            instituion: selectedInstitution.value
+            instituion: selectedInstitution.value,
+            h_index_up: h_index_up.value,
+            h_index_down: h_index_down.value
         }
     })
+    order_by.value = "work"
     fullscreenLoading.value = false
     scholars.value = res.data.authors
 }
@@ -244,12 +267,32 @@ async function select4() {
             page_num: "1",
             page_size: "20",
             order_by: "cite",
-            instituion: selectedInstitution.value
+            instituion: selectedInstitution.value,
+            h_index_up: h_index_up.value,
+            h_index_down: h_index_down.value
+        }
+    })
+    order_by.value = "cite"
+    fullscreenLoading.value = false
+    scholars.value = res.data.authors
+    console.log(scholars)
+}
+async function changePage(val) {
+    fullscreenLoading.value = true
+    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        params: {
+            author_name: final_name.value,
+            page_num: val,
+            page_size: "20",
+            order_by: order_by.value,
+            institution: selectedInstitution.value,
+            h_index_up: h_index_up.value,
+            h_index_down: h_index_down.value
         }
     })
     fullscreenLoading.value = false
     scholars.value = res.data.authors
-    console.log(scholars)
+    currentPage.value = val
 }
 var isfilterHighlight = ref(false)
 // 搜索结果，学者列表
@@ -299,77 +342,169 @@ const handleClick1 = e => {
 const handleClick2 = async e => {
     if (toRaw(selectedKeys2.value) == e.key) {
         selectedKeys2.value[0] = -1
+        const name = e.item.originItemValue.label.split("(")[0].trim()
+        fullscreenLoading.value = true
+        const startTime = performance.now();
+        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+            params: {
+                author_name: final_name.value,
+                page_num: "1",
+                page_size: "20",
+                // order_by: order_by.value,
+                institution: "",
+                h_index_up: "",
+                h_index_down: ""
+            }
+        })
+        const endTime = performance.now();
+        const elapsedTime = endTime - startTime;
+        // 输出时间
+        time.value = elapsedTime
+        isHighlighted1.value = true
+        isHighlighted2.value = false
+        isHighlighted3.value = false
+        isHighlighted4.value = false
+        selectedInstitution.value = ""
+        showResult.value = true
+        scholar_num.value = res.data.total
+        scholars.value = res.data.authors
+        const children = []
+        const options = []
+        for (let i = 0; i < res.data.institutions.length; i++) {
+            children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
+        }
+        institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+        for (let i = 0; i < res.data.h_index.length; i++) {
+            options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
+        }
+        layers = [{ name: 'h指数:', options: options, highlight: -1 }]
+        fullscreenLoading.value = false
+        currentPage.value = 1
     }
     else {
         selectedKeys2.value = e.key
-    }
-    const name = e.item.originItemValue.label.split("(")[0].trim()
-    fullscreenLoading.value = true
-    const startTime = performance.now();
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
-        params: {
-            author_name: final_name.value,
-            page_num: "1",
-            page_size: "20",
-            institution: name
+        const name = e.item.originItemValue.label.split("(")[0].trim()
+        fullscreenLoading.value = true
+        const startTime = performance.now();
+        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+            params: {
+                author_name: final_name.value,
+                page_num: "1",
+                page_size: "20",
+                // order_by: order_by.value,
+                institution: name,
+                h_index_up: "",
+                h_index_down: ""
+            }
+        })
+        const endTime = performance.now();
+        const elapsedTime = endTime - startTime;
+        // 输出时间
+        time.value = elapsedTime
+        isHighlighted1.value = true
+        isHighlighted2.value = false
+        isHighlighted3.value = false
+        isHighlighted4.value = false
+        selectedInstitution.value = name
+        showResult.value = true
+        scholar_num.value = res.data.total
+        scholars.value = res.data.authors
+        const children = []
+        const options = []
+        for (let i = 0; i < res.data.institutions.length; i++) {
+            children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
         }
-    })
-    const endTime = performance.now();
-    const elapsedTime = endTime - startTime;
-    // 输出时间
-    time.value = elapsedTime
-    selectedInstitution.value = name
-    console.log(selectedInstitution.value)
-    showResult.value = true
-    scholar_num.value = res.data.total
-    scholars.value = res.data.authors
-    const children = []
-    const options = []
-    for (let i = 0; i < res.data.institutions.length; i++) {
-        children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
+        institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+        for (let i = 0; i < res.data.h_index.length; i++) {
+            options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
+        }
+        layers = [{ name: 'h指数:', options: options, highlight: -1 }]
+        fullscreenLoading.value = false
+        nextTick()
+        selectedKeys2.value[0] = 1
+        currentPage.value = 1
     }
-    institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
-    for (let i = 0; i < res.data.h_index.length; i++) {
-        options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
-    }
-    layers = [{ name: 'h指数:', options: options, highlight: -1 }]
-    fullscreenLoading.value = false
 };
+const handleHover = e => {
+    console.log(1)
+}
 // watch(openKeys, val => {
 //     console.log('openKeys', val);
 // });
 // 点击之后高亮，并取消同层的其他高亮,再次点击取消高亮
 async function chooseFilter(layerIndex, index) {
-    console.log(layers)
     if (layers[layerIndex].highlight == index) {
         layers[layerIndex].highlight = -1
+        fullscreenLoading.value = true
+        const startTime = performance.now();
+        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+            params: {
+                author_name: final_name.value,
+                page_num: "1",
+                page_size: "20",
+                institution: selectedInstitution.value,
+                h_index_up: "",
+                h_index_down: ""
+            }
+        })
+        const endTime = performance.now();
+        const elapsedTime = endTime - startTime;
+        // 输出时间
+        time.value = elapsedTime
+        scholar_num.value = res.data.total
+        h_index_up.value = (index + 1) * 10 - 1
+        h_index_down.value = index * 10
+        fullscreenLoading.value = false
+        scholars.value = res.data.authors
+        currentPage.value = 1
     }
     else {
         layers[layerIndex].highlight = index
-    }
-    fullscreenLoading.value = true
-    const startTime = performance.now();
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
-        params: {
-            author_name: final_name.value,
-            page_num: "1",
-            page_size: "20",
-            institution: selectedInstitution.value,
-            h_index_up: (index+1) * 10,
-            h_index_down: index * 10
+        fullscreenLoading.value = true
+        const startTime = performance.now();
+        let res = {};
+        if (index < 5) {
+            const { data: result } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+                params: {
+                    author_name: final_name.value,
+                    page_num: "1",
+                    page_size: "20",
+                    institution: selectedInstitution.value,
+                    h_index_up: (index + 1) * 10-1,
+                    h_index_down: index * 10
+                }
+            })
+            h_index_up.value = (index + 1) * 10 - 1
+            h_index_down.value = index * 10
+            res = result
+        } else {
+            const { data: result } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+                params: {
+                    author_name: final_name.value,
+                    page_num: "1",
+                    page_size: "20",
+                    institution: selectedInstitution.value,
+                    h_index_up: 1000,
+                    h_index_down: 50
+                }
+            })
+            h_index_up.value = 1000
+            h_index_down.value = 50
+            res = result
         }
-    })
-    const endTime = performance.now();
+        const endTime = performance.now();
         const elapsedTime = endTime - startTime;
 
         // 输出时间
         time.value = elapsedTime
-    h_index_up.value = (index+1) * 10
-    h_index_down.value = index*10
-    fullscreenLoading.value = false
-    scholars.value = res.data.authors
+        scholar_num.value = res.data.total
+        // h_index_up.value = (index + 1) * 10 - 1
+        // h_index_down.value = index * 10
+        fullscreenLoading.value = false
+        scholars.value = res.data.authors
+        currentPage.value = 1
+    }
 }
-
 //搜索学者
 async function searchScholar() {
     try {
@@ -385,9 +520,12 @@ async function searchScholar() {
         })
         const endTime = performance.now();
         const elapsedTime = endTime - startTime;
-
         // 输出时间
         time.value = elapsedTime
+        isHighlighted1.value = true
+        isHighlighted2.value = false
+        isHighlighted3.value = false
+        isHighlighted4.value = false
         showResult.value = true
         scholar_num.value = res.data.total
         scholars.value = res.data.authors
@@ -402,9 +540,45 @@ async function searchScholar() {
         }
         layers = [{ name: 'h指数:', options: options, highlight: -1 }]
         fullscreenLoading.value = false
+        currentPage.value = 1
     } catch (error) {
         console.log(error)
     }
+}
+const handleOptionSelect = async (value) => {
+    final_name.value = value
+    fullscreenLoading.value = true
+    const startTime = performance.now();
+    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        params: {
+            author_name: value,
+            page_num: "1",
+            page_size: "20"
+        }
+    })
+    const endTime = performance.now();
+    const elapsedTime = endTime - startTime;
+    // 输出时间
+    time.value = elapsedTime
+    isHighlighted1.value = true
+    isHighlighted2.value = false
+    isHighlighted3.value = false
+    isHighlighted4.value = false
+    showResult.value = true
+    scholar_num.value = res.data.total
+    scholars.value = res.data.authors
+    const children = []
+    const options = []
+    for (let i = 0; i < res.data.institutions.length; i++) {
+        children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
+    }
+    institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+    for (let i = 0; i < res.data.h_index.length; i++) {
+        options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
+    }
+    layers = [{ name: 'h指数:', options: options, highlight: -1 }]
+    fullscreenLoading.value = false
+    currentPage.value = 1
 }
 </script>
 <style scoped>
@@ -598,6 +772,8 @@ h2 {
     flex: 5;
     max-height: 60vh;
     overflow: auto;
+    position: sticky;
+    top: 10vh;
 }
 
 .leftNavigate::-webkit-scrollbar {
@@ -633,25 +809,38 @@ h2 {
 .all {
     width: 100px;
     cursor: pointer;
-    font-weight: 200;
+    font-weight: 600;
+    font-size: 13px;
 }
 
 .hNum {
     width: 100px;
     cursor: pointer;
-    font-weight: 200;
+    font-weight: 600;
+    font-size: 13px;
 }
 
 .thesisNum {
     width: 100px;
     cursor: pointer;
-    font-weight: 200;
+    font-weight: 600;
+    font-size: 13px;
 }
 
 .usedNum {
     width: 100px;
     cursor: pointer;
-    font-weight: 200;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 50px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .highlighted {

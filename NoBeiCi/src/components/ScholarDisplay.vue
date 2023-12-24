@@ -1,36 +1,45 @@
 <script setup>
-    // props
-    const props = defineProps({
-        scholars: []
-    })
+import router from '../routes/index.js';
+// props
+const props = defineProps({
+    scholars: []
+})
+function jumpToField(field){
+    router.push('/fieldDetail/' + field.id.substring(field.id.indexOf("C")))
+}
+function NavigateToScholar(id) {
+    router.push('/authorhome/' + id.substring(id.indexOf("A")))
+}
 </script>
 <template>
-    <div v-for="scholar in props.scholars" class="author_block">
+    <div v-for="scholar,index in props.scholars" class="author_block" :class="{grey: index%2==1}">
         <div class="avatar">
-            <img style="padding: 15px;width:100px;height:100px" :src= scholar.avatar>
+            <img style="padding: 20px;width:100px;height:100px;" :src=scholar.avatar>
         </div>
         <div class="info">
             <div class="scholar_head">
                 <div class="name"> {{ scholar.display_name }} </div>
                 <div class="follow">
-                    <div class="page"> 学者主页 </div>
+                    <div class="page" @click="NavigateToScholar(scholar.id)"> 学者主页 </div>
                     <div class="focus">
-                        <el-icon style="font-size: 13px;"><Message /></el-icon>
-                    <div style="font-family:fantasy;font-weight:600;font-size:12px;margin-left:5px">关注</div>
+                        <el-icon style="font-size: 13px;">
+                            <Message />
+                        </el-icon>
+                        <div style="font-family:fantasy;font-weight:600;font-size:12px;margin-left:5px">关注</div>
                     </div>
                 </div>
             </div>
             <div class="scholar_makes">
                 <div class="H-index">
-                    <div style="font-size:11px">
+                    <div style="font-size:11px;display:flex;flex-direction:row">
                         H-index:
-                        {{ scholar.summary_stats.h_index }}
+                        <div style="color: green;margin-left:5px">{{ scholar.summary_stats.h_index }}</div>
                     </div>
                 </div>
                 <div class="thesis">
-                    <div style="font-size:11px">
+                    <div style="font-size:11px;display:flex;flex-direction:row">
                         论文数:
-                        {{ scholar.works_count }}
+                        <div style="color: blue;margin-left:5px;">{{ scholar.works_count }}</div>
                     </div>
                 </div>
                 <div class="icon">
@@ -39,16 +48,19 @@
                     </el-icon>
                 </div>
                 <div class="used">
-                    <div style="font-size:11px">
+                    <div style="font-size:11px;display:flex;flex-direction:row">
                         引用数:
-                        {{ scholar.cited_by_count }}
+                        <div style="color: red;margin-left:5px;">{{ scholar.cited_by_count }}</div>
                     </div>
                 </div>
             </div>
             <div class="scholar_field">
                 <div class="fieldHead">研究领域</div>
-                <div v-for="field in scholar.x_concepts" class="field">
-                    <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
+                <div v-for="field in scholar.x_concepts" class="field"
+                    @click="jumpToField(field)">
+                    <el-icon style="margin-right: 5px;font-size:20px">
+                        <Grid />
+                    </el-icon>
                     {{ field.display_name }}
                 </div>
             </div>
@@ -83,7 +95,7 @@
 }
 
 .scholar_head {
-    margin-top: 10px;
+    margin-top: 15px;
     margin-left: 20px;
     height: 30px;
     font-size: 18px;
@@ -94,12 +106,16 @@
     align-items: center;
     justify-content: space-between;
 }
-.name{
+
+.name {
     margin-left: 10px;
     width: auto;
+    max-width: 70%;
     flex-wrap: nowrap;
+    text-align: left;
 }
-.follow{
+
+.follow {
     margin-left: 10px;
     margin-right: 30px;
     font-size: 16px;
@@ -113,8 +129,8 @@
 
 .page {
     margin-right: 20px;
-    font-family:fantasy;
-    font-weight:600;
+    font-family: fantasy;
+    font-weight: 600;
     font-size: 12px;
     border: solid #ccc;
     border-width: 1px;
@@ -126,7 +142,8 @@
     justify-content: center;
     cursor: pointer;
 }
-.focus{
+
+.focus {
     height: 30px;
     display: flex;
     margin-left: 20px;
@@ -139,11 +156,13 @@
     border: solid #ccc;
     border-width: 1px;
 }
-.focus:hover{
+
+.focus:hover {
     background-color: burlywood;
 }
+
 .scholar_makes {
-    margin-left: 20px;
+    margin-left: 30px;
     height: 50px;
     display: flex;
     flex-direction: row;
@@ -181,7 +200,9 @@
         border-width: 1px;
         margin-right: 20px;
         height: 50%;
-        width: 80px;
+        min-width: 80px;
+        width: auto;
+        padding: 5px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -190,6 +211,7 @@
 
 .scholar_field {
     margin-left: 20px;
+    margin-bottom: 10px;
     height: auto;
     display: flex;
     margin-left: 30px;
@@ -199,11 +221,13 @@
     flex-wrap: wrap;
     gap: 5px;
 }
-.fieldHead{
+
+.fieldHead {
     margin-right: 30px;
     font-size: 15px;
 }
-.field{
+
+.field {
     width: auto;
     margin-right: 10px;
     font-size: 12px;
@@ -211,13 +235,15 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 0px;
 }
-.field:hover{
+
+.field:hover {
     color: burlywood;
     cursor: pointer;
 }
-.more{
+
+.more {
     margin-top: 4px;
     height: 30px;
     display: flex;
@@ -226,8 +252,12 @@
     justify-content: flex-start;
     align-items: center;
 }
-.page:hover{
+
+.page:hover {
     color: burlywood;
     cursor: pointer;
+}
+.grey{
+    background-color: #f2f4f7;
 }
 </style>
