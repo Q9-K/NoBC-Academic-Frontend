@@ -114,6 +114,7 @@ export default {
   articleDisplay:{
     articleDisplayCite: "Cite",
     articleDisplayCollect: "Collect",
+    articleDisplayCollected: "Collected",
     articleDisplayCitations: "citations",
     articleDisplayViews: "views",
   },
@@ -166,7 +167,7 @@ export default {
 
     cooperationScholar: "Co-Scholar",
     cooperationAgency: "Co-Agency",
-    cooperationArticle: "Co-Articles",
+    cooperationArticle: "Articles",
 
     intro1:"You've binded author:",
     intro2:"(Click to view public link), you can maintain your homepage information here, and this information is visible to everyone.",

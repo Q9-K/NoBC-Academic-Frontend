@@ -74,8 +74,9 @@
 
 <script>
 
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import {onUnmounted} from 'vue';
+
 import { Column } from '@antv/g2plot';
 import { Line } from '@antv/g2plot';
 import { Bar } from '@antv/g2plot';
@@ -84,12 +85,30 @@ import { Rose } from '@antv/g2plot';
 import { nextTick } from 'vue';
 
 import { ref } from 'vue';
+import get from '../../functions/Get';
+
+
 
 export default {
-  setup() {
-    const viewMode = ref(1); // 添加 viewMode 变量
   
-  const data = [
+  props: {
+      scholarId: {
+        type: String,
+        required: true
+      },
+    },
+  
+  
+  
+  
+  setup(props) {
+
+    
+
+
+  const viewMode = ref(1); // 添加 viewMode 变量
+  
+  let data = [
     // 这里替换为你的学者近五年论文数数据
     // 格式应该与示例数据保持一致，包括 type 和 sales 字段
     // 例如：
@@ -102,6 +121,12 @@ export default {
     { type: '2023', papers: 21 },
     // ...
   ];
+
+  watch(props, (newVal, oldVal) => {
+      loadData().then(()=>{
+      buildColumn();
+    })
+    });
   
   let columnPlot = null;
 
@@ -239,9 +264,26 @@ export default {
 rosePlot.render();
   }
 
+  const loadData = async () =>{
+    const result = await get(
+        {
+            url: 'http://100.103.70.173:8000/author/get_counts_by_year',
+            params:{
+                    author_id:props.scholarId,
+            },
+            //addToken: true,
+        }
+        );
+        console.log("column data:",result.data)
+        data = result.data
+  }
+
   onMounted(() => {
     
-    buildColumn();
+    // loadData().then(()=>{
+    //   buildColumn();
+    // })
+    
     //buildLine();
     
   });
@@ -259,7 +301,9 @@ rosePlot.render();
     buildColumn,
     buildLine,
     buildBar,
-    buildRose
+    buildRose,
+    loadData,
+    data
   }
   },
 
@@ -286,20 +330,25 @@ rosePlot.render();
   font-family: "PingFang SC", "Microsoft YaHei", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 16px;
   font-weight:600;
+
+  /* font-size: large;  */
+    font-family: HiraginoSansGB-W6,HiraginoSansGB;
+    background-color: transparent;
+    font-weight: 700;
   /* line-height: 16px; */
   /* tab-size: 4; */
 
   text-align: left;
   /* margin-left: 1vw; */
   /* margin-top: 1vh; */
-  margin-bottom: 2vh;
+  margin-bottom: 1.5vh;
 
   word-break: break-word;
 
 }
 
 .box{
-    padding-left: 3vw;
+    padding-left: 2.3vw;
     padding-right: 3vw;
     padding-top: 3vh;
     padding-bottom: 3vh;

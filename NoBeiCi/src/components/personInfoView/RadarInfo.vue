@@ -9,24 +9,13 @@
             <p class="inherited-styles-for-exported-element">{{ $t("personInfo.authorStatistics")}}</p>
             <div style="margin-left: auto;">
                 <el-tooltip placement="bottom"  effect="light">
-                <template #content> 1.Citation（引用量）：该学者所有出版物的被引用次数。<br />
-                    <br />
-                        2.Papers（论文数量）：该学者发表的所有论文的数量。<br />
-                        <br />
-                    3.H-index（H-指数）：如果一位专家的n篇论文中，每篇至少有 h 次引用，<br />
-                        并且其他 (N-h) 篇论文每篇最多有 h 次引用，则该专家的索引为 h。<br />
-                        <br />
-                    4.Activity（活跃度）：学者的活跃度是根据过去几年发表的论文的数量界定的。<br />
-                    <br />
-                    5.Diversity（多样性）：一般来说，专家的研究可能包括几个不同的研究领域。
-                    <br />多样性的定义是为了定量地反映学者的研究范围。<br />
-                    <br />
-                    6.Sociability（社交性）：社交性的分数基本上是根据一位专家有多少合著者<br />来定义的。在下一步，
-                    我们将进一步考虑地点、组织、国籍信息和研究领域。<br />
-                    <br />
-                    7.G-index（G-指数）：G-指数是H-指数的衍生指数，主要是弥补h指数<br />不能很好反应高被引论文的缺陷提出的，
-                    G-指数定义为:论文按被引次数排序后<br />相对排前的累积被引至少g2次的最大论文序次g，
-                    亦即第(g+1)序次论文对应的<br />累积引文数将小于(g+1)2。</template>
+                <template #content> Papers（x10）（论文数量）：乘以10之后为该学者发表的所有论文的数量。<br/><br/>
+Citation（x10）（引用量）：乘以10之后为该学者所有出版物的被引用次数。<br/><br/>
+H-Index（H-指数）：如果一位专家的n篇论文中，每篇至少有h次引用，<br/>并且其他(N-h)篇论文每篇最多有h次引用，则该专家的索引为h。<br/><br/>
+i10_index（i10指数）：指的是作者的论文数量达到至少i次被引用的文章数量。<br/><br/>
+oa_percent（x10）（开放获取比例）：乘以10之后为该学者发表的开放获取论文占<br/>总论文数量的比例。<br/><br/>
+2yr_mean_citedness（2年平均引用率）：该学者所有论文在过去两年内的平均引用次数。<br/><br/>
+2yr_h_index（2年H-指数）：该学者过去两年内的H-指数。<br/></template>
                 <el-button type="" size="large"  link><el-icon><QuestionFilled /></el-icon></el-button>
             </el-tooltip>
         </div>
@@ -53,7 +42,7 @@
         
       <!-- 图和列表 -->
       <div class="chart-container" v-if="viewMode=='chart'">
-        <div ref="chart"></div>
+        <div ref="chart" style="height: 30vh;width: 90%;"></div>
       </div>
       <el-table :data="this.scholarData" border style="width: 80%; margin-left: 1vw; margin-bottom: 2vh;" v-else>
         <el-table-column prop="label" label="Metrics" ></el-table-column>
@@ -84,6 +73,8 @@
     },
     setup(props) {
         
+        let tmpRadar = null
+
         const buildRadarChart = () => {
         const radarPlot = new Radar(chart.value, {
             data: scholarData,
@@ -96,8 +87,10 @@
             },
             },
         });
-
+        tmpRadar = radarPlot
         radarPlot.render();
+
+        
         };
 
 
@@ -120,39 +113,50 @@
       const viewMode = ref('chart'); // 默认显示雷达图
   
       let scholarData = reactive([
-        { label: 'Papers', value: props.data.Papers },
-        { label: 'Citation', value: props.data.Citation },
+        { label: 'Papers(x10)', value: props.data.Papers/10 },
+        { label: 'Citation(x10)', value: props.data.Citation/10 },
         { label: 'H-Index', value: props.data['H-Index'] },
-        { label: 'G-Index', value: props.data['G-Index'] },
-        { label: 'Sociability', value: props.data.Sociability },
-        { label: 'Diversity', value: props.data.Diversity },
-        { label: 'Activity', value: props.data.Activity },
+        { label: 'i10_index', value: props.data.i10_index },
+        { label: 'oa_percent(x10)', value: props.data.oa_percent/10 },
+        { label: '2yr_mean_citedness', value: props.data['2yr_mean_citedness'] },
+        { label: '2yr_h_index', value: props.data['2yr_h_index'] },
       ]);
+
+      function normalizeData(data) {
+        const values = data.map(item => Math.abs(item.value)); // 取绝对值以处理负数情况
+        const max = Math.max(...values);
+        return data.map(item => ({
+          label: item.label,
+          value: item.value / max  // 将原始值除以最大值，进行归一化处理
+        }));
+      }
   
       onMounted(() => {
         nextTick(() => {
           console.log("radar：",props.data)
         })
-          
-          //buildRadarChart();
+        if(props.data['H-index']!= -1)
+          buildRadarChart();
         
         
       });
 
       watch(props, (newVal, oldVal) => {
+        if(tmpRadar)
+          tmpRadar.destroy()
         console.log('data changed',props.data);
         while (scholarData.length) {
           scholarData.shift();
         }
         // 给 scholarData 赋新值
         scholarData.push(
-          { label: 'Papers', value: props.data.Papers },
-          { label: 'Citation', value: props.data.Citation },
-          { label: 'H-Index', value: props.data['H-Index'] },
-          { label: 'G-Index', value: props.data['G-Index'] },
-          { label: 'Sociability', value: props.data.Sociability },
-          { label: 'Diversity', value: props.data.Diversity },
-          { label: 'Activity', value: props.data.Activity },
+          { label: 'Papers(x10)', value: props.data.Papers/10 },
+        { label: 'Citation(x10)', value: props.data.Citation/10 },
+        { label: 'H-Index', value: props.data['H-Index'] },
+        { label: 'i10_index', value: props.data.i10_index },
+        { label: 'oa_percent(x10)', value: props.data.oa_percent/10 },
+        { label: '2yr_mean_citedness', value: props.data['2yr_mean_citedness'] },
+        { label: '2yr_h_index', value: props.data['2yr_h_index'] },
         );
         console.log("scholarData",scholarData)
         buildRadarChart();

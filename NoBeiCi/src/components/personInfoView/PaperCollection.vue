@@ -58,8 +58,8 @@
                 width="50%"
                 :modal="false"
               >
-                <p>{{ citationFormat }}</p>
-                <el-button @click="copyCitation">复制</el-button>
+                <p>{{ paper.citation }}</p>
+                <el-button @click="copyCitation(paper)">复制</el-button>
               </el-dialog>
 
             </div>
@@ -121,9 +121,9 @@ export default {
   methods: {
 
     // 复制引用格式
-    copyCitation() {
+    copyCitation(paper) {
       const textarea = document.createElement('textarea');
-      textarea.value = this.citationFormat;
+      textarea.value = paper.citation;
       document.body.appendChild(textarea);
 
       // 选中并复制文本

@@ -54,7 +54,7 @@ export default {
     list:"列表",
     cooperationScholar: "合作学者",
     cooperationAgency: "合作机构",
-    cooperationArticle: "合作论文数",
+    cooperationArticle: "论文数",
 
     intro1:"您已绑定学者：",
     intro2:"（点击查看公开链接），您可在此维护您的主页信息，此信息所有人可见。",
@@ -147,6 +147,7 @@ export default {
   articleDisplay: {
     articleDisplayCite: "引用",
     articleDisplayCollect: "收藏",
+    articleDisplayCollected: "已收藏",
     articleDisplayCitations: "引用",
     articleDisplayViews: "浏览",
   },

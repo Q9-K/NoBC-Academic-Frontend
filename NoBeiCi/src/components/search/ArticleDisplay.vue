@@ -85,7 +85,7 @@ const collectArticle = () => {
             <p class="title-content" href="toPaperPage" >{{ title}}</p>
         </div>
         <div class="author">
-            <span v-for="(author, index) in authors">
+            <span v-for="(author, index) in authors" :key="index">
                 <el-link type="success">{{ author }}</el-link>
                 <span v-if="index < authors.length - 1">, &nbsp;</span>
             </span>

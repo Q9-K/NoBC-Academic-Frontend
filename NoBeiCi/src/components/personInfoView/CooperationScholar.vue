@@ -10,7 +10,7 @@
         
             <div class="left-panel">
         <!-- <img  class="avatar" alt="Avatar"> -->
-        <el-avatar shape="circle" :size="45" :fit="cover" :src="collaborator.avatar" 
+        <el-avatar shape="circle" :size="45" fit="cover" :src="collaborator.avatar" 
         :border="true" style="border: 2px solid rgb(20, 177, 20); "/>
         
             </div>
@@ -39,6 +39,9 @@
   </script>
 
   <script>
+  import get from "../../functions/Get";
+  import router from "../../routes";
+
   export default {
 
     
@@ -48,6 +51,27 @@
       required: true
 }
     },
+
+    watch: {
+      async scholarId(newValue, oldValue) {
+        // 当 scholarId 属性发生变化时执行的逻辑
+        console.log('scholarId changed:', newValue);
+        // console.log('Old value:', oldValue);
+        this.loadingInstance = this.$loading({
+          lock: true,
+          text: '加载中...',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
+        // 在这里可以执行相应的操作，例如根据新的 scholarId 加载数据等
+        await this.loadCollaborators();
+
+        this.loadingInstance.close();
+      }
+    },
+
+
+
     data() {
       return {
         collaborators: [
@@ -73,17 +97,17 @@
     methods:{
       goToWebsite(collaborator){
             console.log("id:",collaborator.ScholarId)
-            // const homepageUrl = 'www.wdwwada'+collaborator.ScholarId
-            // if (homepageUrl) {
-            //     window.open(homepageUrl, '_blank');
-            // }
+            router.push(`/authorhome/${collaborator.ScholarId}`)
+            // window.location.reload();
+            //this.scholarId = collaborator.ScholarId
+
         },
 
 
       async loadCollaborators(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/check_author_follow/',
+            url: 'http://100.103.70.173:8000/author/get_co_author_list',
             params:{
               author_id: this.scholarId
             },
@@ -98,10 +122,12 @@
     },
 
     mounted(){
-        this.$nextTick(()=>{
-          console.log("ScholarId:",this.scholarId)
-        })
-        
+        // this.$nextTick(()=>{
+        //   console.log("ScholarId:",this.scholarId)
+        // })
+        if(this.scholarId !== 1){
+          this.loadCollaborators()
+        }
     },
   };
   </script>
@@ -157,15 +183,19 @@
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 0vh;
-   
+    
+    width: 10vw;
     
   }
   .left-top{
     font-size: 13px;
     color: #666;
+
+    
     margin-top: 1.5vh;
     margin-bottom: 1vh;
     margin-left: auto;
+    
   }
 
   .left-bottom{

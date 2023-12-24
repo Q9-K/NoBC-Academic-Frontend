@@ -147,7 +147,10 @@ import axios from 'axios';
 import { handleResponse } from '../../functions/handleResponse.js'
 
 import get from '../../functions/Get';
-
+import request from '../../functions/Request';
+import { watch } from 'vue';
+import router from '../../routes';
+import { ElMessage } from 'element-plus';
 
   export default {
     name: 'ScholarProfile',
@@ -155,8 +158,27 @@ import get from '../../functions/Get';
       scholarId: {
       type: String,
       required: true
-}
+    }
     },
+
+    watch: {
+      async scholarId(newValue, oldValue) {
+        // 当 scholarId 属性发生变化时执行的逻辑
+        console.log('scholarId changed:', newValue);
+        // console.log('Old value:', oldValue);
+        this.loadingInstance = this.$loading({
+          lock: true,
+          text: '加载中...',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
+        // 在这里可以执行相应的操作，例如根据新的 scholarId 加载数据等
+        await this.loadscholarProfile();
+
+        this.loadingInstance.close();
+      }
+    },
+
     data(){
         return{
             // scholar: {
@@ -198,9 +220,11 @@ import get from '../../functions/Get';
     methods: {
       goToHomepage() {
 
+      const part = this.scholarId.split('/')
+      const desiredId = part[part.length-1]
       // const pageUrl = 'localhost:5173/authorhome/'+ desiredId
-      console.log("goto: ",'/authorhome/'+this.scholarId)
-      router.push(`/authorhome/${scholarId}`);
+      console.log("goto: ",'/authorhome/'+desiredId)
+      router.push(`/authorhome/${desiredId}`);
 
 
     },
@@ -245,12 +269,46 @@ import get from '../../functions/Get';
 
 
 
-      saveProfile() {
+      async saveProfile() {
       // TODO: 提交修改后的学者信息的逻辑
       // 在这里可以将 this.editedProfile 中的数据发送至后端进行保存
       // 提交成功后，更新 this.scholar，并结束编辑模式
     //   this.scholar = { ...this.editedProfile };
-        this.editing = false;
+        const result = await request(
+          {
+              url: 'http://100.103.70.173:8000/author/post_scholar_basic_information/',
+              params:{
+                author_id: this.scholarId,
+                
+                name: this.scholarProfile.name,
+                chineseName: this.scholarProfile.chineseName,
+                title: this.scholarProfile.title,
+                phone: this.scholarProfile.phone,
+                fax: this.scholarProfile.fax,
+                email: this.scholarProfile.email,
+                englishAffiliation: this.scholarProfile.englishAffiliation,
+                chineseAffiliation: this.scholarProfile.chineseAffiliation,
+                address: this.scholarProfile.address,
+                personalWebsite: this.scholarProfile.personalWebsite,
+                officialWebsite: this.scholarProfile.officialWebsite,
+                google: this.scholarProfile.google,
+                twitter: this.scholarProfile.twitter,
+                facebook: this.scholarProfile.facebook,
+                youtube: this.scholarProfile.youtube,
+                gender: this.scholarProfile.gender,
+                language: this.scholarProfile.language
+              },
+              addToken: true,
+          }
+          );
+          if(result){
+            ElMessage({
+              message:"信息保存成功",
+              type: "success"
+            })
+          }
+          console.log(result)
+          this.editing = false;
     },
     cancelEditing() {
       this.editing = false;
@@ -277,13 +335,16 @@ import get from '../../functions/Get';
 
 
     mounted(){
-        this.$nextTick(()=>{
-          console.log("ScholarId:",this.scholarId)
-        })
-        
-        this.loadscholarProfile();
+        // this.$nextTick(()=>{
+        //   console.log("ScholarId:",this.scholarId)
+        // })
+        if(this.scholarId!==1)
+          this.loadscholarProfile();
 
     },
+
+    
+
   }
   </script>
   

@@ -80,8 +80,37 @@
           <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>关注</el-button>
           <el-button type="primary" color="#626aef" v-else @click="unfollow" ><el-icon><Star /></el-icon>已关注</el-button>
 
-          <el-button type="primary" color="#626aef" plain><el-icon><Avatar /></el-icon>认领</el-button>
+          <el-button type="primary" color="#626aef" @click="showDialog()" v-if="!this.isAuthorBinded" plain><el-icon><Avatar /></el-icon>认领</el-button>
+          <el-button type="primary" color="#626aef" v-else ><el-icon><Star /></el-icon>已认领</el-button>
           <el-button type="primary" color="#626aef" plain><el-icon><Share /></el-icon>分享</el-button>
+
+          <el-dialog title="认证学者" v-model="dialogVisible" :close-on-click-modal="false">
+      <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+        <el-form-item label="上传图片">
+          <el-upload
+            class="avatar-uploader"
+            ref="uploadBox"
+            action="action"
+            :show-file-list="true"
+            :before-upload="beforeAvatarUpload"
+
+            :http-request="uploadForm"
+            :auto-upload="false"
+          >
+          <el-button type="primary">Click to upload</el-button>
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">确定</el-button>
+      </span>
+    </el-dialog>
         </div>
       </div>
     </div>
@@ -113,11 +142,103 @@ import { ElMessage } from 'element-plus'
           
             isfollowed: false,
             isclaimed:false,
+            scholar_id:'',
+            isUserBinded: false,
+            isAuthorBinded: false,
+
+
+            dialogVisible:false,
+            imageUrl: '',
+            form: {
+              remark: '',
+            },
+            rules: {
+              remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+            },
+            file:'',
         };
     },
 
     methods:{
-       goToHomepage() {
+      showDialog(){
+        if(this.isUserBinded){
+          ElMessage("您已绑定学者")
+        }
+        else{
+          this.dialogVisible = true
+        }
+        
+
+        this.$refs.form.resetFields(); // 清空表单
+        this.$refs.uploadBox.clearFiles();
+      },
+
+      async uploadForm(){
+        console.log("start uploading.....")
+        console.log("remark:",this.form.remark)
+        const result = await request(
+        {
+            url: 'http://100.103.70.173:8000/user/apply_for_certification/',
+            params:{
+              idcard_img: this.file,
+              author_id: this.scholar_id,
+              remark: this.form.remark,
+            },
+            addToken: true,
+        }
+        );
+        console.log(result)
+        if(result){
+           ElMessage({
+            message: "发送认领申请成功",
+            type: 'success',
+          })
+          
+          
+          
+        }
+    },
+    handleAvatarSuccess(res) {
+      this.imageUrl = URL.createObjectURL(res.raw);
+    },
+    beforeAvatarUpload(file) {
+      console.log(" file to upload:",file)
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 5;
+
+      if (!isJPG && !isPNG) {
+        ElMessage('上传头像图片只能是 JPG/PNG 格式!');
+        console.log('上传头像图片只能是 JPG/PNG 格式!')
+        return false;
+      }
+      if (!isLt2M) {
+        ElMessage('上传头像图片大小不能超过 5MB!');
+        console.log("上传头像图片大小不能超过 5MB!")
+        return false;
+      }
+      this.file = file
+      console.log("ready to upload")
+      return true;
+    },
+    submitForm() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 调用后端接口上传数据
+          this.$refs.uploadBox.submit()
+
+          // this.$refs.form.resetFields(); // 清空表单
+          // this.$refs.uploadBox.clearFiles();
+          this.dialogVisible = false;
+          //this.$message.success('认证学者成功');
+        } else {
+          return false;
+        }
+      });
+    },
+
+
+    goToHomepage() {
       // const homepageUrl = scholar.officialWebsite;
       // if (homepageUrl) {
       //   window.open(homepageUrl, '_blank');
@@ -156,11 +277,12 @@ import { ElMessage } from 'element-plus'
 
 
     async follow(){
+        console.log("follow:",this.scholar_id)
         const result = await request(
         {
             url: 'http://100.117.229.168:8000/user/follow_scholar/',
             params:{
-              scholar_id: this.scholar.scholar_id
+              scholar_id: this.scholar_id
             },
             addToken: true,
         }
@@ -177,12 +299,14 @@ import { ElMessage } from 'element-plus'
 
     },
 
+    
+
     async unfollow(){
       const result = await request(
         {
             url: 'http://100.117.229.168:8000/user/unfollow_scholar/',
             params:{
-              scholar_id: this.scholar.scholar_id
+              scholar_id: this.scholar_id
             },
             addToken: true,
         }
@@ -204,7 +328,7 @@ import { ElMessage } from 'element-plus'
         {
             url: 'http://100.117.229.168:8000/user/check_author_follow/',
             params:{
-              author_id: this.scholar.scholar_id
+              author_id: this.scholar_id
             },
             addToken: true,
         }
@@ -213,7 +337,43 @@ import { ElMessage } from 'element-plus'
         
         console.log(result)
         this.isfollowed = result.data.followed
+    },
+
+    async getIsUserBinded(){
+      const result = await get(
+        {
+            url: 'http://100.117.229.168:8000/user/get_certification_status/',
+            params:{
+              // author_id: this.scholar_id
+            },
+            addToken: true,
+        }
+        );
+        
+        console.log("isUserBinded",result)
+        
+        if(result.data.status == '已认证')
+          this.isUserBinded = true
+          console.log("isUserBinded",this.isUserBinded)
+    },
+
+    async getIsAuthorBinded(){
+      const result = await get(
+        {
+            url: 'http://100.117.229.168:8000/user/check_author_authentication/',
+            params:{
+              author_id: this.scholar_id
+            },
+            //addToken: true,
+        }
+        );
+        
+        console.log("isAuthorBinded",result)
+        
+        this.isAuthorBinded = result.data
     }
+
+
 
     },
 
@@ -225,7 +385,10 @@ import { ElMessage } from 'element-plus'
       // // 在这里可以处理接收到的 scholar_id 数据
       this.$nextTick(() => {
         console.log("scholar_id:",this.scholar.scholar_id)
+        this.scholar_id = this.scholar.scholar_id
         this.isAuthorFollowed()
+        this.getIsAuthorBinded()
+        this.getIsUserBinded()
       })
       
       // this.isAuthorFollowed()

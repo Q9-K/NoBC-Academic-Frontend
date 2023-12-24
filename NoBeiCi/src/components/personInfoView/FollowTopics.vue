@@ -82,12 +82,35 @@
     })
     }
 
-    const handleInputConfirm = () => {
+    const handleInputConfirm = async () => {
     if (inputValue.value) {
         dynamicTags.value.push(inputValue.value)
     }
     inputVisible.value = false
     inputValue.value = ''
+
+
+    // const result = await request(
+    //     {
+    //         url: 'http://100.103.70.173:8000/user/change_user_info/',
+    //         params:{
+    //             name: this.person.nickName,
+    //             real_name: this.person.realName,
+    //             position: this.person.position,
+    //             organization: this.person.organization,
+    //             subject: this.person.subject,
+    //             gender: this.person.gender
+    //         },
+    //         addToken: true,
+    //     }
+    //     );
+    //     if(result){
+    //         ElMessage({
+    //             message: "修改信息成功",
+    //             type: "success"
+    //         })
+    //     }
+    //     console.log("save:",result)
     }
 
     onMounted(async () => {
