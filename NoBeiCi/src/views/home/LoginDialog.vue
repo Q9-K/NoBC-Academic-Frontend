@@ -24,7 +24,7 @@ const handleLogin = () => {
   formData.append("email", email.value)
   formData.append("password", password.value)
 
-  axios.post('http://100.117.229.168:8000' + '/user/login/', formData, {
+  axios.post('http://100.96.145.140:8000' + '/user/login/', formData, {
     headers: {
       "Content-Type": "multipart/form-data"
     }
