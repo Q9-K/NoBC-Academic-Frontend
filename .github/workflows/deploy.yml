@@ -1,4 +1,4 @@
-name: deploy
+name: Frontend deploy
 on:
   push:
     branches:
@@ -21,7 +21,4 @@ jobs:
           pass: ${{secrets.PASSWORD}}
           connect_timeout: 10s
           local: "./NoBeiCi/dist/*"
-          remote: "/home/q9k/NoBC"
-      # - name: reload nginx
-      #   run: |
-      #     nginx -s reload
+          remote: "/data/frontend/"
