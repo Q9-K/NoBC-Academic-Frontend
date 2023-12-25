@@ -6,7 +6,17 @@
         </el-header>
         <el-container>
             <el-aside class="left-condition">
-                <LeftCondition />
+                <div class="condition">
+                    <p>{{ i18n.t('conf.confConditions')}}</p>
+                    <el-select v-model="selectvalue" filterable placeholder="Select" @change="handleChange" @blur="handleBlur">
+                        <el-option
+                        v-for="item in selectSubject"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        />
+                    </el-select>
+                </div>
             </el-aside>
             <el-container style="margin-top: 0;">
                 <el-main>
@@ -47,7 +57,6 @@
 <script setup>
 import NavBar from '../components/NavigateBar.vue';
 import SearchBar from '../components/SearchBar.vue';
-import LeftCondition from '../components/conf/LeftCondition.vue';
 import JournalDisplay from '../components/conf/JournalDisplay.vue';
 import {checkIsChinese} from "../functions/checkIsChinese.js";
 import {handleResponse} from "../functions/handleResponse.js";
@@ -63,7 +72,49 @@ const type = ref(0);
 const tempLetter = ref('');
 const journalsData = ref([]);
 const pageNum = ref(1);
-const subject = ref("");
+const selectvalue = ref('');
+const selectSubject = [
+        {
+                value: 'Computer Science',
+                label: 'Computer Science'
+            },
+            {
+                value: 'Economics',
+                label: 'Economics'
+            },
+            {
+                value: 'Law',
+                label: 'Law'
+            },
+            {
+                value: 'Mathematics',
+                label: 'Mathematics'
+            },
+            {
+                value: 'Psychology',
+                label: 'Psychology'
+            },
+            {
+                value: 'Medicine',
+                label: 'Medicine'
+            },
+            {
+                value: 'Chemistry',
+                label: 'Chemistry'
+            },
+            {
+                value: 'Physics',
+                label: 'Physics'
+            },
+            {
+                value: 'History',
+                label: 'History'
+            },
+            {
+                value: 'Biology',
+                label: 'Biology'
+            },
+];
 // 在组件加载完成后发起请求,默认是A
 onMounted(() => {
     getJournalsByInitial('A'); 
@@ -73,7 +124,7 @@ const getJournalsByInitial = debounce((initial) => {
     axios.get('http://100.96.145.140:8000/source/get_source_list/', {
         params: {
             initial: initial,
-            page_num: pageNum,
+            page_num: pageNum.value,
             page_size: 10,
         }
         })
@@ -90,7 +141,7 @@ const getJournalsByInitial = debounce((initial) => {
 const getLatestJournal = debounce(() => {
     axios.get('http://100.96.145.140:8000/source/get_latest_sources/', {
         params: {
-            page_num: pageNum,
+            page_num: pageNum.value,
             page_size: 10,
         }
         })
@@ -145,6 +196,33 @@ const handleCurrentChange = (number) => {
         getLatestJournal();
       }
 }
+
+const searchJournal =debounce( (value) => {
+    axios.get('http://100.96.145.140:8000/source/search_sources/', {
+        params: {
+            journal_name: value,
+            page_num: pageNum.value,
+            page_size: 10,
+        }
+        })
+        .then(response => {
+          journalsData.value = response.data.data;
+          type.value = 0;
+        })
+        .catch(error => {
+          console.error('Error fetching journals:', error);
+        });
+}, "300ms");
+
+const handleChange = () => {
+    
+}
+
+const handleBlur = () => {
+    console.log(2);
+    searchJournal(selectvalue.value);
+}
+
 </script>
 
 <style scoped>
@@ -163,6 +241,9 @@ const handleCurrentChange = (number) => {
     padding: 0.5vw;
 }
 
+.el-cascader-panel__body {
+        max-height: none !important;
+}
 .el-main {
     width: 75vw;
     background-color: rgb(255, 255, 255);
