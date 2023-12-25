@@ -4,21 +4,16 @@
  */
 import logoUrl from "../../assets/logo/logo.png"
 import NavigateBar from "../../components/NavigateBar.vue";
-import {Bottom, Position, Search} from '@element-plus/icons-vue'
+import {Search} from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
-import { WordCloud } from "@antv/g2plot";
-import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
 import i18n from "../../locales/index.js";
 import {debounce} from "vue-debounce";
-import pinyin from "pinyin";
 import PreDialog from "./PriorDialog.vue";
 import get from '../../functions/Get.js'
 import {ElMessage} from "element-plus";
-import ThesisDisplay from "../../components/ThesisDisplay.vue";
 import ArticleDisplay from "../../components/search/ArticleDisplay.vue";
 import {useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 import ScholarDisplay from "../../components/ScholarDisplay.vue";
-import { ReloadOutlined } from "@ant-design/icons-vue";
 import {useSearchContentStore} from "../../stores/searchContent.js";
 import router from "../../routes/index.js";
 import TagCloud from "TagCloud";
