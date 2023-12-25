@@ -8,7 +8,7 @@
             <el-aside class="left-condition">
                 <div class="condition">
                     <p>{{ i18n.t('conf.confConditions')}}</p>
-                    <el-select v-model="selectvalue" filterable placeholder="Select" @change="handleChange" @blur="handleBlur">
+                    <el-select v-model="selectvalue" multiple filterable placeholder="Select" @change="handleChange" @blur="handleBlur">
                         <el-option
                         v-for="item in selectSubject"
                         :key="item.value"
@@ -22,7 +22,7 @@
                 <el-main>
                     <el-row style="margin-bottom: 2vh; margin-top: -2vh;">
                         <el-button style="border: 0;">{{ i18n.t('conf.confInitial') }}:</el-button>
-                        <el-button class="letter" v-for="letter in letters" :key="letter"  @click="getJournalsByInitial(letter)" :style="{ marginTop: '0' }">{{ letter }}</el-button>
+                        <el-button class="letter" v-for="letter in letters" :key="letter"  @click="getJournalsByInitial(letter)"  :style="{ marginTop: '0' }">{{ letter }}</el-button>
                     </el-row>
                     <el-row style="margin-bottom: 3px;">
                         <el-button style="border: none; margin-right: 54vw">{{ i18n.t('conf.confJournalList') }}</el-button>
@@ -48,9 +48,9 @@
                 </el-main>
             </el-container>
         </el-container>
-        <el-footer>
+        <!-- <el-footer>
             footer
-        </el-footer>
+        </el-footer> -->
     </el-container>
 </template>
 
@@ -72,7 +72,7 @@ const type = ref(0);
 const tempLetter = ref('');
 const journalsData = ref([]);
 const pageNum = ref(1);
-const selectvalue = ref('');
+const selectvalue = ref([]);
 const selectSubject = [
         {
                 value: 'Computer Science',
@@ -121,11 +121,13 @@ onMounted(() => {
 });
 const getJournalsByInitial = debounce((initial) => {
     tempLetter.value = initial;
-    axios.get('http://api.buaa-q9k.xyz/source/get_source_list/', {
+    console.log(selectSubject.value)
+    axios.get('http://http://api.buaa-q9k.xyz/source/get_source_list/', {
         params: {
             initial: initial,
             page_num: pageNum.value,
             page_size: 10,
+            subject: selectvalue.value,
         }
         })
         .then(response => {
@@ -139,10 +141,11 @@ const getJournalsByInitial = debounce((initial) => {
 
 
 const getLatestJournal = debounce(() => {
-    axios.get('http://100.96.145.140:8000/source/get_latest_sources/', {
+    axios.get('http://api.buaa-q9k.xyz/source/get_latest_sources/', {
         params: {
             page_num: pageNum.value,
             page_size: 10,
+            subject: selectvalue.value,
         }
         })
         .then(response => {
@@ -159,7 +162,7 @@ const handleSearchJournal = (value) => {
     if (checkIsChinese(value)) {
         codeOfLanguage = 1
     }
-    return axios.get('http://100.99.200.37:8000' + '/source/search_sources/', {
+    return axios.get('http://api.buaa-q9k.xyz' + '/source/search_sources/', {
         params: {
             journal_name: value,
         }
@@ -197,30 +200,20 @@ const handleCurrentChange = (number) => {
       }
 }
 
-const searchJournal =debounce( (value) => {
-    axios.get('http://100.96.145.140:8000/source/search_sources/', {
-        params: {
-            journal_name: value,
-            page_num: pageNum.value,
-            page_size: 10,
-        }
-        })
-        .then(response => {
-          journalsData.value = response.data.data;
-          type.value = 0;
-        })
-        .catch(error => {
-          console.error('Error fetching journals:', error);
-        });
+const searchJournal =debounce( () => {
+    if(type == 0) {
+        getJournalsByInitial(tempLetter.value);
+    }
 }, "300ms");
 
 const handleChange = () => {
-    
+    console.log(1);
+    console.log(selectvalue.value);
+    searchJournal();
 }
 
 const handleBlur = () => {
-    console.log(2);
-    searchJournal(selectvalue.value);
+    searchJournal();
 }
 
 </script>
@@ -248,11 +241,6 @@ const handleBlur = () => {
     width: 75vw;
     background-color: rgb(255, 255, 255);
     margin-left: 0;
-}
-
-.el-footer {
-    height: 5vh;
-    background-color: rgb(255, 255, 255);
 }
 
 .home {
