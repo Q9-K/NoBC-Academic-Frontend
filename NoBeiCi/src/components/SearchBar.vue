@@ -123,7 +123,10 @@ const handleSearch = debounce((value) => {
   width: 100vw;
   height: 30vh;
   display: flex;
-  background: linear-gradient(#0000CD , #000000  );
+  /* background: linear-gradient(#0000CD , #000000  ); */
+  /* background-image: url(https://img2.baidu.com/it/u=3199718864,3543619270&fm=253&fmt=auto&app=138&f=JPEG?w=844&h=350); */
+  background-image: url(https://img.zcool.cn/community/0136cf57c68a000000012e7ead255d.jpg@2o.jpg);
+  /* background-position: right 5% bottom 65%; */
 }
 
 .searchMain {
