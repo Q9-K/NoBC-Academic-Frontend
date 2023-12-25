@@ -6,6 +6,7 @@ import axios from "axios";
 import qs from "qs";
 import {handleResponse} from "../../functions/handleResponse.js";
 import {ElMessage} from "element-plus";
+import request from '../../functions/Request.js'
 
 const userName = ref('')
 const password = ref('')
@@ -50,23 +51,47 @@ const handleSendEmail = () => {
     return
   }
 
-  const formData = new FormData()
-  formData.append("email", email.value);
-  formData.append("name", userName.value);
-  formData.append("password", password.value);
-  formData.append("password_repeat", makeSurePassword.value)
+  const sendEmail = async () => {
+    try {
+      const apiUrl = '/user/register/'
+      const params = {
+        email: email.value,
+        name: userName.value,
+        password: password.value,
+        password_repeat: makeSurePassword.value
+      }
 
-  console.log(formData)
-
-  axios.post('http://100.117.229.168:8000' + '/user/register/', formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    }
-  })
-    .then((response) => {
-      handleResponse(response, true, (data) => {
-        receiveCaptcha = data
+      const response = await request({
+        url: apiUrl,
+        params: params,
+        showLoading: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.117.229.168:8000'
       })
+
+      if (response) {
+        return response
+      }
+      else {
+        console.log("空")
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  sendEmail()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: response.msg
+        })
+      }
+      else {
+        receiveCaptcha = response.data
+      }
     })
 }
 
@@ -79,18 +104,45 @@ const handleRegister = () => {
     return
   }
 
-  const formData = new FormData()
-  formData.append("get_code", inputCaptcha.value)
-  formData.append("correct_code", receiveCaptcha)
-  formData.append("email", email.value)
+  const register = async () => {
+    try {
+      const apiUlr = '/user/active_user/'
+      const params = {
+        get_code: inputCaptcha.value,
+        correct_code: receiveCaptcha,
+        email: email.value
+      }
 
-  axios.post('http://100.117.229.168:8000' + '/user/active_user/', formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
+      const response = await request({
+        url: apiUlr,
+        params: params,
+        showLoading: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.117.229.168:8000'
+      })
+
+      if (response) {
+        return response
+      }
+      else {
+        console.log("空")
+      }
     }
-  })
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  register()
     .then((response) => {
-      handleResponse(response, false, (data) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "error",
+          message: response.msg
+        })
+      }
+      else {
+        const data = response.data
 
         localStorage.setItem('userInformation', JSON.stringify({
           username: userName.value,
@@ -100,7 +152,7 @@ const handleRegister = () => {
 
         stateOfPriorDialog.setView(SELECT_FIELD)
         stateOfPriorDialog.setStep(1)
-      })
+      }
     })
 }
 </script>

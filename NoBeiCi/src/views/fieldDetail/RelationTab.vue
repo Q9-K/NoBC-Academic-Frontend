@@ -42,7 +42,7 @@ onMounted(() => {
 
   const fetchChildrenTree = async (fieldId) => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_subdomains/'; // 用实际的 API URL 替换这里
+      const apiUrl = '/concept/get_subdomains/'; // 用实际的 API URL 替换这里
       const params = {
         id: fieldId
         // id: 'https://openalex.org/' + 'C2779065236'
@@ -56,7 +56,9 @@ onMounted(() => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true // 设置为 true 以显示错误消息
+        showError: true, // 设置为 true 以显示错误消息,
+        useTestEnv: false,
+        testEnv: 'http://100.92.185.118:8000'
       });
 
       console.log(response)

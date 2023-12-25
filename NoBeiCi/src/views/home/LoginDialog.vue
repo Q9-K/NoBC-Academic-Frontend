@@ -20,18 +20,44 @@ const handleGotoRegister = () => {
 
 const handleLogin = () => {
 
-  const formData = new FormData()
-  formData.append("email", email.value)
-  formData.append("password", password.value)
+  const login = async () => {
+    try {
+      const apiUrl = '/user/login/'
+      const params = {
+        email: email.value,
+        password: password.value
+      }
 
-  axios.post('http://100.96.145.140:8000' + '/user/login/', formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
+      const response = request({
+        url: apiUrl,
+        params: params,
+        showLoading: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.96.145.140:8000'
+      })
+
+      if (response) {
+        return response
+      }
+      else {
+        console.log("空")
+      }
     }
-  })
-    .then((response) => {
-      handleResponse(response, true, (data) => {
+    catch (e) {
+      console.log(e)
+    }
+  }
 
+  login()
+    .then((response) => {
+      if (response.code !== 200) {
+        ElMessage({
+          type: "warning",
+          message: response.msg
+        })
+      }
+      else {
+        const data = response.data
         localStorage.setItem('userInformation', JSON.stringify({
           username: data.name,
           email: email.value,
@@ -39,7 +65,7 @@ const handleLogin = () => {
         }))
 
         stateOfPriorDialog.closeDialog()
-      })
+      }
     })
 }
 
@@ -51,7 +77,7 @@ const handleManagerLogin = () => {
 
   const managerLogin = async () => {
     try {
-      const apiUrl = 'http://100.117.229.168:8000' + '/manager/login/'
+      const apiUrl = '/manager/login/'
       const params = {
         name: managerName.value,
         password: password.value
@@ -60,6 +86,8 @@ const handleManagerLogin = () => {
       const response = await request({
         url: apiUrl,
         params: params,
+        useTestUrl: false,
+        // testUrl: 'http://100.117.229.168:8000'
       })
 
       // 处理响应数据

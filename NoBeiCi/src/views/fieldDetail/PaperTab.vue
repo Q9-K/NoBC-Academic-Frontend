@@ -19,7 +19,7 @@ onMounted(() => {
   const getPaperData = async (fieldId) => {
 
     try {
-      const apiUrl = 'http://100.99.200.37:8000' + '/work/get_popular_works/';
+      const apiUrl = '/work/get_popular_works/';
       const params = {
         concept_id: fieldId
       }
@@ -32,7 +32,9 @@ onMounted(() => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true // 设置为 true 以显示错误消息
+        showError: true, // 设置为 true 以显示错误消息
+        useTestEnv: false,
+        testEnv: 'http://100.99.200.37:8000'
       })
 
       // 处理响应数据

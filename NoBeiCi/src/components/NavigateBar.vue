@@ -130,12 +130,14 @@ const handleOpenMailDrawer = () => {
 
   const fetchAllMails = async () => {
     try {
-      const apiUrl = 'http://100.117.229.168:8000' + '/user/get_messages/'
+      const apiUrl = '/user/get_messages/'
 
       const response = await get({
         url: apiUrl,
         showLoading: true, // Show loading indicator
         addToken: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.117.229.168:8000',
       })
 
       if (response) {

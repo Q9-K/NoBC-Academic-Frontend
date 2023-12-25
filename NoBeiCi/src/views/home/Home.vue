@@ -57,12 +57,14 @@ onMounted(() => {
 const refreshRecommendWork = () => {
   const fetchRecommendWork = async () => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_works_by_focused_concept/'
+      const apiUrl = '/concept/get_works_by_focused_concept/'
 
       const response = await get({
         url: apiUrl,
         showLoading: true,
-        addToken: true
+        addToken: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.92.185.118:8000'
       })
 
       if (response) {
@@ -96,12 +98,14 @@ const refreshRecommendWork = () => {
 const refreshRecommendScholar = () => {
   const fetchRecommendScholar = async () => {
     try {
-      const apiUrl = 'http://100.103.70.173:8000' + '/author/get_recommend_author'
+      const apiUrl = '/author/get_recommend_author'
 
       const response = await get({
         url: apiUrl,
         showLoading: true,
         addToken: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.103.70.173:8000'
       })
 
       if (response) {

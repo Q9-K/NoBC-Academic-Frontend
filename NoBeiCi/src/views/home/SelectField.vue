@@ -23,8 +23,8 @@ const enFieldsData = []
 const idFieldMap = new Map()
 let rectangleTree
 onMounted(() => {
-
-  const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/').then((response) => {
+  const getLevel0 = axios.get('http://api.buaa-q9k.xyz' + '/concept/get_level_0/').then((response) => {
+  // const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/').then((response) => {
     handleResponse(response, false, (data) => {
 
       for (let {display_name, chinese_display_name, id} of data) {
@@ -57,7 +57,7 @@ onMounted(() => {
     .then(() => {
       for (let {id} of cnFieldsData) {
         let parentId = id
-        getLevel1 = axios.get('http://100.92.185.118:8000' + '/concept/get_subdomains/', {
+        getLevel1 = axios.get('http://api.buaa-q9k.xyz' + '/concept/get_subdomains/', {
           params: {
             id: id
           }
@@ -210,7 +210,7 @@ const handleSelectField = () => {
 
   const selectField = (fieldId) => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/user/add_focus_concept/'
+      const apiUrl = '/user/add_focus_concept/'
       const params = {
         concept_id: fieldId
       }
@@ -221,7 +221,9 @@ const handleSelectField = () => {
         showLoading: true,
         addToken: true,
         errorCallback: null,
-        showError: true
+        showError: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.92.185.118:8000'
       })
 
       if (response) {
