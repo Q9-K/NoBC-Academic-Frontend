@@ -22,3 +22,4 @@ jobs:
           connect_timeout: 10s
           local: "./NoBeiCi/dist/*"
           remote: "/data/frontend/"
+          
