@@ -225,7 +225,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.scholarCount') }}
               </template>
               <template #suffix>
-                <idcard-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <idcard-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="107246" class="statistic-card">
@@ -233,7 +235,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.institutionCount') }}
               </template>
               <template #suffix>
-                <home-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <home-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="248643" class="statistic-card">
@@ -241,7 +245,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.journalCount') }}
               </template>
               <template #suffix>
-                <read-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <read-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="65073" class="statistic-card">
@@ -249,7 +255,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.fieldCount') }}
               </template>
               <template #suffix>
-                <deployment-unit-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <deployment-unit-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="240000000" class="statistic-card">
@@ -257,7 +265,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.workCount') }}
               </template>
               <template #suffix>
-                <file-search-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <file-search-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
           </div>
@@ -385,8 +395,6 @@ onMounted(() => {
             width: 20%;
             .statistic-card-icon {
               font-size: 110%;
-              position: relative;
-              bottom: 1.05vh;
             }
           }
         }
