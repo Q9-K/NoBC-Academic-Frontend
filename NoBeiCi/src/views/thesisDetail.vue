@@ -384,7 +384,7 @@ onMounted(async () => {
                         </div>
                     </div>
                     <div class="fieldHead">
-                        相关领域
+                        {{ i18n.t("thesisDetail.relavantField") }}
                     </div>
                     <div class="fields">
                         <div v-for="field in fields" class="field" @click="jumpToField(field)">
@@ -403,12 +403,12 @@ onMounted(async () => {
                             <span class="pdf">PDF</span>
                         </div>
                         <div class="ppt">
-                            <span style="color: #979797;">认领</span>
+                            <span style="color: #979797;">{{ i18n.t("thesisDetail.get") }}</span>
                         </div>
                         <div class="codeData">
-                            <p class="code-title" id="code"><span>代码</span></p>
+                            <p class="code-title" id="code"><span>{{ i18n.t("thesisDetail.code") }}</span></p>
                             <p class="data-title" id="data">
-                                <span class="code-data-label">数据</span>
+                                <span class="code-data-label">{{ i18n.t("thesisDetail.data") }}</span>
                             </p>
                         </div>
                         <div class="originLink">
@@ -431,13 +431,13 @@ onMounted(async () => {
                             <el-icon>
                                 <Share />
                             </el-icon>
-                            <span>分享</span>
+                            <span>{{ i18n.t("thesisDetail.share") }}</span>
                         </div>
                         <div class="bib">
                             <el-icon>
                                 <Paperclip />
                             </el-icon>
-                            <span>引用</span>
+                            <span>{{ i18n.t("thesisDetail.quote") }}</span>
                         </div>
                         <div class="mark" @click="collection(work_id)">
                             <el-icon>
@@ -474,7 +474,7 @@ onMounted(async () => {
                                     {{ work.cited_by_count }}
                                 </div>
                                 <div class="more">
-                                    <div class="jump" @click="LookThesis(work.id)">查看</div>
+                                    <div class="jump" @click="LookThesis(work.id)">{{ i18n.t("thesisDetail.look") }}</div>
                                     <div class="pdf1" @click="openPDF(work.pdf_url)"
                                         :class="{ grey1: work.pdf_url == null }">PDF</div>
                                 </div>
