@@ -56,7 +56,7 @@
     const search = debounce( async () => {
         try {
             if(input.value != '') {
-              const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
+              const response = await axios.get('http://api.buaa-q9k.xyz/work/advanced_search/', {
               params: {
                   content: input.value,
                   start_time: startTime.value || undefined,
@@ -117,7 +117,7 @@
     let showDropdown = ref(false);
 
     const fetchData = async (value) => {
-      const response = await axios.get('http://100.96.145.140:8000/work/get_suggestion', {
+      const response = await axios.get('http://api.buaa-q9k.xyz/work/get_suggestion', {
         params: {
           content: value,
         },
@@ -268,9 +268,9 @@
             </el-aside>
         </el-container>
       </el-container>
-      <el-footer>
+      <!-- <el-footer>
         footer
-      </el-footer>
+      </el-footer> -->
     </el-container>
 </template>
 
