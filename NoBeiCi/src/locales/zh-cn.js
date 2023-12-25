@@ -59,7 +59,7 @@ export default {
     list:"列表",
     cooperationScholar: "合作学者",
     cooperationAgency: "合作机构",
-    cooperationArticle: "合作论文数",
+    cooperationArticle: "论文数",
 
     intro1:"您已绑定学者：",
     intro2:"（点击查看公开链接），您可在此维护您的主页信息，此信息所有人可见。",
@@ -173,6 +173,7 @@ export default {
   articleDisplay: {
     articleDisplayCite: "引用",
     articleDisplayCollect: "收藏",
+    articleDisplayCollected: "已收藏",
     articleDisplayCitations: "引用",
     articleDisplayViews: "浏览",
   },
@@ -205,5 +206,17 @@ export default {
   },
   journalDisplay: {
     paperCount: "论文数",
+  },
+  authorHome:{
+    paperList:"论文列表",
+    paperIn7yr: "近七年论文数",
+    follow: "关注",
+    followed:"已关注",
+    claim: "认领",
+    claimed: "已认领",
+    share: "分享",
+    column: "柱状图",
+    line:"折线图",
+    bar: "条形图",
   }
 }

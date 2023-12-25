@@ -94,7 +94,7 @@ const collectArticle = async () => {
             <router-link to="/thesisDetail/{{ word_id.value }}"><p class="title-content" href="toPaperPage" >{{ title }}</p></router-link>
         </div>
         <div class="author">
-            <span v-for="(author, index) in authors">
+            <span v-for="(author, index) in authors" :key="index">
                 <el-link type="success">{{ author }}</el-link>
                 <span v-if="index < authors.length - 1">, &nbsp;</span>
             </span>

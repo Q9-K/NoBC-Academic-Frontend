@@ -140,6 +140,7 @@ export default {
   articleDisplay:{
     articleDisplayCite: "Cite",
     articleDisplayCollect: "Collect",
+    articleDisplayCollected: "Collected",
     articleDisplayCitations: "citations",
     articleDisplayViews: "views",
   },
@@ -194,7 +195,7 @@ export default {
 
     cooperationScholar: "Co-Scholar",
     cooperationAgency: "Co-Agency",
-    cooperationArticle: "Co-Articles",
+    cooperationArticle: "Articles",
 
     intro1:"You've binded author:",
     intro2:"(Click to view public link), you can maintain your homepage information here, and this information is visible to everyone.",
@@ -211,5 +212,17 @@ export default {
   },
   journalDisplay: {
     paperCount: "Papers",
+  },
+  authorHome:{
+    paperList:"Paper List",
+    paperIn7yr: "Papers in 7 years",
+    follow: "Follow",
+    followed:"Followed",
+    claim: "Claim",
+    claimed: "Claimed",
+    share: "Share",
+    column: "Column",
+    line:"Line",
+    bar: "Bar",
   }
 }

@@ -81,6 +81,8 @@ import i18n from "../../locales/index.js";
   <script>
   import axios from 'axios';
   import get from "../../functions/Get";
+  import request from "../../functions/Request";
+  import { ElMessage } from "element-plus";
 
   export default {
     name: 'PersonalInfo',
@@ -91,6 +93,26 @@ import i18n from "../../locales/index.js";
       required: true
     }
     },
+
+    watch: {
+      async scholarId(newValue, oldValue) {
+        // 当 scholarId 属性发生变化时执行的逻辑
+        console.log('scholarId changed:', newValue);
+        // console.log('Old value:', oldValue);
+        this.loadingInstance = this.$loading({
+          lock: true,
+          text: '加载中...',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
+        // 在这里可以执行相应的操作，例如根据新的 scholarId 加载数据等
+        await this.loadprofile();
+
+        this.loadingInstance.close();
+      }
+    },
+
+
     data() {
       return {
         profile: {
@@ -115,9 +137,30 @@ import i18n from "../../locales/index.js";
         this.editing[item] = true;
         // this.editedProfile[item] = this.profile[item];
       },
-      saveItem(item) {
+      async saveItem(item) {
         this.profile[item] = this.editedProfile[item];
         //后端。。。。。
+        const result = await request(
+        {
+            url: '/author/post_scholar_intro_information/',
+            params:{
+              author_id: this.scholarId,
+              workExperience: this.profile.workExperience,
+              educationBackground: this.profile.educationBackground,
+              personalSummary: this.profile.personalSummary,
+            },
+            addToken:true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        if(result){
+            ElMessage({
+              message:"修改成功",
+              type: "success"
+            })
+          }
+        console.log(result)
 
         this.editing[item] = false;
       },
@@ -128,11 +171,13 @@ import i18n from "../../locales/index.js";
       async loadprofile(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_intro_information',
+            url: '/author/get_scholar_intro_information',
             params:{
               author_id: this.scholarId
             },
             // addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         
@@ -154,11 +199,12 @@ import i18n from "../../locales/index.js";
 
 
     mounted(){
-      this.$nextTick(()=>{
-        console.log("ScholarId:",this.scholarId)
-        this.loadprofile();
-      })
-      
+      // this.$nextTick(()=>{
+      //   console.log("ScholarId:",this.scholarId)
+      //   this.loadprofile();
+      // })
+      if(this.scholarId !== 1)
+        this.loadprofile()
       
     }
   }
