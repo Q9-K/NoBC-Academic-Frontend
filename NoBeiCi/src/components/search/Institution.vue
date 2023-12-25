@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="institution">机构</button>
+    <el-button @click="toggleDrawer" :class="{ active: showDrawer }" class="institution">机构</el-button>
     <div v-if="showDrawer" class="drawer">
       <ul style="list-style-type: none;" class="institution-list">
         <li v-for="(institution, index) in displayedinstitutions" :key="institution.id">
@@ -61,8 +61,7 @@ const selectInstitution = (institution) => {
   <style scoped>
   .institution {
     border: 0;
-    border-top: 3px solid #f4081c;
-    background-color: #708590;
+    background-color: #b5bef4;
     width: 16vw;
     height: 5vh;
   }
@@ -74,7 +73,7 @@ const selectInstitution = (institution) => {
   
   button.active {
     background-color:  #fafafa;
-    color: #e61717;
+    color: #b5bef4;
   }
   
   .drawer {

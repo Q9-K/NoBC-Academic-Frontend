@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="time-range">{{ i18n.t('timeRanges.timeRangesTime') }}</button>
+    <el-button @click="toggleDrawer" :class="{ active: showDrawer }" class="time-range">{{ i18n.t('timeRanges.timeRangesTime') }}</el-button>
     <div v-if="showDrawer" class="drawer">
       <div class="form-row">
         <select v-model="startYear" class="select">
@@ -56,16 +56,14 @@ watch([startYear, endYear], () => {
 
 <style scoped>
 .time-range {
-  border: 0;
-  border-top: 3px solid #f4081c;
-  background-color: #f0e34e;
+  background-color: #b5bef4;
   width: 16vw;
   height: 5vh;
 }
 
 button.active {
-  background-color: rgb(255, 0, 212);
-  color: #fff;
+  background-color: #fafafa;
+  color: b5bef4;
 }
 
 .drawer {
