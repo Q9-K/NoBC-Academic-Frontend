@@ -1,9 +1,7 @@
 <script setup>
 import i18n from "../../locales/index.js";
 import {ref} from "vue";
-import {REGISTER, SELECT_FIELD, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
-import axios from "axios";
-import {handleResponse} from "../../functions/handleResponse.js";
+import {REGISTER, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 import request from '../../functions/Request.js'
 import {ElMessage} from "element-plus";
 

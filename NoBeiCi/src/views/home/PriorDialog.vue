@@ -8,7 +8,6 @@ import RegisterDialog from "./RegisterDialog.vue";
 import SelectField from "./SelectField.vue";
 import FinishPrior from "./FinishPrior.vue";
 
-const hasAccount = ref(true)
 const currentLanguage = ref(false)
 const stateOfPriorDialog = useStateOfPriorDialog()
 
