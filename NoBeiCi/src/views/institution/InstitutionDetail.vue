@@ -8,7 +8,7 @@ import { Column } from '@antv/g2plot';
 import get from "../../functions/Get.js";
 import {useInstitution} from "../../stores/institution.js"
 const api = {
-  getInstitutionDetail:"http://100.117.229.168:8000/institution/getInstitutionDetail"
+  getInstitutionDetail:"/institution/getInstitutionDetail"
 }
 const language = ref("cn");
 const store = useInstitution();
@@ -55,7 +55,7 @@ watch(route, (to, from) => {
 const getDetail = async () => {
   language.value = i18n.getLocale();
   if(store.getId == "") {
-    let strs = window.location.href.split('/') 
+    let strs = window.location.href.split('/')
     strs[strs.length-1] = "https://openalex.org/"+strs[strs.length-1];
     store.changeId(strs[strs.length-1]);
   }
@@ -64,7 +64,7 @@ const getDetail = async () => {
     params: {
       id: store.getId,
     },
-
+    useTestEnv:false
   });
   institution.value = result.data.institution[0];
   if(institution.value.image_url==null){
@@ -229,7 +229,7 @@ const goJournal= (id)=>{
   left: 5vw;
   z-index: 1000;
 }
-#map {width:800px; height: 600px; }  
+#map {width:800px; height: 600px; }
 .content {
   width: 90vw;
   min-height: 85vh;
@@ -319,7 +319,7 @@ const goJournal= (id)=>{
 
                 }
                 .repositories-content {
-                  
+
                   margin-top: 5px;
                   cursor: pointer;
                   transition: all 0.3s ease-in-out;
