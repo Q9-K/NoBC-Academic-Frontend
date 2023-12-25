@@ -12,7 +12,9 @@ const currentLanguage = ref(false)
 const stateOfPriorDialog = useStateOfPriorDialog()
 
 onMounted(() => {
-  stateOfPriorDialog.setView(LOGIN)
+  if (stateOfPriorDialog.getVisible === true) {
+    stateOfPriorDialog.setView(LOGIN)
+  }
 })
 const handleLanguageChange = (value) => {
   if (value === false) {
