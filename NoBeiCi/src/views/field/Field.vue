@@ -238,7 +238,7 @@ const updateLevel0Treemap = () => {
 
         const getFieldInformation = async (fieldId) => {
           try {
-            const apiUrl =  + '/concept/get_concept_by_id/'
+            const apiUrl = '/concept/get_concept_by_id/'
             const params = {
               id: fieldId
             }

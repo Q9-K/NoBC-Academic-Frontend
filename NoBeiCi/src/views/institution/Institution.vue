@@ -13,7 +13,7 @@ import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
 const api = {
   getInstitutions: '/institution/getInstitutionList/',
-  getInstitutionByKeyword: '/institution/getInstitutionByKeyword/',
+  getInstitutionByKeyword: 'http://api.buaa-q9k.xyz/institution/getInstitutionByKeyword/',
 }
 
 const language = ref("cn")
@@ -38,7 +38,7 @@ const goInstitution = (id) =>{
     console.log("store.id:",store.getId);
     var strs = id.split('/');
     id = strs[strs.length-1];
-    
+
     router.push({ name: 'institutionDetail', params: { institutionId: id } });
 }
 const search = (value)=>{
@@ -122,13 +122,13 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
     <div class="header"><NavigateBar></NavigateBar></div>
     <el-scrollbar>
         <div class="search">
-            <SearchBar 
+            <SearchBar
             :search-function="handleSearchInstitution"
             :select-function="handleSelectInstitution"
             ></SearchBar>
         </div>
         <div class="i-container">
-            
+
             <div v-for="item in institutions" class="card" style="background-color: rgb(250, 250, 250) !important;">
                 <div class="card-box" style="background-color: rgb(250, 250, 250) !important;">
                     <div class="img-box" style="background-color: rgb(250, 250, 250) !important;">
@@ -147,19 +147,19 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
                     </div>
                 </div>
             </div>
-            
+
         </div>
-    
+
     </el-scrollbar>
     <div class="page">
-        <el-pagination background layout="total, prev, pager, next, jumper" 
-        :total="total" 
+        <el-pagination background layout="total, prev, pager, next, jumper"
+        :total="total"
         v-model:currentPage = "page_num"
-        class="pagination" 
+        class="pagination"
         @current-change = "getInstitutions(20,page_num)"
         />
     </div>
-    
+
 </template>
 
 <style scoped lang="scss">
@@ -180,7 +180,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
     justify-content: space-around;
     width: 100vw;
     height: 55vh;
-    
+
     .card {
         background-color: rgb(250, 250, 250) !important;
         width: 300px;
@@ -202,7 +202,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
                     max-height: 300px;
                     object-fit: cover;
                 }
- 
+
             }
             .name-box {
                 height: 60px;
@@ -228,13 +228,13 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
                         box-shadow:  3px 3px 2px 1px  rgba(75, 72, 72, 0.907);
                 }
             }
-    
+
         }
     }
     .card:hover{
         box-shadow:  12px 12px 2px 1px  rgba(75, 72, 72, 0.907);
     }
-    
+
 }
 .page{
     height: 5vh;

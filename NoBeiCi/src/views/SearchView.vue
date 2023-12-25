@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, watch, defineAsyncComponent } from 'vue'
+    import { ref, watch, defineAsyncComponent, onMounted } from 'vue'
     import NavBar from '../components/NavigateBar.vue'
     import 'element-plus/dist/index.css'
     import { Search } from '@element-plus/icons-vue'
@@ -11,13 +11,16 @@
     import Institution from '../components/search/Institution.vue'
     import SelectJournal from '../components/search/SelectJournal.vue'
     //import Subject from '../components/search/Subject.vue'
+    import { ElLoading } from 'element-plus'
     const AsyncSubject = defineAsyncComponent(() => import('../components/search/Subject.vue'));
     import i18n from '../locales'
     import axios from 'axios'
     import {debounce} from "vue-debounce";
+    import { useSearchContentStore } from '../stores/searchContent.js'
+    const store = useSearchContentStore();
+    const input = ref('');
     const showAriticle = ref([true]);
     const key = ref(Date.now());
-    const input = ref('');
     const startTime = ref('');
     const endTime = ref('');
     const subjects = ref([]);
@@ -53,8 +56,14 @@
     };
     const search = debounce( async () => {
         try {
+            let loading;
+            loading = ElLoading.service({
+              lock: true,
+              text: "加载中......",
+              background: 'rgba(0,0,0,0.7)'
+            })
             if(input.value != '') {
-              const response = await axios.get('http://100.99.200.37:8000/work/advanced_search/', {
+              const response = await axios.get('http://api.buaa-q9k.xyz/work/advanced_search/', {
               params: {
                   content: input.value,
                   start_time: startTime.value || undefined,
@@ -80,12 +89,16 @@
                   institutions.value = response.data.data.statistics.top_institutions;
                   totalPage.value = response.data.data.count / 10;
                   key.value = Date.now();
+                  loading.close();
               } else{
                   showAriticle.value = false;
+                  loading.close();
                   window.alert("无结果");
               }
+
           }
         } catch (error) {
+            loading.close();
             console.error('Error fetching data:', error);
         }
     }, "300ms");
@@ -115,7 +128,7 @@
     let showDropdown = ref(false);
 
     const fetchData = async (value) => {
-      const response = await axios.get('http://100.96.145.140:8000/work/get_suggestion', {
+      const response = await axios.get('http://api.buaa-q9k.xyz/work/get_suggestion', {
         params: {
           content: value,
         },
@@ -170,6 +183,14 @@
       pageNum.value = number;
       search();
     }
+
+    onMounted( () => {
+      input.value = store.getContent;
+
+      if (input.value !== '') {
+        search();
+      }
+  });
 </script>
 
 <template>
@@ -252,15 +273,15 @@
             </el-main>
             <el-aside v-if="showAriticle">
                 <SearchResultStatics :data="statics" :key="key" />
-                <p style="text-align: center;" v-if="showAriticle">前1000条结果统计图</p>
+                <p style="text-align: center;" v-if="showAriticle">前500条结果统计图</p>
                 <AuthorDisplay :data="authors" :key="key" />
                 <p style="text-align: center;" v-if="showAriticle"><br/>发表数量最多的作者</p>
             </el-aside>
         </el-container>
       </el-container>
-      <el-footer>
+      <!-- <el-footer>
         footer
-      </el-footer>
+      </el-footer> -->
     </el-container>
 </template>
 

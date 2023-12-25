@@ -86,7 +86,7 @@ const handleManagerLogin = () => {
       const response = await request({
         url: apiUrl,
         params: params,
-        useTestUrl: false,
+        useTestEnv: false,
         // testUrl: 'http://100.117.229.168:8000'
       })
 

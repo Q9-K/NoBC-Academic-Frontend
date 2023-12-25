@@ -4,22 +4,17 @@
  */
 import logoUrl from "../../assets/logo/logo.png"
 import NavigateBar from "../../components/NavigateBar.vue";
-import { Bottom, Position, Search } from '@element-plus/icons-vue'
-import { onMounted, ref, watch } from "vue";
-import { WordCloud } from "@antv/g2plot";
-import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
+import {Search} from '@element-plus/icons-vue'
+import {onMounted, ref, watch} from "vue";
 import i18n from "../../locales/index.js";
-import { debounce } from "vue-debounce";
-import pinyin from "pinyin";
+import {debounce} from "vue-debounce";
 import PreDialog from "./PriorDialog.vue";
 import get from '../../functions/Get.js'
-import { ElMessage } from "element-plus";
-import ThesisDisplay from "../../components/ThesisDisplay.vue";
+import {ElMessage} from "element-plus";
 import ArticleDisplay from "../../components/search/ArticleDisplay.vue";
 import { useStateOfPriorDialog } from "../../stores/stateOfPriorDialog.js";
 import ScholarDisplay from "../../components/ScholarDisplay.vue";
-import { ReloadOutlined } from "@ant-design/icons-vue";
-import { useSearchContentStore } from "../../stores/searchContent.js";
+import {useSearchContentStore} from "../../stores/searchContent.js";
 import router from "../../routes/index.js";
 import TagCloud from "TagCloud";
 import './test.less'
@@ -30,10 +25,6 @@ import {
   HomeOutlined,
   ReadOutlined
 } from "@ant-design/icons-vue";
-
-const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
-
-const searchValue = ref("");
 const isTopSearchInputVisible = ref(false)
 const recommendPaper = ref([])
 const recommendScholar = ref([])
@@ -58,8 +49,11 @@ const isInViewPort = (element) => {
 
 onMounted(() => {
   setInterval(() => {
-    const isSearchInputVisible = isInViewPort(document.querySelector(".search-area-input"))
-    isTopSearchInputVisible.value = !isSearchInputVisible;
+    const element = document.querySelector(".search-area-input")
+    if (element) {
+      const isSearchInputVisible = isInViewPort(element)
+      isTopSearchInputVisible.value = !isSearchInputVisible;
+    }
   }, 500)
 })
 
@@ -216,8 +210,10 @@ onMounted(() => {
               <template #title>
                 {{ i18n.t('homePage.scholarCount') }}
               </template>
-              <template #suffix class="icon1">
-                <idcard-outlined class="statistic-card-icon" />
+              <template #suffix>
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <idcard-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="107246" class="statistic-card">
@@ -225,7 +221,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.institutionCount') }}
               </template>
               <template #suffix>
-                <home-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <home-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="248643" class="statistic-card">
@@ -233,7 +231,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.journalCount') }}
               </template>
               <template #suffix>
-                <read-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <read-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="65073" class="statistic-card">
@@ -241,7 +241,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.fieldCount') }}
               </template>
               <template #suffix>
-                <deployment-unit-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <deployment-unit-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
             <el-statistic :value="240000000" class="statistic-card">
@@ -249,7 +251,9 @@ onMounted(() => {
                 {{ i18n.t('homePage.workCount') }}
               </template>
               <template #suffix>
-                <file-search-outlined class="statistic-card-icon" />
+                <div style="display: flex; height: 25.5px; justify-content: center; align-items: center">
+                  <file-search-outlined class="statistic-card-icon" />
+                </div>
               </template>
             </el-statistic>
           </div>
@@ -391,10 +395,7 @@ onMounted(() => {
             width: 20%;
 
             .statistic-card-icon {
-              top: 0px;
-              font-size: 26px;
-              position: relative;
-              bottom: 1.05vh;
+              font-size: 110%;
             }
           }
         }
