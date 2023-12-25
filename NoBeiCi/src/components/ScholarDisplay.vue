@@ -19,7 +19,7 @@ async function followScholar(id){
         {
             url: "http://api.buaa-q9k.xyz/user/follow_scholar/",
             params: {
-                scholar_id: scholar_id
+                scholar_id: id
             },
             addToken: true
         }
