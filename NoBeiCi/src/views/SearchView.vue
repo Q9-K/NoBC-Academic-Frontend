@@ -287,7 +287,7 @@
 
 <style scoped lang="less">
 .active-button {
-  background-color:rgb(224, 46, 11);
+  background-color:#b5bef4;
 }
 .el-header {
     height: 20vh;
@@ -336,6 +336,7 @@
     background-color: #fff;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     max-height: 200px;
+    width: 30vw;
     overflow-y: auto;
   }
   .dropdown-list li {

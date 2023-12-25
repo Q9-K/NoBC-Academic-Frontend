@@ -1,9 +1,8 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted, nextTick} from 'vue'
 import i18n from '../../locales/index.js'
 import Clipboard from 'clipboard';
 import { ElMessage, ElMessageBox } from 'element-plus'
-import axios from 'axios';
 import request from '../../functions/Request';
 const {data, type} = defineProps(['data', 'type']);
 const title = ref(data.other.title);
@@ -29,9 +28,10 @@ const issue = computed(() => {
 })
 const numberCite = ref(data.other.cited_by_count);
 const numberViews = ref(data.other.visit_count);
-const word_id = data.other.id;
+const word_id = ref(data.other.id);
 const citeMessage = ref(data.other.citation);
 const thesisId = data.other.id
+let isCollected = ref(false)
 const copyText = () => {
   const clipboard = new Clipboard(document.body, {
     text: () => citeMessage.value
@@ -59,41 +59,68 @@ const open = () => {
 }
 
 const collectArticle = async () => {
-  try {
-    const result = await request({
-      url: '/user/add_favorite/',
-      params: {
-        work_id: word_id,
-      },
-      addToken: true,
-      useTestEnv:false,
-      testEnv: 'http://100.117.229.168:8000',
-    });
+    const result = await request(
+        {
+            url: '/user/add_favorite/',
+            params:{
+                    work_id: word_id.value ,
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
+        }
+        );
 
-    console.log(result);
+        if(result){
+            ElMessage({
+                message: '收藏成功',
+                type: 'success',
+            })
+            isCollected.value =true
+        }
+        console.log("collect return:",result)
+       
+}
 
-    if (result) {
-      paper.collected = true;
-      ElMessage({
-        message: '收藏成功',
-        type: 'success',
-      });
-    }
-  } catch (error) {
-    console.error('Error collecting paper:', error);
-    ElMessage({
-      message: '收藏失败，请重试',
-      type: 'error',
-    });
-  }
-};
+const uncollectArticle = async () => {
+    const result = await request(
+        {
+            url: '/user/remove_favorite/',
+            params:{
+                    work_id: word_id.value ,
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
+        }
+        );
+        if(result){
+            ElMessage({
+                message: '取消收藏成功',
+                type: 'success',
+            })
+            isCollected.value =false
+        }
+        
+        console.log("uncollect return:",result)
+       
+}
 
+onMounted (()=>{
+
+console.log("111111")
+nextTick(()=>{
+     console.log("article data:",data)
+     isCollected.value = data.other.iscollected
+})
+
+})
 </script>
 
 <template>
     <el-card class="box-card">
         <div class="title">
-            <router-link to="/thesisDetail/{{ word_id.value }}"><p class="title-content" href="toPaperPage" >{{ title }}</p></router-link>
+            <router-link :to="`/thesisDetail/${word_id}`"><p class="title-content" href="toPaperPage" >{{ title }}</p></router-link>
         </div>
         <div class="author">
             <span v-for="(author, index) in authors" :key="index">
@@ -111,7 +138,8 @@ const collectArticle = async () => {
             <span>{{i18n.t('articleDisplay.articleDisplayCitations')}}&nbsp; </span><span style="color: rgb(241, 16, 181);">{{ numberCite }}</span>  &nbsp;|&nbsp;
             <span>{{i18n.t('articleDisplay.articleDisplayViews')}} </span> <span style="color: rgb(241, 16, 181);">{{ numberViews }}</span>
             <el-button class="quote-button" @click="copyText"><el-icon><Link /></el-icon>{{i18n.t('articleDisplay.articleDisplayCite')}}</el-button>
-            <el-button class="collect-button" @click="collectArticle"><el-icon><FolderAdd /></el-icon>{{i18n.t('articleDisplay.articleDisplayCollect')}}</el-button>
+            <el-button class="collect-button" @click="collectArticle" v-if="!isCollected"><el-icon><FolderAdd /></el-icon>{{i18n.t('articleDisplay.articleDisplayCollect')}}</el-button>
+            <el-button class="collect-button1" @click="uncollectArticle" color="#626aef" v-else>{{i18n.t('articleDisplay.articleDisplayCollected')}}</el-button>
         </div>
     </el-card>
 </template>
@@ -181,11 +209,19 @@ const collectArticle = async () => {
     margin-left:31vw;
     background-color: transparent;
 }
+
 .collect-button {
     margin-left: 1vw;
-    font-size: large; 
+    /* font-size: large;  */
     background-color: transparent;
-    margin-right: 3vw;
+    margin-right: 0vw;
+}
+
+.collect-button1 {
+    margin-left: 1vw;
+    /* font-size: large;  */
+    /* background-color: transparent; */
+    margin-right: 0vw;
 }
 
 </style>
