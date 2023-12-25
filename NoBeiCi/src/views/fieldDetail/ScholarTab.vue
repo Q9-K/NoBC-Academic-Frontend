@@ -57,19 +57,7 @@ onMounted(() => {
         })
       }
       else {
-        const data = response.data
-        allScholars.value = data
-        // allScholars.value.push({
-        //   id: data.id,
-        //   avatar: data.avatar,
-        //   citedByCount: data.cited_by_count,
-        //   name: data.display_name,
-        //   worksCount: data.works_count,
-        //   impactFactor: data.summary_stats['2yr_mean_citedness'],
-        //   hIndex: data.summary_stats['h_index'],
-        //   i10Index: data.summary_stats['i10_index'],
-        //   oaPercent: data.summary_stats['oa_percent']
-        // })
+        allScholars.value = response.data
       }
     })
 })

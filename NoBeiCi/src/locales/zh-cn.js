@@ -8,7 +8,9 @@ export default {
     conferences: "期刊会议",
     institution: "权威机构",
     field: "流行领域",
-    researcher: "权威学者"
+    researcher: "权威学者",
+    messageBoxTitle: "站内消息",
+    noMessage: "暂无消息"
   },
   homePage: {
     search: "搜索学者、论文、期刊",
@@ -94,7 +96,9 @@ export default {
     },
     selectFieldMode: {
       select: "选择您的关注领域",
-      finishSelect: "选好了"
+      finishSelect: "选好了",
+      selectButton: "选择",
+      skipSelect: "跳过"
     },
     finishMode: {
       finish: "注册成功！欢迎使用NoBC学术搜索！"
@@ -130,7 +134,21 @@ export default {
   },
   thesisDetail:{
     quote:"引用",
-    browse:"浏览"
+    browse:"浏览",
+    Link: "原文链接",
+    collection: "收藏",
+    related: "关联论文",
+    relavant: "相关论文",
+    quoted: "引用论文",
+    beQuoted: "被引用",
+    more: "更多",
+    net: "引文网络",
+    fold: "收起",
+    summary: "一句话总结",
+    introduce: "该论文暂时没有pdf,无法进行对话",
+    input: "请输入你的想法",
+    send: "发送",
+    abstract: "摘要"
   },
   field: {
     moreDetail: "更多"

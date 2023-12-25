@@ -8,7 +8,9 @@ export default {
     conferences: "Conferences",
     institution: "Institution",
     field: "Field",
-    researcher: "Researcher"
+    researcher: "Researcher",
+    messageBoxTitle: "Platform Message",
+    noMessage: "No Message"
   },
   homePage: {
     search: "Search for scholars, papers and journals",
@@ -61,7 +63,9 @@ export default {
     },
     selectFieldMode: {
       select: "Select your Interests",
-      finishSelect: "I've selected"
+      finishSelect: "I've selected",
+      selectButton: "Pick It!",
+      skipSelect: 'Skip Here'
     },
     finishMode: {
       finish: "OK! Welcome to NoBC Academic!"
@@ -97,7 +101,21 @@ export default {
   },
   thesisDetail:{
     quote:"Quote",
-    browse:"Browse"
+    browse:"Browse",
+    Link: "Link",
+    collection: "collection",
+    related: "Related Papers",
+    relavant: "Relavant Papers",
+    quoted: "Quoted Papers",
+    beQuoted: "Quoted Number",
+    more: "more" ,
+    net: "Quoted Network",
+    fold: "fold",
+    summary: "Summarize in a sentence",
+    introduce: "Sorry, The paper does not have a PDF",
+    input: "Message ChatPDF",
+    send: "send",
+    abstract: "abstract"
   },
   field: {
     moreDetail: "More"
