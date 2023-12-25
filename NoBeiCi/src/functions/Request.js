@@ -8,6 +8,7 @@ const contentTypeJson = "application/json"
 
 const instance = axios.create({
     timeout: 10 * 1000,
+    baseURL: "http://123.60.99.8:",
 })
 //请求前过滤器
 let loading = null;
@@ -22,6 +23,12 @@ instance.interceptors.request.use(
         }
         if (config.addToken && JSON.parse(localStorage.getItem("userInformation")).token) {
             config.headers['token'] = JSON.parse(localStorage.getItem("userInformation")).token;//这里应该为获取Token的方法
+        }
+        if(config.addManagerToken && localStorage.getItem("manager")){
+            config.headers['token'] = localStorage.getItem("manager");
+        }
+        if(config.useTestEnv){
+            config.baseURL = config.testEnv
         }
         return config;
     }, (error) => {
@@ -61,7 +68,7 @@ instance.interceptors.response.use(
 
 
 const request = (config) => {
-    const { url, params, dataType, showLoading = true, addToken = false,errorCallback, showError = true } = config
+    const { url, params, dataType, showLoading = true, addToken = false,addManagerToken=false,useTestEnv = true,testEnv="",errorCallback, showError = true } = config
     let contentType = contentTypeForm;
     let fromData = new FormData();
     for (let key in params) {
@@ -77,7 +84,10 @@ const request = (config) => {
     return instance.post(url, fromData, {
         headers: headers,
         addToken: addToken,
+        addManagerToken: addManagerToken, // 是否添加管理端token
         showLoading: showLoading,
+        useTestEnv: useTestEnv,
+        testEnv: testEnv,
         errorCallback: errorCallback,
         showError: showError
     }).catch(error => {

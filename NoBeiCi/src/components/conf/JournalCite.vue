@@ -19,11 +19,12 @@ export default {
   },
 
   setup(props) {
+      const reversedData = props.data.slice().reverse();
       const buildCiteChart = () => {
         const dualAxes = new DualAxes(chart.value, {
-        data: [data, data],
-        xField: 'time',
-        yField: ['cite', 'count'],
+        data: [reversedData, reversedData],
+        xField: 'year',
+        yField: ['cited_by_count', 'works_count'],
         geometryOptions: [
             {
             geometry: 'column',
@@ -44,11 +45,14 @@ export default {
     const viewMode = ref('chart');
     
     const data = [
-        { time: '2019-03', cite: 350, count: 800 },
-        { time: '2019-04', cite: 900, count: 600 },
-        { time: '2019-05', cite: 300, count: 400 },
-        { time: '2019-06', cite: 450, count: 380 },
-        { time: '2019-07', cite: 470, count: 220 },
+        { time: '2014', cite: 350, count: 800 },
+        { time: '2015', cite: 900, count: 600 },
+        { time: '2016', cite: 300, count: 400 },
+        { time: '2017', cite: 450, count: 380 },
+        { time: '2018', cite: 470, count: 520 },
+        { time: '2019', cite: 350, count: 800 },
+        { time: '2020', cite: 900, count: 600 },
+        { time: '2021', cite: 300, count: 400 },
     ];
 
     onMounted(() => {

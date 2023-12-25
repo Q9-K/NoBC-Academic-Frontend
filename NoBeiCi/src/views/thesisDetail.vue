@@ -11,13 +11,14 @@ import { ElMessage } from 'element-plus';
 import router from "../routes/index.js";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
 import { nextTick } from 'vue';
-
+// 
+var isParentReady = ref(false)
+// title和abstract
 var title = ref('')
 var abstract = ref('')
 //const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
 const authorShips = ref([])
-
 
 // 当前论文id
 var currentId = ref('')
@@ -27,17 +28,15 @@ var isShowLink = ref(false)
 //原文链接开关
 function changeShowLink() {
     isShowLink.value = !isShowLink.value
-    console.log(isShowLink.value)
 }
 //原文链接列表
 var links = ref([])
 
 function openLink(link) {
-    console.log(1)
     window.open(link, '_blank')
 }
 //存放论文数据
-var pdf_url = ref('')
+var pdf_url = ref(null)
 var hasPDF = ref(true)
 var date = ref('')
 var instituion = ref('')
@@ -45,7 +44,7 @@ var data = ref({ name: '', children: [] })
 var visit_count = ref('')
 var cited_by_count = ref('')
 var work_id = ref('')
-
+var fields = ref('')
 //存放是否全局加载
 var fullscreenLoading = ref(false)
 
@@ -78,11 +77,23 @@ function setRelavant() {
 }
 //打开当前论文的pdf
 function navigateToExternalURL() {
-    window.open(pdf_url, '_blank')
+    console.log(pdf_url)
+    if (pdf_url != null) {
+        window.open(pdf_url, '_blank')
+    }
 }
 // 打开PDF
 function openPDF(url) {
-    window.open(url, '_blank')
+    if (url != null) {
+        window.open(url, '_blank')
+    }
+}
+function NavigateToScholar(id) {
+    router.push('/authorhome/' + id)
+}
+function jumpToField(field){
+    console.log(1)
+    router.push('/fieldDetail/' + field.id.substring(field.id.indexOf("C")))
 }
 // 收藏论文
 async function collection() {
@@ -129,6 +140,7 @@ async function getThesis() {
         authorShips.value = res.data.data.authorships
         if (res.data.data.pdf_url == null) {
             hasPDF.value = false
+            pdf_url.value = null
         } else {
             pdf_url = toRaw(res.data.data.pdf_url)
         }
@@ -142,6 +154,7 @@ async function getThesis() {
         data.value.name = res.data.data.title.substring(0, 10) + ".."
         data.value.id = res.data.data.id
         work_id.value = res.data.data.id
+        fields.value = res.data.data.concepts
         //原文链接列表初值
         for (let i = 0; i < res.data.data.locations.length; i++) {
             links.value.push(res.data.data.locations[i].landing_page_url)
@@ -175,12 +188,14 @@ function findChildren(data, name, referenced_works) {
         }
     }
 }
-
 onMounted(async () => {
     // getThesisData();
     const { params } = useRoute();
     currentId.value = params.thesisId
     await getThesis()
+    isParentReady.value = true;
+    nextTick(() => {
+    });
     const treemapOfBigField = echarts.init(document.getElementById('containerOfTreemap'))
     const options = {
         tooltip: {
@@ -221,7 +236,7 @@ onMounted(async () => {
     treemapOfBigField.hideLoading();
     treemapOfBigField.setOption(options)
     treemapOfBigField.on('click', async function (params) {
-        if (params.data.children == null && params.treeAncestors.length <= 3) {
+        if (params.data.children == null && params.treeAncestors.length <= 4) {
             const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
                 params: {
                     id: params.data.id,
@@ -291,12 +306,12 @@ onMounted(async () => {
                                     <span>
                                         <span class="author-link-font-author">
                                             <span class="personLink">
-                                                <a class="author_label" :href=author.author.id>
+                                                <a class="author_label" @click="NavigateToScholar(author.author.id)">
                                                     <span>{{ author.author.display_name }}</span>
                                                 </a>
                                             </span>
                                         </span>
-                                        <span class="mr" v-if="index != authorShips.length - 1">,</span>
+                                        <span class="mr" v-if="index != authorShips.length - 1">,&nbsp;&nbsp;</span>
                                     </span>
                                 </div>
                             </div>
@@ -335,7 +350,7 @@ onMounted(async () => {
                     <div class="abstract">
                         <div class="abstract-title">
                             <div class="abstract-absTop" style="margin-top: 0px;">
-                                <span>摘要</span>
+                                <span> {{ i18n.t("thesisDetail.abstract") }} </span>
                             </div>
                             <span class="abstract-absLabel">
                                 <div class="abstract-abstractContent">
@@ -347,10 +362,12 @@ onMounted(async () => {
                                                     {{ abstract }}
                                                 </div>
                                                 <span v-if="ifShowMoreButton" class="abstract-morebtn">
-                                                    <span class="morebtn" @click="showAllAbstract">更多</span>
+                                                    <span class="morebtn" @click="showAllAbstract"> {{
+                                                        i18n.t("thesisDetail.more") }} </span>
                                                 </span>
                                                 <span v-if="!ifShowMoreButton" class="abstract-morebtn2">
-                                                    <span class="morebtn" @click="showAllAbstract">收起</span>
+                                                    <span class="morebtn" @click="showAllAbstract">{{
+                                                        i18n.t("thesisDetail.fold") }}</span>
                                                 </span>
                                             </div>
                                             <!-- <div class="abstract-tranText" v-if="ifShowTranslate" @click="showTranslate">
@@ -364,6 +381,15 @@ onMounted(async () => {
                                     </div>
                                 </div>
                             </span>
+                        </div>
+                    </div>
+                    <div class="fieldHead">
+                        相关领域
+                    </div>
+                    <div class="fields">
+                        <div v-for="field in fields" class="field" @click="jumpToField(field)">
+                            <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
+                            {{ field.display_name }}
                         </div>
                     </div>
                     <div class="actionButton">
@@ -390,7 +416,7 @@ onMounted(async () => {
                                 <el-icon>
                                     <Promotion />
                                 </el-icon>
-                                <span>原文链接</span>
+                                <span> {{ i18n.t("thesisDetail.Link") }} </span>
                                 <el-icon>
                                     <ArrowDown />
                                 </el-icon>
@@ -417,25 +443,25 @@ onMounted(async () => {
                             <el-icon>
                                 <StarFilled />
                             </el-icon>
-                            <span>收藏</span>
+                            <span> {{ i18n.t("thesisDetail.collection") }} </span>
                         </div>
                     </div>
                 </div>
                 <div class="relation">
-                    <div class="relavant">相关论文</div>
+                    <div class="relavant"> {{ i18n.t("thesisDetail.related") }} </div>
                     <div class="relavantDetail">
                         <div class="relavantDetailHead">
                             <div class="first" @click="setRelated" :class="{ highlighted: isHighlighted1 }">
                                 <el-icon style="margin-right: 5px;font-size:20px">
                                     <Document />
                                 </el-icon>
-                                引用论文
+                                {{ i18n.t("thesisDetail.quoted") }}
                             </div>
                             <div class="second" @click="setRelavant" :class="{ highlighted: isHighlighted2 }">
                                 <el-icon style="margin-right: 5px;font-size:20px">
                                     <Document />
                                 </el-icon>
-                                相关论文
+                                {{ i18n.t("thesisDetail.relavant") }}
                             </div>
                         </div>
                         <div class="relavantDetailBody">
@@ -444,24 +470,26 @@ onMounted(async () => {
                                     <p>{{ work.title }}</p>
                                 </div>
                                 <div class="work_related">
-                                    被引用
+                                    {{ i18n.t("thesisDetail.beQuoted") }}
                                     {{ work.cited_by_count }}
                                 </div>
                                 <div class="more">
                                     <div class="jump" @click="LookThesis(work.id)">查看</div>
-                                    <div class="pdf" @click="openPDF(work.pdf_url)">PDF</div>
+                                    <div class="pdf1" @click="openPDF(work.pdf_url)"
+                                        :class="{ grey1: work.pdf_url == null }">PDF</div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                    <div class="relationHead">引文网络</div>
+                    <div class="relationHead"> {{ i18n.t("thesisDetail.net") }} </div>
                     <div id="containerOfTreemap" class="map"></div>
                 </div>
             </div>
             <div class="chat">
                 <div>
-                    <chatInThesis :pdf_url="pdf_url" class="rightBar"></chatInThesis>
+                    <chatInThesis class="rightBar" :pdf_url="pdf_url" v-if="!isParentReady"></chatInThesis>
+                    <chatInThesis class="rightBar" :pdf_url="pdf_url" v-if="isParentReady"></chatInThesis>
                 </div>
             </div>
         </div>
@@ -482,7 +510,7 @@ onMounted(async () => {
 .indexArticle {
     width: 100%;
     color: #333;
-    max-width: 2000px;
+    /*max-width: 2000px;*/
     padding-left: 15px;
     padding-right: 15px;
     margin: 0 auto;
@@ -498,7 +526,8 @@ onMounted(async () => {
     .indexContent {
         width: 100%;
         flex: 1 1;
-        margin-right: 20px;
+        /*margin-right: 20px;*/
+        margin-right: 400px;
 
         .background {
             background-color: #fff;
@@ -554,6 +583,11 @@ onMounted(async () => {
 
                                 .author_label {
                                     color: #6b6b6b;
+                                    cursor: pointer;
+                                }
+
+                                .author_label:hover {
+                                    color: yellow;
                                 }
                             }
                         }
@@ -609,7 +643,7 @@ onMounted(async () => {
             .abstract {
                 display: flex;
                 align-items: center;
-                margin-bottom: 15px;
+                margin-bottom: 7px;
                 flex-wrap: wrap;
 
                 .abstract-title {
@@ -752,12 +786,14 @@ onMounted(async () => {
 
                     .pdf {
                         color: #e8edf4;
+
                     }
 
                 }
 
                 .grey {
                     background-color: #e7e7e7;
+                    cursor: auto;
                 }
 
                 .ppt {
@@ -948,6 +984,34 @@ onMounted(async () => {
                     cursor: pointer;
                 }
             }
+
+            .fieldHead {
+                height: 30px;
+                text-align: left;
+                margin-top: 0px;
+                font-size: 15px;
+                font-weight: 500;
+                color: #222;
+            }
+            .fields{
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+                .field{
+                    margin-right: 20px;
+                    font-size: 14px;
+                    color: #6b6b6b;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                }
+                .field:hover{
+                    color: burlywood;
+                }
+            }
         }
 
         .relation {
@@ -978,7 +1042,8 @@ onMounted(async () => {
                     display: flex;
                     align-items: center;
                     justify-content: flex-start;
-                    width: 100%;
+                    min-width: 100%;
+                    width: auto;
                     border: solid lightgray;
                     border-left: hidden;
                     border-right: hidden;
@@ -987,7 +1052,8 @@ onMounted(async () => {
                     margin-bottom: 8px;
 
                     .first {
-                        width: 114px;
+                        min-width: 120px;
+                        width: auto;
                         height: 40px;
                         border: solid;
                         border-color: #979797;
@@ -999,10 +1065,13 @@ onMounted(async () => {
                         justify-content: center;
                         font-weight: 600;
                         cursor: pointer;
+                        padding-left: 5px;
+                        padding-right: 5px;
                     }
 
                     .second {
-                        width: 114px;
+                        min-width: 120px;
+                        width: auto;
                         height: 40px;
                         border: solid;
                         border-color: #979797;
@@ -1014,6 +1083,8 @@ onMounted(async () => {
                         justify-content: center;
                         font-weight: 600;
                         cursor: pointer;
+                        padding-left: 5px;
+                        padding-right: 5px;
                     }
 
                     .highlighted {
@@ -1080,7 +1151,7 @@ onMounted(async () => {
                                 cursor: pointer;
                             }
 
-                            .pdf {
+                            .pdf1 {
                                 border: solid;
                                 border-width: 1px;
                                 margin-left: 20px;
@@ -1090,6 +1161,11 @@ onMounted(async () => {
                                 font-weight: 700;
                                 background-color: #c51c01;
                                 cursor: pointer;
+                            }
+
+                            .grey1 {
+                                background-color: #e7e7e7;
+                                cursor: auto;
                             }
                         }
                     }
@@ -1117,6 +1193,9 @@ onMounted(async () => {
 
     .chat {
         display: block;
+        position: fixed;
+        /*right: 200px;*/
+        left: 68vw;
 
         .rightBar {
             flex: 0 0 370px;
@@ -1126,4 +1205,8 @@ onMounted(async () => {
         }
     }
 }
-</style>
+
+.indexArticle::-webkit-scrollbar {
+    width: 1px;
+    /* 设置滚动条宽度 */
+}</style>

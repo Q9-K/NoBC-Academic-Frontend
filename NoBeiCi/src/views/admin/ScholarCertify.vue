@@ -1,79 +1,187 @@
 <script setup>
-import {ref,onMounted,nextTick} from 'vue'
+import {ref,onMounted,nextTick,watch} from 'vue'
 import get from "../../functions/Get.js";
 import i18n from "../../locales/index.js";
 import ImageViewer from "../../components/ImageViewer.vue";
+import request from "../../functions/Request.js";
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const api = {
+  getCertifications: "http://100.117.229.168:8000/manager/get_certifications_all/",
+  getCertificationDetail: "http://100.117.229.168:8000/manager/get_certification_detail/",
+  reviewCertification:"http://100.117.229.168:8000/manager/check_certification/",
+}
 const showInfoList = ref(true);
 const detail = ref({
-  id:0,
-  img:[
-    {src:"https://cdn.wwads.cn/creatives/m88Dv8ffgDW2NO9TVOfe2Ee3QYRtwORH2acMe3Id.png",},
-    {src:"https://cdn.wwads.cn/creatives/m88Dv8ffgDW2NO9TVOfe2Ee3QYRtwORH2acMe3Id.png",},
-
-  ],
-  beizhu:"备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注",  
+  user_id:0,
+  user:"",
+  author_id:"http://openalex.org/aaa123",
+  author_name:"aaa123",
+  idcard_img_urlOne:"",
+  idcard_img_urlTwo:"",
+  idcard_img_urlThree:"",
+  idcard_img_urlFour:"",
+  date_time:"",
+  remark:"备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注",
+  imgs:[]
 });
 const certifications = ref([
+  {
+            id: 1,
+            user: "joker",
+            author_id: "1",
+            status: "passed",
+            result_msg: "pass",
+            idcard_img_urlOne: "111",
+            idcard_img_urlTwo: "",
+            idcard_img_urlThree: "",
+            idcard_img_urlFour: "",
+            date_time: "2023-12-22T10:54:59",
+            remark: "",
+            author_name: "未知"
+  }
 
 ])
 const certificationsCopy = ref([
 
 ])
-const scholarList = ref([
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"1"},
-{id:"2",name:"222",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"3",name:"333",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"1",name:"444",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"},
-{id:"1",name:"111",scholarName:"222",time:"2023/23/01 21:21:09",status:"0"}
-])
+const opinion = ref("");
 const checkDetail = (id)=>{
-  detail.value.id = id;
+  getDetail(id);
   showInfoList.value = !showInfoList.value;
-  //getDetail(id);
-  imagePreview();
 }
 const backToList = ()=>{
-  getCertifications();
   imageViewerRef.value = null;
   previewImgList.value = [];
+  opinion.value = "";
+  detail.value = {
+    imgs:[],
+    author:{
+      avatar:"",
+    },
+  };
   showInfoList.value = !showInfoList.value;
 }
 const getCertifications = async()=>{
-  certifications.value = await get({
-      url:"/manager/get_certifications_pending/",
+  const result = await get({
+      url: api.getCertifications,
       params:{},
-      addtoken: true
+      addManagerToken: true
   });
+  certifications.value = result.data;
+  for(let i = 0; i < certifications.value.length; i++){
+    certifications.value[i].date_time = certifications.value[i].date_time.replace("T", "  ");
+  }
   certificationsCopy.value = certifications.value;
+  sortLatest();
 }
 const getDetail = async(id)=>{
-     detail.value  = await get({
-      url:"/manager/get_certification_detail/",
+     const result  = await get({
+      url: api.getCertificationDetail,
       params:{certification_id:id},
-      addtoken: true
+      addManagerToken: true
      });
-     
+     detail.value = result.data;
+     let avater;
+     detail.value.imgs = [];
+     for(let i = 0; i < certificationsCopy.value.length; i++){
+        if(certificationsCopy.value[i].id == id){
+          avater = certificationsCopy.value[i];
+        }
+     }
+     detail.value.user_avatar = avater.user_avatar;
+     detail.value.author_avatar = avater.author_avatar;
+     if(detail.value.idcard_img_urlOne!="") detail.value.imgs.push(detail.value.idcard_img_urlOne);
+     if(detail.value.idcard_img_urlTwo!="") detail.value.imgs.push(detail.value.idcard_img_urlTwo);
+     if(detail.value.idcard_img_urlThree!="") detail.value.imgs.push(detail.value.idcard_img_urlThree);
+     if(detail.value.idcard_img_urlFour!="") detail.value.imgs.push(detail.value.idcard_img_urlFour);
+     if(detail.value.remark=="") detail.value.remark = "申请者没有填写备注信息";
+     nextTick(()=>{
+       imagePreview();
+     })
 }
+
+const review = async(pass)=>{
+  
+  const result = await request({
+    url: api.reviewCertification,
+    params: {
+      certification_id: detail.value.id,
+      status: pass,
+      opinion: opinion.value
+    },
+    addManagerToken: true
+  });
+  getCertifications();
+  setTimeout(backToList(),500);
+}
+
+
 onMounted(()=>{
+  language.value = i18n.getLocale();
   getCertifications();
 })
-const sortEarliest = ()=>{
 
-}
+
+
 const sortLatest = ()=>{
-
+  sortEarliest();
+  certifications.value = certifications.value.reverse();
+}
+const sortEarliest = ()=>{
+    certifications.value = certifications.value.sort((a,b)=>{
+      let yearA,yearB,monthA,monthB,dayA,dayB,hourA,hourB,minuteA,minuteB,secondA,secondB;
+      let tmp = a.date_time.split(" ");
+      yearA = tmp[0].split("-")[0];
+      monthA = tmp[0].split("-")[1];
+      dayA = tmp[0].split("-")[2];
+      hourA = tmp[1].split(":")[0];
+      minuteA = tmp[1].split(":")[1];
+      secondA = tmp[1].split(":")[2];
+      tmp = b.date_time.split(" ");
+      yearB = tmp[0].split("-")[0];
+      monthB = tmp[0].split("-")[1];
+      dayB = tmp[0].split("-")[2];
+      hourB = tmp[1].split(":")[0];
+      minuteB = tmp[1].split(":")[1];
+      secondB = tmp[1].split(":")[2];
+      if(yearA>yearB) return 1;
+      else if(yearA<yearB) return -1;
+      else{
+        if(monthA>monthB) return 1;
+        else if(monthA<monthB) return -1;
+        else{
+          if(dayA>dayB) return 1;
+          else if(dayA<dayB) return -1;
+          else{
+            if(hourA>hourB) return 1;
+            else if(hourA<hourB) return -1;
+            else{
+              if(minuteA>minuteB) return 1;
+              else if(minuteA<minuteB) return -1;
+              else{
+                if(secondA>secondB) return 1;
+                else if(secondA<secondB) return -1;
+                else return 0;
+              }
+            }
+          }
+        }
+      }
+    });
 
 }
 const filterTobecertified = ()=>{
-  certifications.value = certifications.value.filter(item=>item.status == 0);
+  certifications.value = certifications.value.filter(item=>item.status == "pending");
 }
 const showall = ()=>{
   certifications.value = certificationsCopy.value;
 }
-
+const toAuthor = (id)=>{
+  let strs = id.split('/')
+  id = strs[strs.length-1];
+  window.open(router.resolve('/authorhome/'+id).href, '_blank')
+}
 //图片预览
 const imageViewerRef = ref(null);
 const previewImgList = ref([]);
@@ -81,7 +189,6 @@ const imagePreview = () => {
     const imageNodeList = document
       .querySelector("#detail")
       .querySelectorAll("img");
-    console.log(imageNodeList);
     const imageList = [];
     imageNodeList.forEach((item, index) => {
       const src = item.getAttribute("src");
@@ -92,6 +199,10 @@ const imagePreview = () => {
     });
     previewImgList.value = imageList;
 };
+const language = ref("cn");
+watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
+    language.value = newValue
+});
 </script>
 
 <template>
@@ -107,7 +218,10 @@ const imagePreview = () => {
         <el-button color="#2353a4" @click="filterTobecertified()">{{ i18n.t('admin.tobecertified') }}</el-button>
         <el-button color="#2353a4" @click="showall()">{{ i18n.t('admin.showall') }}</el-button>
       </div>
-      <div v-for="item in scholarList" class="scholar-item">
+      <div class="no-certification">
+        <el-empty :description=" language=='cn' ? '没有数据' : 'No Data' " v-if="certifications.length==0" ></el-empty>
+      </div>
+      <div v-for="item in certifications" class="scholar-item">
           <div class="brief-info">
             <div class="info-title">
               <div class="title-name">{{i18n.t('admin.applicantName')}}</div>
@@ -117,10 +231,17 @@ const imagePreview = () => {
             </div>
             <el-divider style="margin: 5px !important"></el-divider>
             <div class="info-info">
-              <div class="info-name">{{item.name}}</div>
-              <div class="info-schName">{{item.scholarName}}</div>
-              <div class="info-time">{{item.time}}</div>
-              <div class="info-status">{{item.name}}</div>
+              <div class="info-name">{{item.user}}</div>
+              <div class="info-schName">{{item.author_name}}</div>
+              <div class="info-time">{{item.date_time}}</div>
+              <div class="info-status">
+                {{item.status == "passed" ? (language=="cn" ? "已通过": "Passed") : 
+                  ( item.status == "pending" ? (language=="cn" ? "待审核": "ToBeReviewd") :
+                    (language=="cn" ? "已拒绝": "Rejected")
+                  ) 
+                }}
+              
+            </div>
             </div>
           </div>
           <div class="detail-button">
@@ -137,7 +258,7 @@ const imagePreview = () => {
   </Transition>
   <!-- 详情 -->
   <Transition>
-    <div class="detail" id="detail" v-show="!showInfoList">
+    <div class="detail" id="detail" v-if="!showInfoList">
       <ImageViewer
         ref="imageViewerRef" 
         :imageList="previewImgList"
@@ -147,11 +268,23 @@ const imagePreview = () => {
         <div class="info-panel">
           <div class="applicant-scholar">
             <div class="applicant-info">
-              {{ i18n.t('admin.applicantName') }}
+              <div class="applicant-info-label">{{ i18n.t('admin.applicantName') }}</div>
+              <div class="applicant-info-detail">
+                <div class="applicant-avatar">
+                  <el-avatar :size="100" :src="detail.user_avatar"></el-avatar>
+                </div>
+                <div class="applicant-name">{{ detail.user }}</div>
+              </div>
             </div>
             <el-divider direction="vertical" style="margin: 0; height: 150px; !important;"></el-divider>
             <div class="scholar-info">
-              {{ i18n.t('admin.scholar') }}
+              <div class="scholar-info-label">{{ i18n.t('admin.scholar') }}</div>
+              <div class="scholar-info-detail">
+                <div class="scholar-avater">
+                  <el-avatar :size="100" :src="detail.author_avatar"></el-avatar>
+                </div>
+                <div class="scholar-name" @click="toAuthor(detail.author_id)">{{ detail.author_name }}</div>
+              </div>
             </div>
           </div>
           <el-divider style="margin: 0;"></el-divider>
@@ -159,15 +292,18 @@ const imagePreview = () => {
           
           <div class="certification">
           
-            <div v-for="item in detail.img" class="certification-img">
-              <el-image :src="item.src" style="width: 330px; height: 250px;"></el-image>
+            <div v-for="item in detail.imgs" class="certification-img">
+              <img :src="item" style=" width: 330px ; max-width: 330px !important;height: 250px;"/>
+            </div>
+            <div v-if="detail.imgs.length==0" style="margin: 0 auto;">
+              <el-empty :description=" language=='cn' ? '无认证材料' : 'No Data' "></el-empty>
             </div>
           </div>
           <el-divider style="margin: 0;"></el-divider>
           <div class="addition">
             <div class="addition-label">{{ i18n.t('admin.remark') }}</div>
             <el-input
-              v-model="detail.beizhu"
+              v-model="detail.remark"
               :rows="10"
               type="textarea"
               disabled
@@ -176,8 +312,34 @@ const imagePreview = () => {
         </div>
         <el-divider direction="vertical" style="margin: 0; height: 800px !important;"></el-divider>
         <div class="submit-panel">
-          <el-button type="success" style="margin-top: 20px; !important">{{ i18n.t('admin.accept') }}</el-button>
-          <el-button type="danger" style="margin-top: 20px; !important">{{ i18n.t('admin.decline') }}</el-button>
+          <el-button 
+            type="success" 
+            style="margin-top: 20px; !important" 
+            @click="review(1)"
+            v-if ="detail.status == 'pending'"
+          >{{ i18n.t('admin.accept') }}</el-button>
+          <el-button 
+            type="danger" 
+            style="margin-top: 20px; !important" 
+            @click="review(2)"
+            v-if ="detail.status == 'pending'"
+          >{{ i18n.t('admin.decline') }}</el-button>
+          <div class="opinion-label">{{ i18n.t('admin.opinion') }}</div>
+          <el-input 
+            type="textarea" 
+            v-model="opinion" 
+            :rows="10" 
+            :placeholder='language == "cn" ? "请输入审核意见" : "Please enter a review comment" '
+            v-if ="detail.status == 'pending'"
+          ></el-input>
+          <el-input 
+            type="textarea" 
+            v-model="detail.result_msg" 
+            :rows="10" 
+            :placeholder='language == "cn" ? "管理员没有意见" : "No comment" '
+            v-if ="detail.status != 'pending'"
+            disabled
+          ></el-input>
         </div>
       </div>
     </div>
@@ -288,12 +450,62 @@ const imagePreview = () => {
             .applicant-info {
               width: 50%;
               height: 150px;
-             
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              .applicant-info-label{
+
+              }
+              .applicant-info-detail{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .applicant-avatar{
+                  margin-left: 80px;
+                }
+                .applicant-avater:hover {
+                  cursor: pointer;
+                }
+                .applicant-name{
+                  font-size: 20px;
+                  width: 60%;
+                  transition: all 0.3s ease-in-out;
+                }
+                .applicant-name:hover{
+                  cursor: pointer;
+                  color : rgb(38, 168, 255);
+                }
+              }
             }
             .scholar-info {
               width: 50%;
               height: 150px;
-              
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              .scholar-info-label{
+
+              }
+              .scholar-info-detail{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .scholar-avater{
+                  margin-left: 80px;
+                }
+                .scholar-avater:hover {
+                  cursor: pointer;
+                }
+                .scholar-name{
+                  font-size: 20px;
+                  width: 60%;
+                  transition: all 0.3s ease-in-out;
+                }
+                .scholar-name:hover{
+                  cursor: pointer;
+                  color : rgb(38, 168, 255);
+                }
+              }
             }
           }
           .certification-label{
@@ -305,9 +517,13 @@ const imagePreview = () => {
               overflow-x: scroll;
               justify-content: start;
               align-items: center;
+
               .certification-img {
                 margin:20px;
-
+                
+              }
+              .certification-img:hover {
+                cursor: pointer;
               }
             }
             .addition{
@@ -321,6 +537,9 @@ const imagePreview = () => {
         .submit-panel {
 
           width: 20%;
+          .opinion-label{
+            margin: 10px 0;
+          }
         }
     }
 }

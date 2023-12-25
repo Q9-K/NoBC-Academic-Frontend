@@ -24,6 +24,9 @@ export const useStateOfPriorDialog = defineStore('stateOfPriorDialog', {
     },
     closeDialog() {
       this.isDialogVisible = false
+    },
+    openDialog() {
+      this.isDialogVisible = true
     }
   },
   getters: {
