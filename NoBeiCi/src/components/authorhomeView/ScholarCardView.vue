@@ -170,8 +170,8 @@ import router from "../../routes";
     methods:{
 
       async share(){
-      
-        const part = this.scholar.scholar_id.split("/");
+        console.log("scholar id:",this.scholar_id)
+        const part = this.scholar_id.split("/");
         const id = part[part.length-1]
       // const url = 'buaa-q9k.xyz/authorhome/A5069285356';
       const url = 'buaa-q9k.xyz/authorhome/'+id;
