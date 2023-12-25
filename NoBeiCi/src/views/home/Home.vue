@@ -183,7 +183,7 @@ onMounted(() => {
 <template>
   <PreDialog />
   <NavigateBar :whether-search-input-visible="isTopSearchInputVisible" />
-  <div class="home-page-outer">
+  <div id="home-page-outer" class="home-page-outer">
     <div class="search-area-outer">
       <div class="search-area-left-outer">
         <div id="container-of-3D-tagcloud" class="threeD-tagcloud"></div>
@@ -201,11 +201,11 @@ onMounted(() => {
               </template>
             </el-input>
           </div>
-          <div class="search-area-slogan-outer">
-            <p class="search-area-slogan">
-              {{ i18n.t('homePage.slogan') }}
-            </p>
-          </div>
+<!--          <div class="search-area-slogan-outer">-->
+<!--            <p class="search-area-slogan">-->
+<!--              {{ i18n.t('homePage.slogan') }}-->
+<!--            </p>-->
+<!--          </div>-->
           <div class="statistic-card-outer">
             <el-statistic :value="89520174" class="statistic-card">
               <template #title>
