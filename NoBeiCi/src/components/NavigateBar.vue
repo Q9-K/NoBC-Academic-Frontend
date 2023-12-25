@@ -168,12 +168,20 @@ const handleOpenMailDrawer = () => {
 
 }
 
-const email = JSON.parse(localStorage.getItem('userInformation')).email
-const idEmail = email.split('@')[0]
-const mailWebSocket = new WebSocket('ws://100.117.229.168:8000/' + idEmail + '/message')
-mailWebSocket.onmessage = (event) => {
-  whetherShowDot.value = 1
-}
+watch(
+  () => localStorage.getItem('userInformation'),
+  (newValue) => {
+    if (newValue === null) {
+      return
+    }
+    const email = JSON.parse(localStorage.getItem('userInformation')).email
+    const idEmail = email.split('@')[0]
+    const mailWebSocket = new WebSocket('ws://100.117.229.168:8000/' + idEmail + '/message')
+    mailWebSocket.onmessage = (event) => {
+      whetherShowDot.value = 1
+    }
+  }
+)
 
 </script>
 
