@@ -7,9 +7,9 @@ import request from "../../functions/Request.js";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const api = {
-  getcomplaints: "http://100.117.229.168:8000/manager/get_complaints_all/",
-  getcomplaintDetail: "http://100.117.229.168:8000/manager/get_complaint_detail/",
-  reviewcomplaint:"http://100.117.229.168:8000/manager/check_complaint/",
+  getcomplaints: "/manager/get_complaints_all/",
+  getcomplaintDetail: "/manager/get_complaint_detail/",
+  reviewcomplaint:"/manager/check_complaint/",
 }
 const showInfoList = ref(true);
 const detail = ref({
@@ -48,7 +48,8 @@ const getcomplaints = async()=>{
   const result = await get({
       url: api.getcomplaints,
       params:{},
-      addManagerToken: true
+      addManagerToken: true,
+      useTestEnv:false,
   });
   complaints.value = result.data;
   console.log(result.data);
@@ -62,8 +63,10 @@ const getDetail = async(id)=>{
      const result  = await get({
       url: api.getcomplaintDetail,
       params:{complaint_id:id},
-      addManagerToken: true
+      addManagerToken: true,
+      useTestEnv:false,
      });
+
      detail.value = result.data;
      let avater;
      detail.value.imgs = [];
@@ -90,7 +93,8 @@ const review = async(pass)=>{
       status: pass,
       opinion: opinion.value
     },
-    addManagerToken: true
+    addManagerToken: true,
+    useTestEnv:false,
   });
   getcomplaints();
   setTimeout(backToList(),500);

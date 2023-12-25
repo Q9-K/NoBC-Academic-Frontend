@@ -7,9 +7,9 @@ import request from "../../functions/Request.js";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const api = {
-  getCertifications: "http://100.117.229.168:8000/manager/get_certifications_all/",
-  getCertificationDetail: "http://100.117.229.168:8000/manager/get_certification_detail/",
-  reviewCertification:"http://100.117.229.168:8000/manager/check_certification/",
+  getCertifications: "/manager/get_certifications_all/",
+  getCertificationDetail: "/manager/get_certification_detail/",
+  reviewCertification:"/manager/check_certification/",
 }
 const showInfoList = ref(true);
 const detail = ref({
@@ -66,7 +66,8 @@ const getCertifications = async()=>{
   const result = await get({
       url: api.getCertifications,
       params:{},
-      addManagerToken: true
+      addManagerToken: true,
+      useTestEnv:false,
   });
   certifications.value = result.data;
   for(let i = 0; i < certifications.value.length; i++){
@@ -79,7 +80,8 @@ const getDetail = async(id)=>{
      const result  = await get({
       url: api.getCertificationDetail,
       params:{certification_id:id},
-      addManagerToken: true
+      addManagerToken: true,
+      useTestEnv:false,
      });
      detail.value = result.data;
      let avater;
@@ -110,7 +112,8 @@ const review = async(pass)=>{
       status: pass,
       opinion: opinion.value
     },
-    addManagerToken: true
+    addManagerToken: true,
+    useTestEnv:false,
   });
   getCertifications();
   setTimeout(backToList(),500);

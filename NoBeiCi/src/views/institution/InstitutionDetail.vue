@@ -8,7 +8,7 @@ import { Column } from '@antv/g2plot';
 import get from "../../functions/Get.js";
 import {useInstitution} from "../../stores/institution.js"
 const api = {
-  getInstitutionDetail:"http://100.117.229.168:8000/institution/getInstitutionDetail"
+  getInstitutionDetail:"/institution/getInstitutionDetail"
 }
 const language = ref("cn");
 const store = useInstitution();
@@ -64,7 +64,7 @@ const getDetail = async () => {
     params: {
       id: store.getId,
     },
-
+    useTestEnv:false;
   });
   institution.value = result.data.institution[0];
   if(institution.value.image_url==null){
