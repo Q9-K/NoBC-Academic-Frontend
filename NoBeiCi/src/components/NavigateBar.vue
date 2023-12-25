@@ -6,7 +6,8 @@ import defaultUserProfile from '../assets/user/defaultUserProfile.png'
 import English from '../assets/i18n/EN-UK.svg'
 import Chinese from '../assets/i18n/ZH-CH.svg'
 import i18n from "../locales/index.js";
-import {GlobalOutlined,
+import {
+  GlobalOutlined,
   UserOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -39,6 +40,7 @@ const isManager = ref(false)
 const whetherShowMailDrawer = ref(false)
 const whetherShowDot = ref(0)
 const allMailData = ref([])
+const username = ref('')
 
 if (localStorage.getItem('theme') === null) {
   localStorage.setItem('theme', 'light')
@@ -55,6 +57,15 @@ watch(
   () => props.whetherSearchInputVisible,
   (newValue, oldValue) => {
     isSearchInputVisible.value = !!newValue;
+  }
+)
+
+watch(
+  () => localStorage.getItem('userInformation'),
+  (newValue) => {
+    if (newValue) {
+      username.value = JSON.parse(localStorage.getItem('userInformation')).username
+    }
   }
 )
 
@@ -237,7 +248,7 @@ watch(
               </div>
               <div style="width: 65%; height: 100%; display: flex; justify-content: flex-start; align-items: center">
                 <p style="font-family: STSong,serif; ; cursor: pointer" @click="() => isLoginRegisterModeOpen = true">
-                  大傻逼
+                  {{ username }}
                 </p>
               </div>
             </div>
