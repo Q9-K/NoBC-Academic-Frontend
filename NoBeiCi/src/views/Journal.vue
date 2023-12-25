@@ -10,8 +10,8 @@
                 </div>
                 <el-row type="flex" justify="center">
                     <el-col :span="12">
-                        <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalStatistics')}}</el-button>
-                        <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalPapers')}}</el-button>
+                        <el-button type="primary" round >{{i18n.t('journal.journalStatistics')}}</el-button>
+                        <!-- <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalPapers')}}</el-button> -->
                     </el-col>
                 </el-row>
            </el-header>
@@ -97,10 +97,17 @@
                             </el-table>
                         </div>
                         <div v-if="showThesis">
-                            <p>test</p>
+                            <el-table :key="key" :data="thesisData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
+                                <el-table-column prop="title" label="title" sortable width="900" />
+                                <el-table-column prop="cited_by_count" label="cited_by_count" sortable width="450" />
+                            </el-table>
                         </div>
                         <div v-if="showInstitution">
-                            <p>test</p>
+                            <el-table :key="key" :data="authorData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
+                                <el-table-column prop="author" label="Author" sortable width="450" />
+                                <el-table-column prop="thesisnumber" label="ThesisNumber"  sortable width="450" />
+                                <el-table-column prop="citenumber" label="CiteNumber" sortable width="450" />
+                            </el-table>
                         </div>
                     </el-row>
                 </div>
@@ -151,36 +158,7 @@ const word = ref([]);
 const cite = ref([]);
 const institute = ref([]);
 
-const thesisData =ref([
-  {
-    2019: 'Tom',
-    2020: 'Tom',
-    2021: 'Tom',
-    2022: 'Tom',
-    2023: 'Tom'
-  },
-  {
-    2019: 'Tom',
-    2020: 'Tom',
-    2021: 'Tom',
-    2022: 'Tom',
-    2023: 'Tom'
-  },
-  {
-    2019: 'Tom',
-    2020: 'Tom',
-    2021: 'Tom',
-    2022: 'Tom',
-    2023: 'Tom'
-  },
-  {
-    2019: 'Tom',
-    2020: 'Tom',
-    2021: 'Tom',
-    2022: 'Tom',
-    2023: 'Tom'
-  },
-]);
+const thesisData =ref([]);
 
 const authorData = ref([]);
 
@@ -226,6 +204,12 @@ const getAllInfo = async () => {
                     source_id: ident,
                 }
             });
+            const response4 = await axios.get('http://100.96.145.140:8000/source/get_works_by_cited',{
+                params: {
+                    source_id: ident,
+                }
+            });
+            const response5 = await axios.get('')
             data.value = response1.data;
             country.value = response2.data.data[1];
             institute.value = response2.data.data[0];
@@ -243,6 +227,8 @@ const getAllInfo = async () => {
                 thesisnumber: item.doc_count,
                 citenumber: item.reverse_nested_cited_by_count.total_cited_by_count.value,
             }));
+            console.log(response4.data.data);
+            thesisData.value = response4.data.data;
             key = 1;
             key1 = 1;
         } catch (error) {

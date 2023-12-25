@@ -1,7 +1,12 @@
 <template>
     <div class="condition">
-        <p> {{ i18n.t('conf.confConditions')}} </p>
-        <el-cascader-panel :options="subject" filterable close />
+        <p>{{ i18n.t('conf.confConditions')}}</p>
+        <el-cascader-panel
+            :options="subject"
+            :value="['guide']"
+            filterable
+            expand-trigger="hover"
+        />
     </div>
 </template>
 
@@ -13,35 +18,53 @@ const subject = [
         value: 'guide',
         label: i18n.t('conf.confSubject'),
         children: [
-            {
-                value: '计算机科学',
-                label: '计算机科学'
+        {
+                value: 'Computer Science',
+                label: 'Computer Science'
             },
             {
-                value: '经济学',
-                label: '经济学'
+                value: 'Economics',
+                label: 'Economics'
             },
             {
-                value: '法学',
-                label: '法学'
+                value: 'Law',
+                label: 'Law'
             },
             {
-                value: '数学',
-                label: '数学'
+                value: 'Mathematics',
+                label: 'Mathematics'
             },
             {
-                value: '心理学',
-                label: '心理学'
+                value: 'Psychology',
+                label: 'Psychology'
             },
             {
-                value: '医学',
-                label: '医学'
+                value: 'Medicine',
+                label: 'Medicine'
+            },
+            {
+                value: 'Chemistry',
+                label: 'Chemistry'
+            },
+            {
+                value: 'Physics',
+                label: 'Physics'
+            },
+            {
+                value: 'History',
+                label: 'History'
+            },
+            {
+                value: 'Biology',
+                label: 'Biology'
             },
         ]
     },
-]
+];
 </script>
 
-<style>
-
+<style scoped>
+    .el-cascader-panel__body {
+        max-height: none !important;
+    }
 </style>
