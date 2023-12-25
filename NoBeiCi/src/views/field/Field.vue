@@ -34,7 +34,7 @@ let selectedFieldId = ''
 const updateLevel0Treemap = () => {
   const getSubFields = async (parentFieldId) => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_subdomains/'
+      const apiUrl = '/concept/get_subdomains/'
       const params = {
         id: parentFieldId
       }
@@ -47,6 +47,8 @@ const updateLevel0Treemap = () => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
+        useTestEnv: false,
+        testEnv: 'http://100.92.185.118:8000'
       })
 
       // 处理响应数据
@@ -236,7 +238,7 @@ const updateLevel0Treemap = () => {
 
         const getFieldInformation = async (fieldId) => {
           try {
-            const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_concept_by_id/'
+            const apiUrl =  + '/concept/get_concept_by_id/'
             const params = {
               id: fieldId
             }
@@ -248,6 +250,8 @@ const updateLevel0Treemap = () => {
                 // 如果需要，请处理错误回调
                 console.error('发生错误：', errorData);
               },
+              useTestEnv: false,
+              testEnv: 'http://100.92.185.118:8000'
             })
 
             // 处理响应数据
@@ -307,7 +311,7 @@ onMounted(() => {
 
   const getAllLevel0Fields = async () => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_level_0/'
+      const apiUrl = '/concept/get_level_0/'
 
       const response = await get({
         url: apiUrl,
@@ -316,7 +320,9 @@ onMounted(() => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true // 设置为 true 以显示错误消息
+        showError: true, // 设置为 true 以显示错误消息,
+        useTestEnv: false,
+        testEnv: 'http://100.92.185.118:8000'
       })
 
       // 处理响应数据
@@ -403,7 +409,8 @@ const handleSearchField = (value) => {
     codeOfLanguage = 1
   }
 
-  return axios.get('http://100.92.185.118:8000' + '/concept/search_concept/', {
+  return axios.get('http://api.buaa-q9k.xyz' + '/concept/search_concept/', {
+  // return axios.get('http://100.92.185.118:8000' + '/concept/search_concept/', {
     params: {
       keyword: value,
       language: codeOfLanguage

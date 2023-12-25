@@ -60,32 +60,13 @@
 import { Column } from '@antv/g2plot';
 
 export default {
+  props: {
+    data: {
+      type: Array,
+      required: true,
+    },
+  },
   mounted() {
-    const data = [
-      {
-      year: '1994',
-      value: 60,
-      },
-      {
-        year: '1995',
-        value: 49,
-      },{
-        year: '1996',
-        value: 55,
-      },
-      {
-        year: '1997',
-        value: 49,
-      },
-      {
-        year: '1998',
-        value: 49,
-      },{
-        year: '1999',
-        value: 55,
-      },
-    ];
-
     const columnPlot = new Column(this.$refs.container, {
       title: {
         visible: true,
@@ -96,9 +77,11 @@ export default {
         text: 'g2plot内置了暗黑主题，可通过theme配置。',
       },
       theme: 'light',
-      data,
+      data: this.data,
       xField: 'year',
-      yField: 'value',
+      yField: 'doc_count',
+      width: 270, // 设置宽度
+      height: 200, // 设置高度
     });
 
     columnPlot.render();

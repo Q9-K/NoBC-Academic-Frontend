@@ -7,6 +7,8 @@ const contentTypeForm = "application/x-www-form-urlencoded;charset=UTF-8";
 const contentTypeJson = "application/json"
 
 const instance = axios.create({
+    //
+    baseURL: "http://api.buaa-q9k.xyz",
     timeout: 10 * 1000,
 })
 //请求前过滤器
@@ -26,7 +28,10 @@ instance.interceptors.request.use(
         if(config.addManagerToken && localStorage.getItem("manager")){
             config.headers['token'] = localStorage.getItem("manager");
         }
-        console.log("config",config)
+        if(config.useTestEnv){
+            config.baseURL = config.testEnv
+        }
+        console.log(config)
         return config;
     }, (error) => {
         if (error.config.showLoading && loading) {
@@ -66,7 +71,7 @@ instance.interceptors.response.use(
 
 
 const get=(config)=>{
-    const { url, params, showLoading = true, addToken = false,addManagerToken=false,errorCallback, showError = true } = config
+    const { url, params, showLoading = true, addToken = false,addManagerToken=false,useTestEnv = true,testEnv="",errorCallback, showError = true } = config
     let contentType = contentTypeJson;
     let headers = {
         'Content-Type': contentType,
@@ -78,6 +83,8 @@ const get=(config)=>{
         addManagerToken: addManagerToken,
         params: params,
         showLoading: showLoading,
+        useTestEnv: useTestEnv,
+        testEnv: testEnv,
         errorCallback: errorCallback,
         showError: showError
     }).catch(error => {

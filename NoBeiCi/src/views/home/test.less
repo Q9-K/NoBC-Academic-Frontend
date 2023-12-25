@@ -1,0 +1,43 @@
+.home-page-outer-dark {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient( 94.3deg, rgba(26, 33, 64, 1) 10.9%, rgba(81, 84, 115, 1) 87.1%);
+}
+
+.home-page-outer-light {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient( 94.3deg, rgba(26, 33, 64, 1) 10.9%, rgba(81, 84, 115, 1) 87.1%);
+}
+
+.home-page-outer::before {
+  position: absolute;
+  content: "";
+  z-index: 0;
+  width: 500px;
+  height: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-150%, -100%);
+  background-color: #FFE53B;
+  background-image: linear-gradient(147deg, #FFE53B 0%, #FF2525 74%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, .2);
+  animation: pulse 3.6s infinite;
+}
+
+.home-page-outer::after {
+  position: absolute;
+  content: "";
+  z-index: 0;
+  width: 200px;
+  height: 200px;
+  top: -100px;
+  left: -100px;
+  transform: translate(100%, 100%);
+  background-color: #170918;
+  background-image: linear-gradient(45deg, #000000 0%, #6b7f84 52%, #6b6d6c 90%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, .2);
+  animation: pulse 4.5s infinite;
+}

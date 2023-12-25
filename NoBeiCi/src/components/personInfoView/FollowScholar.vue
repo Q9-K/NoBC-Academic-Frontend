@@ -89,11 +89,13 @@
 
         const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/follow_scholar/',
+            url: '/user/follow_scholar/',
             params:{
               scholar_id: scholar.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -112,11 +114,13 @@
 
         const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/unfollow_scholar/',
+            url: '/user/unfollow_scholar/',
             params:{
               scholar_id: scholar.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -134,11 +138,13 @@
       async loadFollowAuthor(){
         const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_follows/',
+            url: '/user/get_follows/',
             params:{
 
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         console.log(result.data)

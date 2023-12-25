@@ -89,7 +89,7 @@
                             
                             v-model="unbindDialogVisible"
                             width="30%"
-                            :before-close="handleCloseDialog"
+                            
                             >
                             <template #header>
                                 <p style="font-size: 17px;">{{ i18n.t("personInfo.unbindConfirm") }}</p>
@@ -128,13 +128,15 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="informIndex == 1">  
-                                <PersonalInfo :scholar-id="this.author_id"></PersonalInfo>
+                                <PersonalInfo :scholar-id="this.author_id" :key="this.key"></PersonalInfo>
                             </div>
                             </transition>
 
                             <transition name="el-fade-in-linear">
                             <div v-if="informIndex == 2">  
-                                nmsl
+                                <el-row v-for="data in this.articleData" :key="data.id">
+                                    <ArticleView :data="data" :key="this.key"></ArticleView>
+                                </el-row>
                             </div>
                             </transition>
 
@@ -223,7 +225,7 @@
 
                 <el-card shadow="hover" style="width: 100%;">
                 <div style="display: flex; align-items: center;margin-left: 40%;">
-                  <el-avatar :size="80" :round="true">M</el-avatar>
+                  <el-avatar :size="80" :round="true" :src="this.user_avatar" ></el-avatar>
                   
                 </div>
                 </el-card>
@@ -270,22 +272,22 @@
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Cellphone /></el-icon>
                             <span class="bind-form-font">手机</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Message /></el-icon>
                             <span class="bind-form-font">邮箱</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Lock /></el-icon>
                             <span class="bind-form-font">密码</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                     </div>
@@ -336,13 +338,13 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="followIndex == 2">  
-                                nmsl
+                                开发中
                             </div>
                             </transition>
 
                             <transition name="el-fade-in-linear">
                             <div v-if="followIndex == 3">  
-                                nmsl
+                                开发中
                             </div>
                             </transition>
 
@@ -394,7 +396,13 @@ import PaperCollection from "../components/personInfoView/PaperCollection.vue";
 import BrowsingHistory from "../components/personInfoView/BrowsingHistory.vue";
 
 import CooperationAgency from "../components/personInfoView/CooperationAgency.vue";
+import ArticleView from "../components/authorhomeView/ArticleView.vue";
+
 import get from "../functions/Get.js";
+
+import router from "../routes";
+import request from "../functions/Request";
+import { ElMessage } from 'element-plus';
 
 export default {
     data() {
@@ -423,13 +431,7 @@ export default {
             },
 
             scholarMetrics: {
-                Papers: 100,
-                Citation: 200,
-                'H-Index': 50,
-                'G-Index': 60,
-                Sociability: 70,
-                Diversity: 80,
-                Activity: 90,
+                'H-index':-1,
             },
 			chosenIndex: 1,
 
@@ -444,14 +446,40 @@ export default {
                 organization: '',
                 interested_concepts: [],
             },
+            user_avatar:'',
+
             informIndex: 1,
             followIndex: 1,
             cooperationIndex:1,
 
             unbindDialogVisible: false, // 控制解绑确认弹窗的显示状态
+
+
+            articleData:[],
+            key:1,
 		};
 	},
     methods: {
+
+    async loadArticles(){
+        const result = await get(
+        {
+            url: '/author/get_works/',
+            params:{
+                    author_id:this.author_id,
+                    page_num:1,
+                    page_size:10,
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        console.log("get works:",result.data)
+        this.key += Date.now()
+        this.articleData = result.data.data
+
+    },
 
 
     // 显示解绑确认弹窗
@@ -464,8 +492,29 @@ export default {
       this.unbindDialogVisible = false; // 关闭弹窗
     },
     // 确认解绑
-    confirmUnbind() {
+    async confirmUnbind() {
       // 在这里执行解绑逻辑，可以调用后端接口等
+      const result = await request(
+        {
+            url: '/user/relieve_certification/',
+            params:{
+                
+            },
+            addToken:true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        if(result){
+            ElMessage({
+              message:"解绑成功",
+              type: "success"
+            })
+          }
+        console.log(result)
+
+
+
       // 解绑完成后，可以关闭弹窗，并执行其他操作
       this.is_author_binded = false;
       this.unbindDialogVisible = false;
@@ -473,12 +522,12 @@ export default {
     },
 
     goToHomepage() {
-      // const homepageUrl = this.links.find(link => link.id === 1)?.url;
-      const homepageUrl = this.scholarProfile.officialWebsite
-      console.log("goto:",homepageUrl)
-      if (homepageUrl) {
-        window.open(homepageUrl, '_blank');
-      }
+
+    
+        const parts = this.author_id.split("/");
+        const desiredId = parts[parts.length - 1];
+        console.log("goto: ",'/authorhome/'+desiredId)
+        router.push(`/authorhome/${desiredId}`);
     },
 
     goToAuthorSearchpage() {
@@ -494,10 +543,12 @@ export default {
 
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            url: '/author/get_scholar_metrics/',
             params:{
                 author_id: this.author_id
             },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log(result.data)
@@ -506,16 +557,36 @@ export default {
 
     },
 
+    async loadscholarProfile(){
+
+        const result = await get(
+        {
+            url: '/author/get_author_by_id',
+            params:{
+                author_id: this.author_id
+            },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        console.log(result.data)
+        this.scholarProfile = result.data;
+
+
+        },
+
 
 
     async loadUserInfo(){
         const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_user_info/',
+            url: '/user/get_user_info/',
             params:{
 
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         console.log("UserInfo",result.data)
@@ -529,12 +600,40 @@ export default {
 
     },
 
+    async loadUserAvatar(){
+        const result = await get(
+        {
+            url: '/user/get_user_avatar/',
+            params:{
+                
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        console.log("UserAvatar:",result.data)
+        this.user_avatar = result.data;
+        
+    },
+
 
 
     async changeContent(index) {
         if(index===2 ){
             this.loadUserInfo()
+            this.loadUserAvatar()
         }
+        if(index ===1){
+
+            if(this.author_id){
+                this.loadscholarMetrics();
+                this.loadscholarProfile()
+            }
+                
+        }
+
+
         this.chosenIndex = -1;
           setTimeout(() => {
           this.chosenIndex = index;
@@ -546,12 +645,44 @@ export default {
         
       },
 
-      saveForm() {
+      async saveForm() {
       // 在这里可以将表单数据保存到后端或执行其他操作
-      console.log(this.form);
+      console.log(this.person);
+      const result = await request(
+        {
+            url: '/user/change_user_info/',
+            params:{
+                name: this.person.nickName,
+                real_name: this.person.realName,
+                position: this.person.position,
+                organization: this.person.organization,
+                subject: this.person.subject,
+                gender: this.person.gender
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        if(result){
+            ElMessage({
+                message: "修改信息成功",
+                type: "success"
+            })
+        }
+        console.log("save:",result)
+
     },
 
     async changeInformContent(index) {
+
+        if(index == 2){
+            this.loadArticles();
+        }
+        if(index ==1){
+            this.key+= Date.now()
+        }
+
        this.informIndex = -1;
           setTimeout(() => {
           this.informIndex = index;
@@ -585,10 +716,7 @@ export default {
       },
 
 
-      saveForm() {
-      // 在这里可以将表单数据保存到后端或执行其他操作
-      console.log(this.form);
-    },
+     
     },
 
     components: {
@@ -614,11 +742,17 @@ export default {
     console.log("token:",this.token)
     console.log("email:",this.email)
 
-    this.loadUserInfo()
-    this.$nextTick(()=>{
+    this.loadUserInfo().then(() => {
         console.log("author_id:",this.author_id)
-    })
-    this.loadscholarMetrics()
+        if(this.author_id){
+            this.loadscholarMetrics();
+            this.loadscholarProfile();
+            this.loadArticles();
+        }
+        
+    });
+    
+    
   },
 }
 </script>

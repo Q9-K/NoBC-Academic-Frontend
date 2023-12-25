@@ -53,6 +53,17 @@
               引用
             </el-button>
             </div>
+
+            <el-dialog
+                title="论文引用格式"
+                v-model="citationDialogVisible"
+                width="50%"
+                :modal="false"
+              >
+                <p>{{ paper.citation }}</p>
+                <el-button @click="copyCitation(paper)">复制</el-button>
+              </el-dialog>
+
             
           </div>
       </div>
@@ -75,6 +86,8 @@
 import get from '../../functions/Get';
 import router from '../../routes';
 import request from '../../functions/Request';
+import { ElMessage } from 'element-plus';
+
 
 export default {
     name: 'PaperCollectionList',
@@ -101,9 +114,36 @@ export default {
         },
         // 添加更多论文...
       ],
+
+      citationDialogVisible :false
     };
   },
   methods: {
+
+    copyCitation(paper) {
+      const textarea = document.createElement('textarea');
+      textarea.value = paper.citation;
+      document.body.appendChild(textarea);
+
+      // 选中并复制文本
+      textarea.select();
+      document.execCommand('copy');
+
+      // 移除textarea元素
+      document.body.removeChild(textarea);
+
+      // 提示复制成功
+      ElMessage({
+        message: '引用格式已复制成功',
+        type: 'success',
+      })
+      
+      console.log("引用格式已复制：" + this.citationFormat);
+      // 可以根据需要添加复制成功提示等逻辑
+    },
+
+
+
     toggleCollection(paper) {
       // 切换收藏状态
       paper.collected = !paper.collected;
@@ -111,17 +151,20 @@ export default {
     viewCitation(paper) {
       // 处理查看引用逻辑
       console.log('查看引用', paper);
+      this.citationDialogVisible = true
     },
 
     async collect(paper){
       
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/add_favorite/',
+            url: '/user/add_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
        
@@ -139,11 +182,13 @@ export default {
     async unCollect(paper){
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/remove_favorite/',
+            url: '/user/remove_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
 
@@ -173,11 +218,13 @@ export default {
     async loadPaper(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000//user/get_histories/',
+            url: '/user/get_histories/',
             params:{
               // author_id: this.scholar.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         

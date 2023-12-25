@@ -11,11 +11,18 @@
                 <!-- 中间 -->
                 <div class="middle-part">
                     <div class="middle-up">
-                        <ColumnPlot></ColumnPlot>
+                        <ColumnPlot :scholarId="author_id"></ColumnPlot>
                     </div>
 
                     <div class="middle-down">
-                        <p class="inherited-styles-for-exported-element">论文列表</p>
+                        <p class="inherited-styles-for-exported-element">{{ i18n.t("authorHome.paperList") }}</p>
+                        <div v-loading="this.isLoading" style="min-height: 20vh;">
+                            <el-row v-for="data in this.articleData" :key="data.id" >
+                            <ArticleView :data="data" :key="this.key"></ArticleView>
+                            <!-- <ArticleDisplay :data="data"></ArticleDisplay> -->
+                        </el-row>
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -71,8 +78,11 @@ import ScholarCardView from '../components/authorhomeView/ScholarCardView.vue';
 import CooperationAgencyVue from "../components/personInfoView/CooperationAgency.vue";
 
 import ColumnPlot from "../components/authorhomeView/ColumnPlot.vue";
-import get from "../functions/Get";
+import ArticleView from "../components/authorhomeView/ArticleView.vue";
+import ArticleDisplay from "../components/search/ArticleDisplay.vue";
 
+import get from "../functions/Get";
+import { ElLoading } from 'element-plus'
 
 
 export default {
@@ -97,9 +107,40 @@ export default {
             title: '教授',
             englishAffiliation: 'beihang University',
             scholar_id:'111',
-            }
+            
+            },
+            articleData:[],
+            
+
+
+            moduleLoaded: true,
+            key:1,
+
+            isLoading: true, // 是否显示加载状态
+            loadingText: '正在加载...', // 加载文本提示
+            loadingSpinner: 'el-icon-loading', // 加载图标样式
+            loadingBackground: 'rgba(0, 0, 0, 0.8)', // 加载背景色
+            elementLoadingText: '正在加载', // ElementPlus自带的Loading组件参数：加载文本提示
         };
     },
+
+    watch: {
+    '$route.params.id': function(newId, oldId) {
+        // 在 id 属性变化时触发的回调函数
+        console.log('New id:', newId);
+        console.log('Old id:', oldId);
+        window.location.reload();
+        // this.author_id = 'https://openalex.org/'+this.$route.params.id;
+        // console.log("id:",this.author_id)
+        // this.scholar.scholar_id = this.author_id
+
+        // this.loadScholarInfo()
+        // this.loadscholarMetrics()
+        // 执行其他逻辑操作...
+    }
+    },
+
+
     methods:{
         async changeCooperationContent(index) {
        this.cooperationIndex = -1;
@@ -116,10 +157,12 @@ export default {
 
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            url: '/author/get_scholar_metrics/',
             params:{
                 author_id: this.author_id
             },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("scholarMetrics:",result)
@@ -133,27 +176,65 @@ export default {
       async loadScholarInfo(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_author_by_id',
+            url: '/author/get_author_by_id',
             params:{
                     author_id:this.author_id
             },
             //addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
-        console.log(result.data)
+        console.log("authorInfo:",result)
         this.scholar = result.data
 
     },
+
+    async loadArticles(){
+        
+        const result = await get(
+        {
+            url: '/author/get_works/',
+            params:{
+                    author_id:this.author_id,
+                    page_num:1,
+                    page_size:10,
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        this.key = Date.now()
+        this.isLoading = false
+        
+        console.log("get works:",result)
+        this.articleData = result.data.data
+        console.log("art Data:",this.articleData)
+        
+    },
+
+
+    
     },
 
     mounted(){
+        this.moduleLoaded = true
+        console.log("key:",this.key)
+
         this.author_id = 'https://openalex.org/'+this.$route.params.id;
         console.log("id:",this.author_id)
         this.scholar.scholar_id = this.author_id
 
+        
         this.loadScholarInfo()
         this.loadscholarMetrics()
-
+        this.loadArticles()
+        this.key += Date.now()
+        
+        console.log("key:",this.key)
+        
+        
         // bus.$emit('scholar-id-updated', this.author_id);
     },
 
@@ -165,6 +246,8 @@ export default {
         ScholarCardView,
         CooperationAgencyVue,
         ColumnPlot,
+        ArticleView,
+        ArticleDisplay
     },
 }   
 </script>
@@ -172,17 +255,25 @@ export default {
 <style scoped>
 
 .inherited-styles-for-exported-element {
+    
+
   color: #414040;
   font-family: "PingFang SC", "Microsoft YaHei", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 16px;
   font-weight:600;
+
+  /* font-size: large;  */
+    font-family: HiraginoSansGB-W6,HiraginoSansGB;
+    background-color: transparent;
+    font-weight: 700;
+
   /* line-height: 16px; */
   /* tab-size: 4; */
 
   text-align: left;
-  margin-left: 3vw;
-  /* margin-top: 1vh; */
-  margin-bottom: 2vh;
+  margin-left: 2.3vw;
+  margin-top: 1.5vh;
+  margin-bottom: 1vh;
 
   word-break: break-word;
 

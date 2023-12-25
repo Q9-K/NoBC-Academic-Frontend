@@ -1,5 +1,6 @@
 <template>
     <div class="scholar-card">
+      <svg t="1703417859877" class="binded" v-if="this.isAuthorBinded" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3367" width="130" height="130"><path d="M511.321169 1.380674c-279.586517 0-506.247191 226.649169-506.247191 506.247191 0 279.586517 226.660674 506.247191 506.247191 506.247191s506.247191-226.660674 506.247191-506.247191c0-279.598022-226.660674-506.247191-506.247191-506.247191z m0 23.011236c266.884315 0 483.235955 216.35164 483.235955 483.235955s-216.35164 483.235955-483.235955 483.235955-483.235955-216.35164-483.235956-483.235955 216.35164-483.235955 483.235956-483.235955z m361.506516 542.466877A378.235685 378.235685 0 0 1 597.026517 872.183371 378.22418 378.22418 0 0 1 213.54427 755.274787l-3.290607-3.842877-8.755775 7.386607a389.695281 389.695281 0 0 0 398.462561 124.410247A389.695281 389.695281 0 0 0 883.286292 573.716135l0.851416-5.062472-11.321528-1.794876z m-127.861932 29.649977a269.104899 269.104899 0 0 1-183.077393 166.72791 269.116404 269.116404 0 0 1-242.365843-53.236494l-7.35209 8.790292a280.576 280.576 0 0 0 252.674876 55.491595A280.541483 280.541483 0 0 0 753.963146 605.080449l1.76036-4.602247-10.746248-3.957932z m-557.378157-72.059685l-21.745618 5.821842-9.814293 116.862562-0.149573 12.909304-0.609797 0.161078-6.592719-11.102921-66.92818-96.290517-21.849169 5.85636 93.931865 129.668314 17.258427-4.602247 16.499057-159.283775z m110.028224-29.477394l-90.434157 24.230832 38.716404 144.476045 91.561708-24.529978-4.096-15.290966-71.449887 19.145348-13.852764-51.694741 61.037303-16.349483-4.119011-15.383012-61.037304 16.349483-12.529618-46.73582 70.333843-18.846202-4.130517-15.371506z m79.204674-21.055281l-3.440179 0.862922-50.831821 13.611146 38.693394 144.384 20.100314-5.396135-16.775191-62.613573 34.401798-9.204494c7.892854-2.117034 14.819236-1.426697 20.790652 2.071011 5.373124 3.164045 9.181483 8.053933 11.413573 14.692674l0.690337 2.278112 3.532225 13.196944c1.242607 4.636764 2.818876 9.03191 4.740314 13.196944 1.645303 3.566742 3.773843 6.178517 6.408629 7.82382l1.346158 0.73636 20.721618-5.557214-0.632809-2.381663a18.696629 18.696629 0 0 1-7.651236-7.306067 43.042517 43.042517 0 0 1-4.003955-9.066427l-0.770877-2.634786-3.635775-13.588135c-2.301124-8.537169-5.994427-15.221933-11.125933-20.054292-5.12-4.83236-12.10391-7.444135-20.963236-7.823821 6.753798-5.292584 11.390562-11.206472 13.887281-17.764674 2.508225-6.558202 2.772854-13.542112 0.793888-20.95173-3.589753-13.369528-10.596674-22.401438-21.055281-27.118742-9.699236-4.372135-21.918202-4.843865-36.633888-1.403685z m100.950293-27.222292l-20.203866 5.407641 38.704899 144.48755 20.215371-5.40764-38.716404-144.487551z m130.036494-34.839011l-93.195506 24.967191 38.716405 144.476045 20.11182-5.384629-17.12036-63.902202 62.671102-16.798203-4.130517-15.371505-62.659596 16.786696-13.346517-49.819325 73.07218-19.571057-4.119011-15.383011z m44.411685-11.896809l-20.21537 5.407641 38.704898 144.48755 20.215371-5.419146-38.716404-144.476045z m-250.247191 90.710292c6.074966 3.164045 10.193978 8.813303 12.36854 16.947776 2.301124 8.594697 1.518742 15.670652-2.347146 21.204853-3.877393 5.545708-11.505618 9.837303-22.861663 12.886293l-28.683506 7.685752-13.691685-51.107955 30.72-8.226516c10.274517-2.761348 18.443506-2.554247 24.506966 0.609797z m377.510832-124.812944l-90.434158 24.230832 38.716405 144.476045 91.561708-24.529978L815.230562 494.741573l-71.449888 19.145348-13.852764-51.694741 61.037303-16.349483-4.119011-15.383012-61.037303 16.349484-12.529618-46.735821 70.333843-18.846202-4.130517-15.371506z m75.269753-20.100314l-3.612764 0.897438-46.747326 12.529618 38.716404 144.476045 46.747326-12.529618c19.386966-5.200539 33.446831-15.152899 42.156584-29.857079 8.168989-13.78373 10.332045-29.22427 6.500674-46.298606l-0.851415-3.451686-5.292585-19.74364c-4.924404-18.385978-14.842247-31.801528-29.765033-40.246652-13.979326-7.927371-29.937618-9.848809-47.863371-5.77582z m-674.804495-60.162877a389.292584 389.292584 0 0 0-69.194786 194.099776l-0.437214 6.765303 11.436584 0.621303a377.614382 377.614382 0 0 1 63.879191-189.54355l3.704809-5.407641-9.388584-6.535191z m711.357843 80.930517c9.492135 6.155506 16.165393 15.279461 20.00827 27.36036l0.897438 3.083505 5.338606 19.950742c3.681798 13.760719 2.761348 26.094742-2.818876 37.025079-5.568719 10.930337-15.221933 18.224899-28.971146 21.906696l-26.647011 7.133483-30.489888-113.813573 26.635506-7.133483c13.749213-3.681798 25.772584-2.186067 36.047101 4.487191z m-471.442697-133.350112A280.817618 280.817618 0 0 0 215.960449 454.702022l-0.816898 4.751821 11.310022 1.817887a269.346517 269.346517 0 0 1 196.354876-217.041977 269.358022 269.358022 0 0 1 278.447461 89.651775l2.945438 3.670292 9.008899-7.075955a280.817618 280.817618 0 0 0-293.358741-97.28zM652.598652 150.148315l-4.521708 10.516134a378.293213 378.293213 0 0 1 158.317303 126.377708l3.854382 5.430652 9.411596-6.523685a389.59173 389.59173 0 0 0-167.061573-135.800809z m-444.726652 51.061932l-1.357663 26.670023-20.675595 17.477033 26.117752 10.090427 11.551641 24.426427 17.557573-20.29591 27.671011-2.266607-15.290966-22.758112 5.603236-25.899146-26.980674 6.408629-24.196315-13.852764zM366.453933 98.844764l-6.420135 25.922157-23.644045 13.231461 23.701573 14.865258 6.673258 26.186787 21.112809-16.579596 27.590472 3.037484-10.654202-25.243326 10.447101-24.368899-27.705528 1.150562-21.101303-18.201888z m195.894651-4.452674l-14.036854 24.10427-26.577977 7.938876 17.810696 19.628584-1.86391 27.348854 25.105259-11.873798 25.346876 8.801798-2.209078-26.946157 17.569078-21.791641-26.635505-4.786337-14.508585-22.424449z" fill="#cdcdcd" p-id="3368"></path></svg>
       <div class="header">
         <div class="avatar">
           <img :src="scholar.avatar" alt="Avatar">
@@ -77,20 +78,56 @@
           
         </div>
         <div class="actions">
-          <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>关注</el-button>
-          <el-button type="primary" color="#626aef" v-else @click="unfollow" ><el-icon><Star /></el-icon>已关注</el-button>
+          <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>{{ i18n.t("authorHome.follow") }}</el-button>
+          <el-button type="primary" color="#626aef" v-else @click="unfollow" ><el-icon><Star /></el-icon>{{ i18n.t("authorHome.followed") }}</el-button>
 
-          <el-button type="primary" color="#626aef" plain><el-icon><Avatar /></el-icon>认领</el-button>
-          <el-button type="primary" color="#626aef" plain><el-icon><Share /></el-icon>分享</el-button>
+          <el-button type="primary" color="#626aef" @click="showDialog()" v-if="!this.isAuthorBinded" plain><el-icon><Avatar /></el-icon>{{ i18n.t("authorHome.claim") }}</el-button>
+          <el-button type="primary" color="#626aef" v-else >{{ i18n.t("authorHome.claimed") }}</el-button>
+          <el-button type="primary" color="#626aef" @click="share()" plain><el-icon><Share /></el-icon>{{ i18n.t("authorHome.share") }}</el-button>
+
+          <el-dialog title="认证学者" v-model="dialogVisible" :close-on-click-modal="false">
+      <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+        <el-form-item label="上传图片">
+          <el-upload
+            class="avatar-uploader"
+            ref="uploadBox"
+            action="action"
+            :show-file-list="true"
+            :before-upload="beforeAvatarUpload"
+
+            :http-request="uploadForm"
+            :auto-upload="false"
+          >
+          <el-button type="primary">Click to upload</el-button>
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">确定</el-button>
+      </span>
+    </el-dialog>
         </div>
       </div>
     </div>
   </template>
+
+
+<script setup>
+import i18n from "../../locales";
+</script>
   
   <script>
 import get from "../../functions/Get.js";
 import request from "../../functions/Request.js"
 import { ElMessage } from 'element-plus'
+import router from "../../routes";
+
 
 
   export default {
@@ -113,18 +150,138 @@ import { ElMessage } from 'element-plus'
           
             isfollowed: false,
             isclaimed:false,
+            scholar_id:'',
+            isUserBinded: false,
+            isAuthorBinded: false,
+
+
+            dialogVisible:false,
+            imageUrl: '',
+            form: {
+              remark: '',
+            },
+            rules: {
+              remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+            },
+            file:'',
         };
     },
 
     methods:{
-       goToHomepage() {
+
+      async share(){
+      
+        const part = this.scholar.scholar_id.split("/");
+        const id = part[part.length-1]
+      // const url = 'buaa-q9k.xyz/authorhome/A5069285356';
+      const url = 'buaa-q9k.xyz/authorhome/'+id;
+    try {
+    await navigator.clipboard.writeText(url);
+    ElMessage({
+      message: '学者链接已复制成功',
+      type: 'success',
+    });
+    } catch (err) {
+    console.error('复制失败：', err);
+    ElMessage({
+      message: '复制失败，请手动复制链接',
+      type: 'error',
+    });
+    }
+      
+   
+      },
+
+
+      showDialog(){
+        if(this.isUserBinded){
+          ElMessage("您已绑定学者")
+        }
+        else{
+          this.dialogVisible = true
+        }
+        
+
+        this.$refs.form.resetFields(); // 清空表单
+        this.$refs.uploadBox.clearFiles();
+      },
+
+      async uploadForm(){
+        console.log("start uploading.....")
+        console.log("remark:",this.form.remark)
+        const result = await request(
+        {
+            url: '/user/apply_for_certification/',
+            params:{
+              idcard_img: this.file,
+              author_id: this.scholar_id,
+              remark: this.form.remark,
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        console.log(result)
+        if(result){
+           ElMessage({
+            message: "发送认领申请成功",
+            type: 'success',
+          })
+          
+          
+          
+        }
+    },
+    handleAvatarSuccess(res) {
+      this.imageUrl = URL.createObjectURL(res.raw);
+    },
+    beforeAvatarUpload(file) {
+      console.log(" file to upload:",file)
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 5;
+
+      if (!isJPG && !isPNG) {
+        ElMessage('上传头像图片只能是 JPG/PNG 格式!');
+        console.log('上传头像图片只能是 JPG/PNG 格式!')
+        return false;
+      }
+      if (!isLt2M) {
+        ElMessage('上传头像图片大小不能超过 5MB!');
+        console.log("上传头像图片大小不能超过 5MB!")
+        return false;
+      }
+      this.file = file
+      console.log("ready to upload")
+      return true;
+    },
+    submitForm() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 调用后端接口上传数据
+          this.$refs.uploadBox.submit()
+
+          // this.$refs.form.resetFields(); // 清空表单
+          // this.$refs.uploadBox.clearFiles();
+          this.dialogVisible = false;
+          //this.$message.success('认证学者成功');
+        } else {
+          return false;
+        }
+      });
+    },
+
+
+    goToHomepage() {
       // const homepageUrl = scholar.officialWebsite;
       // if (homepageUrl) {
       //   window.open(homepageUrl, '_blank');
       // }
-
-      console.log("goto: ",'/authorhome/'+scholar.scholar_id)
-      router.push(`/authorhome/${scholar.scholar_id}`);
+      const part = this.scholar.scholar_id.split("/");
+        const id = part[part.length-1]
+      console.log("goto: ",'/authorhome/'+id)
+      router.push(`/authorhome/${id}`);
     },
     goToEmail() {
       // const emailUrl = this.links.find(link => link.id === 2)?.url;
@@ -156,13 +313,16 @@ import { ElMessage } from 'element-plus'
 
 
     async follow(){
+        console.log("follow:",this.scholar_id)
         const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/follow_scholar/',
+            url: '/user/follow_scholar/',
             params:{
-              scholar_id: this.scholar.scholar_id
+              scholar_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -177,14 +337,18 @@ import { ElMessage } from 'element-plus'
 
     },
 
+    
+
     async unfollow(){
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/unfollow_scholar/',
+            url: '/user/unfollow_scholar/',
             params:{
-              scholar_id: this.scholar.scholar_id
+              scholar_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -202,18 +366,60 @@ import { ElMessage } from 'element-plus'
     async isAuthorFollowed(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/check_author_follow/',
+            url: '/user/check_author_follow/',
             params:{
-              author_id: this.scholar.scholar_id
+              author_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         
         
         console.log(result)
         this.isfollowed = result.data.followed
+    },
+
+    async getIsUserBinded(){
+      const result = await get(
+        {
+            url: '/user/get_certification_status/',
+            params:{
+              // author_id: this.scholar_id
+            },
+            addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
+        }
+        );
+        
+        console.log("isUserBinded",result)
+        
+        if(result.data.status == '已认证')
+          this.isUserBinded = true
+          console.log("isUserBinded",this.isUserBinded)
+    },
+
+    async getIsAuthorBinded(){
+      const result = await get(
+        {
+            url: '/user/check_author_authentication/',
+            params:{
+              author_id: this.scholar_id
+            },
+            //addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
+        }
+        );
+        
+        console.log("isAuthorBinded",result)
+        
+        this.isAuthorBinded = result.data
     }
+
+
 
     },
 
@@ -225,7 +431,10 @@ import { ElMessage } from 'element-plus'
       // // 在这里可以处理接收到的 scholar_id 数据
       this.$nextTick(() => {
         console.log("scholar_id:",this.scholar.scholar_id)
+        this.scholar_id = this.scholar.scholar_id
         this.isAuthorFollowed()
+        this.getIsAuthorBinded()
+        this.getIsUserBinded()
       })
       
       // this.isAuthorFollowed()
@@ -235,12 +444,20 @@ import { ElMessage } from 'element-plus'
   </script>
   
   <style scoped>
+  .binded{
+    position: absolute;
+    left: 20vw;
+    top:25vh;
+    z-index: 2;
+  }
+
   .scholar-card {
     background-color: #6e83f7;
     color: white;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 2.5vh;
+    z-index: 1;
   }
   
   .header {
@@ -249,6 +466,7 @@ import { ElMessage } from 'element-plus'
 
     display: flex;
     align-items: center;
+    z-index: 3;
   }
   
   .avatar {

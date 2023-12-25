@@ -44,7 +44,8 @@ let enDescription = ''
 let cnDescription = ''
 
 onMounted(() => {
-  axios.get('http://100.92.185.118:8000' + '/concept/get_concept_by_id/', {
+  axios.get('http://api.buaa-q9k.xyz' + '/concept/get_concept_by_id/', {
+  // axios.get('http://100.92.185.118:8000' + '/concept/get_concept_by_id/', {
     params: {
       id: fFullId
     }
@@ -163,7 +164,7 @@ const handleStarField = () => {
 
       console.log(fFullId)
 
-      const apiUrl = 'http://100.117.229.168:8000' + '/user/add_focus_concept/'
+      const apiUrl = '/user/add_focus_concept/'
       const params = {
         concept_id: fFullId
       }
@@ -174,7 +175,9 @@ const handleStarField = () => {
         showLoading: true, // Show loading indicator
         addToken: true, // Whether to add a token to the request headers (if required by your backend)
         errorCallback: null, // Callback function for error handling (if needed)
-        showError: true
+        showError: true,
+        useTestEnv: false,
+        testEnv: 'http://100.117.229.168:8000'
       })
 
       // 处理响应数据
@@ -215,7 +218,7 @@ const handleCancelStarField = () => {
 
   const handleCancelStar = async () => {
     try {
-      const apiUrl = 'http://100.117.229.168:8000' + '/user/remove_focus_concept/'
+      const apiUrl = '/user/remove_focus_concept/'
       const params = {
         concept_id: fFullId
       }
@@ -226,7 +229,9 @@ const handleCancelStarField = () => {
         showLoading: true, // Show loading indicator
         addToken: true, // Whether to add a token to the request headers (if required by your backend)
         errorCallback: null, // Callback function for error handling (if needed)
-        showError: true
+        showError: true,
+        useTestEnv: false,
+        testEnv: 'http://100.117.229.168:8000'
       })
 
       // 处理响应数据
@@ -272,7 +277,7 @@ onMounted(() => {
 
       console.log(fFullId)
 
-      const apiUrl = 'http://100.117.229.168:8000' + '/user/check_concept_focus/'
+      const apiUrl = '/user/check_concept_focus/'
       const params = {
         concept_id: fFullId
       }
@@ -288,7 +293,9 @@ onMounted(() => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true
+        showError: true,
+        useTestEnv: false,
+        testEnv: 'http://100.117.229.168:8000'
       })
 
       if (response) {

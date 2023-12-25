@@ -8,6 +8,7 @@ const contentTypeJson = "application/json"
 
 const instance = axios.create({
     timeout: 10 * 1000,
+    baseURL: "http://api.buaa-q9k.xyz",
 })
 //请求前过滤器
 let loading = null;
@@ -25,6 +26,9 @@ instance.interceptors.request.use(
         }
         if(config.addManagerToken && localStorage.getItem("manager")){
             config.headers['token'] = localStorage.getItem("manager");
+        }
+        if(config.useTestEnv){
+            config.baseURL = config.testEnv
         }
         return config;
     }, (error) => {
@@ -64,7 +68,7 @@ instance.interceptors.response.use(
 
 
 const request = (config) => {
-    const { url, params, dataType, showLoading = true, addToken = false,addManagerToken=false,errorCallback, showError = true } = config
+    const { url, params, dataType, showLoading = true, addToken = false,addManagerToken=false,useTestEnv = true,testEnv="",errorCallback, showError = true } = config
     let contentType = contentTypeForm;
     let fromData = new FormData();
     for (let key in params) {
@@ -82,6 +86,8 @@ const request = (config) => {
         addToken: addToken,
         addManagerToken: addManagerToken, // 是否添加管理端token
         showLoading: showLoading,
+        useTestEnv: useTestEnv,
+        testEnv: testEnv,
         errorCallback: errorCallback,
         showError: showError
     }).catch(error => {

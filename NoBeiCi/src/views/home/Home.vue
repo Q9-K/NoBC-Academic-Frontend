@@ -4,7 +4,7 @@
  */
 import logoUrl from "../../assets/logo/logo.png"
 import NavigateBar from "../../components/NavigateBar.vue";
-import { Search } from '@element-plus/icons-vue'
+import {Bottom, Position, Search} from '@element-plus/icons-vue'
 import {onMounted, ref, watch} from "vue";
 import { WordCloud } from "@antv/g2plot";
 import researchProfileUrl from '../../assets/other/kawaiiFish.jpg'
@@ -21,6 +21,15 @@ import ScholarDisplay from "../../components/ScholarDisplay.vue";
 import { ReloadOutlined } from "@ant-design/icons-vue";
 import {useSearchContentStore} from "../../stores/searchContent.js";
 import router from "../../routes/index.js";
+import TagCloud from "TagCloud";
+import './test.less'
+import {
+  FileSearchOutlined,
+  DeploymentUnitOutlined,
+  IdcardOutlined,
+  HomeOutlined,
+  ReadOutlined
+} from "@ant-design/icons-vue";
 
 const journalProfileUrl = 'https://onlinelibrary.wiley.com/cms/asset/e1c09603-8433-4440-86aa-f87e82e9a12b/aehe.2017.43.issue-6.cover.gif'
 
@@ -57,12 +66,14 @@ onMounted(() => {
 const refreshRecommendWork = () => {
   const fetchRecommendWork = async () => {
     try {
-      const apiUrl = 'http://100.92.185.118:8000' + '/concept/get_works_by_focused_concept/'
+      const apiUrl = '/concept/get_works_by_focused_concept/'
 
       const response = await get({
         url: apiUrl,
         showLoading: true,
-        addToken: true
+        addToken: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.92.185.118:8000'
       })
 
       if (response) {
@@ -96,12 +107,14 @@ const refreshRecommendWork = () => {
 const refreshRecommendScholar = () => {
   const fetchRecommendScholar = async () => {
     try {
-      const apiUrl = 'http://100.103.70.173:8000' + '/author/get_recommend_author'
+      const apiUrl = '/author/get_recommend_author'
 
       const response = await get({
         url: apiUrl,
         showLoading: true,
         addToken: true,
+        useTestEnv: false,
+        // testEnv: 'http://100.103.70.173:8000'
       })
 
       if (response) {
@@ -151,13 +164,24 @@ const handleSearchButtonClick = debounce(() => {
   router.push('/search')
 }, "300ms")
 
-const handleRefreshWork = () => {
-  refreshRecommendWork()
-}
+onMounted(() => {
 
-const handleRefreshScholar = () => {
-  refreshRecommendScholar()
-}
+  // const TagCloud = require('TagCloud');
+
+  const container = '.threeD-tagcloud';
+  const texts = [
+    '学术成果', 'work', 'institution', 'fields', 'concept', 'Technological Frontier',
+    '前沿科技', 'Research Forum', 'Austronesian languages', 'Machine Learning',
+    'international', '国际化', 'AI辅助', 'Research with ChatGPT', '和AI一起搞学术',
+    '研究领域', '领域趋势', '期刊总览', '机构大观', 'AI解读论文', '领域成网', '学者关系，一网打尽', '一流大学找北航',
+    'Journal', 'Work Cited', '一键引用论文', '萨卡班甲鱼全宇宙最可爱！', 'サカサカバンバンバスピスピス'
+  ];
+  const options = {
+    radius: 200
+  };
+
+  TagCloud(container, texts, options);
+})
 
 </script>
 
@@ -166,29 +190,77 @@ const handleRefreshScholar = () => {
   <NavigateBar :whether-search-input-visible="isTopSearchInputVisible" />
   <div class="home-page-outer">
     <div class="search-area-outer">
-      <div class="search-area-logo-outer">
-        <img class="search-area-logo" :src="logoUrl">
+      <div class="search-area-left-outer">
+        <div id="container-of-3D-tagcloud" class="threeD-tagcloud"></div>
       </div>
-      <div class="search-area-input-outer">
-        <el-input
-          v-model="searchValue"
-          :placeholder="i18n.t('homePage.search')"
-          class="search-area-input"
-          maxlength="100"
-          show-word-limit
-        >
-          <template #append>
-            <el-button :icon="Search" @click="handleSearchButtonClick" />
-          </template>
-        </el-input>
-      </div>
-      <div class="search-area-slogan-outer">
-        <p class="search-area-slogan">
-          {{ i18n.t('homePage.slogan') }}
-        </p>
+      <div class="search-area-right-outer">
+        <div class="search-area-right">
+          <div class="search-area-logo-outer">
+            <img class="search-area-logo" :src="logoUrl">
+          </div>
+          <div class="search-area-input-outer">
+            <el-input
+              v-model="searchValue"
+              :placeholder="i18n.t('homePage.search')"
+              class="search-area-input"
+              maxlength="100"
+              show-word-limit
+            >
+              <template #append>
+                <el-button :icon="Search" @click="handleSearchButtonClick" />
+              </template>
+            </el-input>
+          </div>
+          <div class="search-area-slogan-outer">
+            <p class="search-area-slogan">
+              {{ i18n.t('homePage.slogan') }}
+            </p>
+          </div>
+          <div class="statistic-card-outer">
+            <el-statistic :value="89520174" class="statistic-card">
+              <template #title>
+                {{ i18n.t('homePage.scholarCount') }}
+              </template>
+              <template #suffix>
+                <idcard-outlined class="statistic-card-icon" />
+              </template>
+            </el-statistic>
+            <el-statistic :value="107246" class="statistic-card">
+              <template #title>
+                {{ i18n.t('homePage.institutionCount') }}
+              </template>
+              <template #suffix>
+                <home-outlined class="statistic-card-icon" />
+              </template>
+            </el-statistic>
+            <el-statistic :value="248643" class="statistic-card">
+              <template #title>
+                {{ i18n.t('homePage.journalCount') }}
+              </template>
+              <template #suffix>
+                <read-outlined class="statistic-card-icon" />
+              </template>
+            </el-statistic>
+            <el-statistic :value="65073" class="statistic-card">
+              <template #title>
+                {{ i18n.t('homePage.fieldCount') }}
+              </template>
+              <template #suffix>
+                <deployment-unit-outlined class="statistic-card-icon" />
+              </template>
+            </el-statistic>
+            <el-statistic :value="240000000" class="statistic-card">
+              <template #title>
+                {{ i18n.t('homePage.workCount') }}
+              </template>
+              <template #suffix>
+                <file-search-outlined class="statistic-card-icon" />
+              </template>
+            </el-statistic>
+          </div>
+        </div>
       </div>
     </div>
-    <div style="width: 100%; height: 5vh"></div>
     <div class="display-area-outer">
       <el-tabs
         type="border-card"
@@ -221,7 +293,6 @@ const handleRefreshScholar = () => {
       </el-tabs>
     </div>
   </div>
-  <div style="width: 100%; height: 20vh" ></div>
 </template>
 
 <style scoped lang="scss">
@@ -234,43 +305,90 @@ const handleRefreshScholar = () => {
   overflow-y: auto;
   .search-area-outer {
     width: 100%;
-    height: 60vh;
+    height: calc(90vh - 39px);
     display: flex;
-    flex-wrap: wrap;
-    .search-area-logo-outer {
-      width: 100%;
-      height: 55%;
+    flex-wrap: nowrap;
+    .search-area-left-outer {
+      height: 100%;
+      width: 40%;
       display: flex;
       justify-content: center;
       align-items: center;
-      .search-area-logo {
-        height: 50%;
+      .threeD-tagcloud {
+        width: fit-content;
+        height: fit-content;
+      }
+    }
+    .search-area-right-outer {
+      height: 100%;
+      width: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      .search-area-right {
+        height: fit-content;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
         position: relative;
-        top: 20%;
+        bottom: 9%;
+        .search-area-logo-outer {
+          width: 100%;
+          height: 31.5vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .search-area-logo {
+            height: 50%;
+            position: relative;
+            top: 20%;
+          }
+        }
+        .search-area-input-outer {
+          width: 100%;
+          height: 22.5vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .search-area-input {
+            width: 90%;
+            height: 35%;
+          }
+        }
+        .search-area-slogan-outer {
+          width: 100%;
+          height: 5vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .search-area-slogan {
+            color: #b2aeae;
+            width: fit-content;
+            height: 100%;
+            position: relative;
+            bottom: 3.5vh;
+            font-family: KaiTi,serif;
+            font-size: large;
+          }
+        }
+        .statistic-card-outer {
+          width: 100%;
+          height: 5vh;
+          display: flex;
+          flex-wrap: nowrap;
+          .statistic-card {
+            height: 100%;
+            width: 20%;
+            .statistic-card-icon {
+              font-size: 110%;
+              position: relative;
+              bottom: 1.05vh;
+            }
+          }
+        }
       }
-    }
-    .search-area-input-outer {
-      width: 100%;
-      height: 35%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .search-area-input {
-        width: 55%;
-        height: 35%;
-      }
-    }
-    .search-area-slogan-outer {
-      width: 100%;
-      height: 10%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .search-area-slogan {
-        color: #b2aeae;
-        font-family: KaiTi,serif;
-        font-size: large;
-      }
+
     }
   }
   .display-area-outer {
@@ -278,6 +396,7 @@ const handleRefreshScholar = () => {
     justify-content: flex-start;
     flex-wrap: wrap;
     width: 100%;
+    position: relative;
     .display-card-outer {
       padding-left: 1.5vw;
       padding-right: 1.5vw;
@@ -366,5 +485,9 @@ const handleRefreshScholar = () => {
 }
 :deep(.el-card__body) {
   width: 100%;
+}
+:deep(.tagcloud) {
+  width: 100%;
+  height: 100%;
 }
 </style>

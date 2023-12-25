@@ -16,7 +16,7 @@ onMounted(() => {
   const getScholarData = async (fieldId) => {
 
     try {
-      const apiUrl = 'http://100.103.70.173:8000' + '/author/get_hot_authors';
+      const apiUrl = '/author/get_hot_authors';
       const params = {
         concept_id: fieldId
       }
@@ -29,7 +29,9 @@ onMounted(() => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
-        showError: true // 设置为 true 以显示错误消息
+        showError: true, // 设置为 true 以显示错误消息,
+        useTestEnv: false,
+        testEnv: 'http://100.103.70.173:8000'
       })
 
       // 处理响应数据

@@ -58,8 +58,8 @@
                 width="50%"
                 :modal="false"
               >
-                <p>{{ citationFormat }}</p>
-                <el-button @click="copyCitation">复制</el-button>
+                <p>{{ paper.citation }}</p>
+                <el-button @click="copyCitation(paper)">复制</el-button>
               </el-dialog>
 
             </div>
@@ -121,9 +121,9 @@ export default {
   methods: {
 
     // 复制引用格式
-    copyCitation() {
+    copyCitation(paper) {
       const textarea = document.createElement('textarea');
-      textarea.value = this.citationFormat;
+      textarea.value = paper.citation;
       document.body.appendChild(textarea);
 
       // 选中并复制文本
@@ -163,11 +163,13 @@ export default {
       
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/add_favorite/',
+            url: '/user/add_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
        
@@ -187,11 +189,13 @@ export default {
 
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/remove_favorite/',
+            url: '/user/remove_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
 
@@ -223,11 +227,13 @@ export default {
     async loadPaperCollection(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_favorites/',
+            url: '/user/get_favorites/',
             params:{
               // author_id: this.scholar.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         
