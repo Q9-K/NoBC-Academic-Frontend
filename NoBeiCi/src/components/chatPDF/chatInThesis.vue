@@ -33,10 +33,8 @@
                 </div>
             </div>
         </div>
-        <div class="input">
-            <el-input v-model="textarea"  style="height: 15vh;width:90%;margin:auto" type="textarea" :placeholder=content :suffix-icon="Search" @keyup.enter="getMessage"
+        <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search" @keyup.enter="getMessage"
             clearable></el-input>
-        </div>
         <div class="sendButton">
             <form @click="getMessage" class="button" @keyup.enter="getMessage">{{ i18n.t("thesisDetail.send") }}</form>
         </div>
@@ -197,14 +195,14 @@ onMounted(async () => {
     /* 滚动条轨道的圆角 */
 }
 
-/*.input {
+.input {
     border-radius: 20px;
     margin-top: 1vh;
     margin-left: 5%;
     margin-right: 5%;
     height: 5vh;
     width: 90%;
-}*/
+}
 
 .sendButton {
     margin-top: 1vh;
@@ -283,8 +281,8 @@ h2 {
     font-weight: 1000;
 }
 
-
-
-  
+::v-deep .el-textarea__inner{
+    height: 10vh;
+}
   
 </style>

@@ -520,14 +520,15 @@ onMounted(async () => {
     justify-content: space-around;
     padding-top: 30px;
     background-color: #f2f4f7;
-    max-width: 1440px;
+    /*max-width: 1440px;*/
+    max-width: 77.2vw;
     overflow-x: hidden;
 
     .indexContent {
         width: 100%;
         flex: 1 1;
         /*margin-right: 20px;*/
-        margin-right: 400px;
+        margin-right: 21.45vw;
 
         .background {
             background-color: #fff;
