@@ -150,6 +150,22 @@ export default {
     send: "发送",
     abstract: "摘要"
   },
+  scholarDisplay:{
+    mainPage:"学者主页",
+    focus: "关注",
+    thesises: "论文数",
+    quotes: "引用数",
+    field: "研究领域"
+  },
+  scholar:{
+    title: "NOBC帮你理解科学",
+    include: "搜索结果包含",
+    thesises: "论文数",
+    result: "结果",
+    synthesis: "综合",
+    h: "h指数",
+    quotes: "引用数"
+  },
   field: {
     moreDetail: "更多"
   },

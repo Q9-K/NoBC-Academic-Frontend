@@ -128,7 +128,7 @@ async function LookThesis(id) {
 async function getThesis() {
     try {
         fullscreenLoading.value = true
-        const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+        const { data: res } = await axios.get("buaa-q9k.xyz:8000/work/get_work/", {
             params: {
                 id: currentId.value,
                 user_id: "1592295057@qq.com"
@@ -237,7 +237,7 @@ onMounted(async () => {
     treemapOfBigField.setOption(options)
     treemapOfBigField.on('click', async function (params) {
         if (params.data.children == null && params.treeAncestors.length <= 4) {
-            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_work/", {
+            const { data: res } = await axios.get("buaa-q9k.xyz:8000/work/get_work/", {
                 params: {
                     id: params.data.id,
                     user_id: "1592295057@qq.com"

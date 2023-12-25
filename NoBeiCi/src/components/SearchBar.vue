@@ -1,5 +1,5 @@
 <template>
-  <div class="searchBox">
+  <div class="searchBox" >
     <div class="searchMain">
       <h2>NOBC帮你理解科学</h2>
       <a-select
@@ -73,7 +73,7 @@
 </template>
 <script setup>
 
-import { toRefs, defineProps } from 'vue'
+import { toRefs, defineProps, onMounted } from 'vue'
 import { ref } from 'vue';
 import {debounce} from "vue-debounce";
 import {useUpperSearchBarStore} from "../stores/upperSearchBar.js";
@@ -116,7 +116,6 @@ const handleSearch = debounce((value) => {
     })
 
 }, "10ms")
-
 </script>
 <style scoped>
 .searchBox {

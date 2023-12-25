@@ -1,5 +1,8 @@
 <script setup>
 import router from '../routes/index.js';
+import request from "../functions/Request"
+import { ElMessage } from 'element-plus';
+import i18n from "../locales/index.js";
 // props
 const props = defineProps({
     scholars: []
@@ -9,6 +12,31 @@ function jumpToField(field){
 }
 function NavigateToScholar(id) {
     router.push('/authorhome/' + id.substring(id.indexOf("A")))
+}
+async function followScholar(id){
+    const scholar_id = id.substring(id.indexOf("A"))   
+    const result = await request(
+        {
+            url: "http://100.99.200.37:8000/user/follow_scholar/",
+            params: {
+                scholar_id: scholar_id
+            },
+            addToken: true
+        }
+    )
+    if(result.code==200){
+        ElMessage({
+            message: "关注成功",
+            type: 'success',
+        })        
+    }
+    else{
+        ElMessage({
+            message: result.msg,
+            type: 'error',
+        })
+    }
+    console.log(result)
 }
 </script>
 <template>
@@ -20,12 +48,12 @@ function NavigateToScholar(id) {
             <div class="scholar_head">
                 <div class="name"> {{ scholar.display_name }} </div>
                 <div class="follow">
-                    <div class="page" @click="NavigateToScholar(scholar.id)"> 学者主页 </div>
+                    <div class="page" @click="NavigateToScholar(scholar.id)"> {{ i18n.t("scholarDisplay.mainPage") }} </div>
                     <div class="focus">
                         <el-icon style="font-size: 13px;">
                             <Message />
                         </el-icon>
-                        <div style="font-family:fantasy;font-weight:600;font-size:12px;margin-left:5px">关注</div>
+                        <div style="font-family:fantasy;font-weight:600;font-size:12px;margin-left:5px" @click="followScholar(scholar.id)">{{ i18n.t("scholarDisplay.focus") }}</div>
                     </div>
                 </div>
             </div>
@@ -38,7 +66,7 @@ function NavigateToScholar(id) {
                 </div>
                 <div class="thesis">
                     <div style="font-size:11px;display:flex;flex-direction:row">
-                        论文数:
+                        {{ i18n.t("scholarDisplay.thesises") }}:
                         <div style="color: blue;margin-left:5px;">{{ scholar.works_count }}</div>
                     </div>
                 </div>
@@ -49,13 +77,13 @@ function NavigateToScholar(id) {
                 </div>
                 <div class="used">
                     <div style="font-size:11px;display:flex;flex-direction:row">
-                        引用数:
+                        {{ i18n.t("scholarDisplay.quotes") }}:
                         <div style="color: red;margin-left:5px;">{{ scholar.cited_by_count }}</div>
                     </div>
                 </div>
             </div>
             <div class="scholar_field">
-                <div class="fieldHead">研究领域</div>
+                <div class="fieldHead">{{ i18n.t("scholarDisplay.field") }}</div>
                 <div v-for="field in scholar.x_concepts" class="field"
                     @click="jumpToField(field)">
                     <el-icon style="margin-right: 5px;font-size:20px">

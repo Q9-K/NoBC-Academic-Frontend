@@ -1,8 +1,8 @@
 <template>
     <NavigateBar></NavigateBar>
-    <div class="searchBox">
+    <div class="searchBox" >
         <div class="searchMain">
-            <h2>NOBC帮你理解科学</h2>
+            <h2>{{ i18n.t("scholar.title") }}</h2>
             <div class="searchIcon">
                 <div style="margin-top:10px;background-color: #fff;width:40px;margin-right:3pxh;eight:20px;z-index:9999">
                     <el-icon style="font-size: 20px; z-index:9999;cursor:pointer;" @click="searchScholar()">
@@ -79,13 +79,13 @@
     </div>
     <div class="main" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="result" v-if="showResult">
-            <p>查询结果包含&nbsp;&nbsp;&nbsp;'</p>
+            <p>{{ i18n.t("scholar.include") }}&nbsp;&nbsp;&nbsp;'</p>
             <p style="font-size: 30px;color:blue; font-size: 800"> {{ final_name }} </p>
             <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }}</p>
             <p v-if="scholar_num == 10000">+</p>
-            <p>)结果</p>
+            <p>){{ i18n.t("scholar.thesises") }}</p>
             <div style="margin-left: 30px;font-size: 12px;width:auto;display:flex;flex-direction:row;text-align: left;">
-                <p>响应的时间为</p>
+                <p>{{ i18n.t("scholar.result") }}</p>
                 <p style="color: blue;font-weight: 800;"> {{ time }} </p> ms
             </div>
         </div>
@@ -109,10 +109,10 @@
             </div>
             <div class="detail">
                 <div class="search">
-                    <div class="all" @click="select1" :class="{ highlighted: isHighlighted1 }">综合</div>
-                    <div class="hNum" @click="select2" :class="{ highlighted: isHighlighted2 }">h指数</div>
-                    <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">论文数</div>
-                    <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">引用数</div>
+                    <div class="all" @click="select1" :class="{ highlighted: isHighlighted1 }">{{ i18n.t("scholar.synthesis") }}</div>
+                    <div class="hNum" @click="select2" :class="{ highlighted: isHighlighted2 }">{{ i18n.t("scholar.h") }}</div>
+                    <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">{{ i18n.t("scholar.thesises") }}</div>
+                    <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">{{ i18n.t("scholar.quotes") }}</div>
                 </div>
                 <ScholarDisplay :scholars="scholars" />
                 <div class="page">
@@ -126,11 +126,12 @@
 <script setup>
 import NavigateBar from '../../components/NavigateBar.vue';
 import ScholarDisplay from '../../components/ScholarDisplay.vue';
-import { reactive, ref, watch, h, toRaw, nextTick } from 'vue';
+import { reactive, ref, watch, h, toRaw, nextTick, onMounted } from 'vue';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
-import request from "../../functions/Request"
 import { debounce } from "vue-debounce";
 import axios from 'axios';
+import i18n from "../../locales/index.js";
+import request from "../../functions/Request"
 // 全局等待
 const fullscreenLoading = ref(false)
 //接口响应的时间
@@ -580,6 +581,23 @@ const handleOptionSelect = async (value) => {
     fullscreenLoading.value = false
     currentPage.value = 1
 }
+const isLight = ref(false)
+// onMounted(() => {
+//     isLight.value = localStorage.getItem('theme') === 'light'
+// })
+watch(
+  () => localStorage.getItem('theme'),
+  (newValue) => {
+    if (newValue == 'light') {
+      isLight.value = true
+      console.log(1)
+    }
+    else {
+      isLight.value = false
+      console.log(2)
+    }
+  }
+)
 </script>
 <style scoped>
 .searchBox {
@@ -847,5 +865,9 @@ h2 {
     color: #4759c5;
     background-color: #fafafa;
     border-bottom: hidden;
+}
+.light{
+    height: 30vh;
+    background: linear-gradient(#333, #444);
 }
 </style>

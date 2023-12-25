@@ -117,6 +117,22 @@ export default {
     send: "send",
     abstract: "abstract"
   },
+  scholarDisplay:{
+    mainPage:"Scholar Home",
+    focus: "focus",
+    thesises: "thesis Number",
+    quotes: "quotes Number",
+    field: "Research Field"
+  },
+  scholar:{
+    title: "NOBC HELP RESEARCH",
+    include: "The Results include",
+    thesises: "thesis",
+    result: "result",
+    synthesis: "synthesis",
+    h: "h-index",
+    quotes: "quotes"
+  },
   field: {
     moreDetail: "More"
   },
