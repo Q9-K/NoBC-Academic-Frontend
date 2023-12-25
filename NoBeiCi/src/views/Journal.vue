@@ -11,7 +11,6 @@
                 <el-row type="flex" justify="center">
                     <el-col :span="12">
                         <el-button type="primary" round >{{i18n.t('journal.journalStatistics')}}</el-button>
-                        <!-- <el-button type="primary" round @click="toShowPaper">{{i18n.t('journal.journalPapers')}}</el-button> -->
                     </el-col>
                 </el-row>
            </el-header>
@@ -19,11 +18,6 @@
            <el-main>
                 <div v-if="showPaper">
                 <table class="basic-message">
-                    <!-- <tr v-for="(row, rowIndex) in tableData" :key="rowIndex">
-                        <td v-for="(column, columnIndex) in row" :key="columnIndex">
-                            {{ column }}
-                        </td>
-                    </tr> -->
                     <tr>
                         <td>{{ i18n.t('journal.journalCount') }}</td>
                         <td>{{ works_count }}</td>
@@ -103,8 +97,8 @@
                             </el-table>
                         </div>
                         <div v-if="showInstitution">
-                            <el-table :key="key" :data="authorData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
-                                <el-table-column prop="author" label="Author" sortable width="450" />
+                            <el-table :key="key" :data="instituteData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
+                                <el-table-column prop="Institution" label="Institution" sortable width="450" />
                                 <el-table-column prop="thesisnumber" label="ThesisNumber"  sortable width="450" />
                                 <el-table-column prop="citenumber" label="CiteNumber" sortable width="450" />
                             </el-table>
@@ -117,18 +111,11 @@
                 </div>
            </el-main>
         </el-container>
-        <el-footer>
-            foot
-        </el-footer>
     </el-container>
 </template>
 
 <script setup>
 import NavigateBar from '../components/NavigateBar.vue';
-//import JournalCountry from '../components/conf/Country.vue'
-// import JournalWord from '../components/conf/JournalWord.vue';
-// import JournalCite from '../components/conf/JournalCite.vue';
-//import JournalInstitute from '../components/conf/JournalInstitute.vue'
 import JournalPaper from '../components/conf/JournalPaper.vue'
 import { onMounted, ref, getCurrentInstance, watch } from 'vue';
 import i18n from '../locales/index.js'
@@ -156,7 +143,7 @@ let key1 = 0;
 const country = ref([]);
 const word = ref([]);
 const cite = ref([]);
-const institute = ref([]);
+const instituteData = ref([]);
 
 const thesisData =ref([]);
 
@@ -189,27 +176,31 @@ const getAllInfo = async () => {
             const instance = getCurrentInstance();
             const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
             //const ident = instance.proxy.$route.params.id;
-            const response1 = await axios.get('http://100.96.145.140:8000/source/get_source_by_id', {
+            const response1 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_source_by_id', {
                 params: {
                 source_id: ident,
                 },
             });
-            const response2 = await axios.get('http://100.96.145.140:8000/source/get_authors_distribution', {
+            const response2 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_authors_distribution', {
                 params: {
                     source_id: ident,
                 },
             });
-            const response3 = await axios.get('http://100.96.145.140:8000/source/get_authors_by_cited/', {
+            const response3 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_authors_by_cited/', {
                 params: {
                     source_id: ident,
                 }
             });
-            const response4 = await axios.get('http://100.96.145.140:8000/source/get_works_by_cited',{
+            const response4 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_works_by_cited',{
                 params: {
                     source_id: ident,
                 }
             });
-            const response5 = await axios.get('')
+            const response5 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_institutions_by_cited/', {
+                params: {
+                    source_id: ident,
+                }
+            });
             data.value = response1.data;
             country.value = response2.data.data[1];
             institute.value = response2.data.data[0];
@@ -227,8 +218,12 @@ const getAllInfo = async () => {
                 thesisnumber: item.doc_count,
                 citenumber: item.reverse_nested_cited_by_count.total_cited_by_count.value,
             }));
-            console.log(response4.data.data);
             thesisData.value = response4.data.data;
+            instituteData.value = response5.data.data.map(item => ({
+                display_name: item.key.display_name,
+                doc_count: item.doc_count,
+                citenumber: item.reverse_nested_cited_by_count.total_cited_by_count.value,
+            }));
             key = 1;
             key1 = 1;
         } catch (error) {
