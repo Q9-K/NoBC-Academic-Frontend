@@ -153,7 +153,14 @@ export default {
     introduce: "该论文暂时没有pdf,无法进行对话",
     input: "请输入你的想法",
     send: "发送",
-    abstract: "摘要"
+    abstract: "摘要",
+    get: "认领",
+    code: "代码",
+    data: "数据",
+    share: "分享",
+    link: "引用",
+    look: "查看",
+    relavantField: "相关领域"
   },
   scholarDisplay:{
     mainPage:"学者主页",
