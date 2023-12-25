@@ -19,6 +19,11 @@ export default {
     journal: "Journal and Academic Conference",
     popularPaper: "Popular Papers",
     scholar: "Authority Scholar",
+    scholarCount: "Scholars",
+    journalCount: "Journals",
+    institutionCount: "Institutions",
+    workCount: "Works",
+    fieldCount: "Fields"
   },
   admin:{
     reviewScholarCertification:"Review Scholar Certification",
