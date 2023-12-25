@@ -22,10 +22,10 @@
         </div>
         <div class="data">
           <div class="num">
-            1111
+            89,520,174
           </div>
           <div class="name">
-            科研人员
+            学者
           </div>
         </div>
       </div>
@@ -35,10 +35,10 @@
         </div>
         <div class="data">
           <div class="num">
-            1111
+            240,000,000
           </div>
           <div class="name">
-            论文成果
+            论文
           </div>
         </div>
       </div>
@@ -48,10 +48,10 @@
         </div>
         <div class="data">
           <div class="num">
-            1111
+            65,073
           </div>
           <div class="name">
-            知识概念
+            领域
           </div>
         </div>
       </div>
@@ -61,10 +61,10 @@
         </div>
         <div class="data">
           <div class="num">
-            1111
+            107,246
           </div>
           <div class="name">
-            引用关系
+            机构
           </div>
         </div>
       </div>

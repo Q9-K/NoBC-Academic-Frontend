@@ -89,7 +89,7 @@ async function getIntroduction() {
     try {
         if (props.pdf_url != null) {
             loading.value = true
-            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_reply/",
+            const { data: res } = await axios.get("http://api.buaa-q9k.xyz/work/get_reply/",
                 {
                     params: { msg: message.value, pdf_url: props.pdf_url }
                 }
@@ -111,7 +111,7 @@ async function getMessage() {
         if (hasPDF.value == true) {
             messages.value.push(textarea.value)
             loading1.value = true
-            const { data: res } = await axios.get("http://100.99.200.37:8000/work/get_quick_reply/",
+            const { data: res } = await axios.get("http://api.buaa-q9k.xyz/work/get_quick_reply/",
                 {
                     params: { msg: textarea.value }
                 }

@@ -17,7 +17,7 @@ async function followScholar(id){
     const scholar_id = id.substring(id.indexOf("A"))   
     const result = await request(
         {
-            url: "http://100.99.200.37:8000/user/follow_scholar/",
+            url: "http://api.buaa-q9k.xyz/user/follow_scholar/",
             params: {
                 scholar_id: scholar_id
             },

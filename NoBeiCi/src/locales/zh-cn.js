@@ -169,7 +169,11 @@ export default {
     result: "结果",
     synthesis: "综合",
     h: "h指数",
-    quotes: "引用数"
+    quotes: "引用数",
+    institution: "机构",
+    thesis: "论文",
+    scholar: "学者",
+    field: "领域"
   },
   field: {
     moreDetail: "更多"

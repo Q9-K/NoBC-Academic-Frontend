@@ -123,9 +123,9 @@ export default {
     abstract: "abstract"
   },
   scholarDisplay:{
-    mainPage:"Scholar Home",
+    mainPage:"Home",
     focus: "focus",
-    thesises: "thesis Number",
+    thesises: "thesis",
     quotes: "quotes Number",
     field: "Research Field"
   },
@@ -136,7 +136,11 @@ export default {
     result: "result",
     synthesis: "synthesis",
     h: "h-index",
-    quotes: "quotes"
+    quotes: "quotes",
+    institution: "institution",
+    thesis: "thesis",
+    scholar: "scholar",
+    field: "field"
   },
   field: {
     moreDetail: "More"

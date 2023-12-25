@@ -23,10 +23,10 @@
                 </div>
                 <div class="data">
                     <div class="num">
-                        1111
+                        89,520,174
                     </div>
                     <div class="name">
-                        科研人员
+                        {{ i18n.t("scholar.scholar") }}
                     </div>
                 </div>
             </div>
@@ -38,10 +38,10 @@
                 </div>
                 <div class="data">
                     <div class="num">
-                        1111
+                        240,000,000
                     </div>
                     <div class="name">
-                        论文成果
+                        {{ i18n.t("scholar.thesis") }}
                     </div>
                 </div>
             </div>
@@ -53,10 +53,10 @@
                 </div>
                 <div class="data">
                     <div class="num">
-                        1111
+                        65,073
                     </div>
                     <div class="name">
-                        知识概念
+                        {{ i18n.t("scholar.field") }}
                     </div>
                 </div>
             </div>
@@ -68,10 +68,10 @@
                 </div>
                 <div class="data">
                     <div class="num">
-                        1111
+                        107,246
                     </div>
                     <div class="name">
-                        引用关系
+                        {{ i18n.t("scholar.institution") }}
                     </div>
                 </div>
             </div>
@@ -157,7 +157,7 @@ const final_name = ref()
 const handleSearch = debounce(async (value) => {
     if (isNonEmptyString(value)) {
         scholar_name.value = value
-        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: value,
                 page_num: "1",
@@ -194,7 +194,7 @@ async function select1() {
     isHighlighted4.value = false
     // 按default排序
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -216,7 +216,7 @@ async function select2() {
     isHighlighted4.value = false
     // 按h_index排序
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -241,7 +241,7 @@ async function select3() {
     isHighlighted3.value = true
     isHighlighted4.value = false
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -262,7 +262,7 @@ async function select4() {
     isHighlighted3.value = false
     isHighlighted4.value = true
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -280,7 +280,7 @@ async function select4() {
 }
 async function changePage(val) {
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: val,
@@ -327,7 +327,7 @@ const h_index = reactive([
 ]);
 const institutionNum = ref('..')
 var institution = reactive([
-    getItem('机构 ' + '(' + institutionNum.value + ')', 'sub2', () => h(AppstoreOutlined), [
+    getItem(i18n.t("scholar.institution") + '(' + institutionNum.value + ')', 'sub2', () => h(AppstoreOutlined), [
     ]),
 ]);
 //第一个聚类的点击事件
@@ -346,7 +346,7 @@ const handleClick2 = async e => {
         const name = e.item.originItemValue.label.split("(")[0].trim()
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -374,7 +374,7 @@ const handleClick2 = async e => {
         for (let i = 0; i < res.data.institutions.length; i++) {
             children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
         }
-        institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+        institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
         for (let i = 0; i < res.data.h_index.length; i++) {
             options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
         }
@@ -387,7 +387,7 @@ const handleClick2 = async e => {
         const name = e.item.originItemValue.label.split("(")[0].trim()
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -415,7 +415,7 @@ const handleClick2 = async e => {
         for (let i = 0; i < res.data.institutions.length; i++) {
             children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
         }
-        institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+        institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
         for (let i = 0; i < res.data.h_index.length; i++) {
             options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
         }
@@ -438,7 +438,7 @@ async function chooseFilter(layerIndex, index) {
         layers[layerIndex].highlight = -1
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -465,7 +465,7 @@ async function chooseFilter(layerIndex, index) {
         const startTime = performance.now();
         let res = {};
         if (index < 5) {
-            const { data: result } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+            const { data: result } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
                 params: {
                     author_name: final_name.value,
                     page_num: "1",
@@ -479,7 +479,7 @@ async function chooseFilter(layerIndex, index) {
             h_index_down.value = index * 10
             res = result
         } else {
-            const { data: result } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+            const { data: result } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
                 params: {
                     author_name: final_name.value,
                     page_num: "1",
@@ -512,7 +512,7 @@ async function searchScholar() {
         final_name.value = scholar_name.value
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -535,7 +535,7 @@ async function searchScholar() {
         for (let i = 0; i < res.data.institutions.length; i++) {
             children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
         }
-        institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+        institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
         for (let i = 0; i < res.data.h_index.length; i++) {
             options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
         }
@@ -550,7 +550,7 @@ const handleOptionSelect = async (value) => {
     final_name.value = value
     fullscreenLoading.value = true
     const startTime = performance.now();
-    const { data: res } = await axios.get('http://100.103.70.173:8000/author/get_author_by_name/', {
+    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: value,
             page_num: "1",
@@ -573,7 +573,7 @@ const handleOptionSelect = async (value) => {
     for (let i = 0; i < res.data.institutions.length; i++) {
         children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
     }
-    institution = [getItem('机构 ' + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+    institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
     for (let i = 0; i < res.data.h_index.length; i++) {
         options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
     }
@@ -599,7 +599,7 @@ watch(
   }
 )
 </script>
-<style scoped>
+<style scoped lang="scss">
 .searchBox {
     margin-top: 10vh;
     left: 0;
