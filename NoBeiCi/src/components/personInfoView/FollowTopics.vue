@@ -56,6 +56,7 @@
     import { ElInput } from 'element-plus'
 
     import { defineProps } from 'vue';
+    import request from '../../functions/Request';
 
     const props = defineProps({
     dynamicTags: {

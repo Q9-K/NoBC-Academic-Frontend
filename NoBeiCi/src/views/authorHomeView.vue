@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="middle-down">
-                        <p class="inherited-styles-for-exported-element">论文列表</p>
+                        <p class="inherited-styles-for-exported-element">{{ i18n.t("authorHome.paperList") }}</p>
                         <div v-loading="this.isLoading" style="min-height: 20vh;">
                             <el-row v-for="data in this.articleData" :key="data.id" >
                             <ArticleView :data="data" :key="this.key"></ArticleView>
@@ -157,10 +157,12 @@ export default {
 
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            url: '/author/get_scholar_metrics/',
             params:{
                 author_id: this.author_id
             },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("scholarMetrics:",result)
@@ -174,11 +176,13 @@ export default {
       async loadScholarInfo(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_author_by_id',
+            url: '/author/get_author_by_id',
             params:{
                     author_id:this.author_id
             },
             //addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("authorInfo:",result)
@@ -190,13 +194,15 @@ export default {
         
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_works/',
+            url: '/author/get_works/',
             params:{
                     author_id:this.author_id,
                     page_num:1,
                     page_size:10,
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         this.key = Date.now()

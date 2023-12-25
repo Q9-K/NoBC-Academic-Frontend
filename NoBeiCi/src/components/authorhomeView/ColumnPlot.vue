@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <p class="inherited-styles-for-exported-element">近七年论文数</p>
+        <p class="inherited-styles-for-exported-element">{{ i18n.t("authorHome.paperIn7yr") }}</p>
         
         <div style="display: flex;">
 
@@ -43,19 +43,19 @@
             <el-menu-item index="1" @click="this.switchChart(1)" >
               <svg t="1703259750977" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" 
               p-id="7134" width="17" height="17"><path d="M896 896H96a32 32 0 0 1-32-32V224a32 32 0 0 1 64 0v608h768a32 32 0 1 1 0 64z" p-id="7135" fill="#8a8a8a"></path><path d="M512 752.16a32 32 0 0 1-32-32V350.624a32 32 0 0 1 64 0v369.536a32 32 0 0 1-32 32zM320 752.576a32 32 0 0 1-32-32V512a32 32 0 0 1 64 0v208.576a32 32 0 0 1-32 32zM896 752.672a32 32 0 0 1-32-32V163.488a32 32 0 1 1 64 0v557.184a32 32 0 0 1-32 32zM704 752.736a32 32 0 0 1-32-32V224a32 32 0 1 1 64 0v496.736a32 32 0 0 1-32 32z" p-id="7136" fill="#8a8a8a"></path></svg>
-                <template #title>柱状图</template>
+                <template #title>{{ i18n.t("authorHome.column") }}</template>
               </el-menu-item>
 
               <el-menu-item index="2" @click="this.switchChart(2)" >
                 <svg t="1703259857800" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" 
                 p-id="8406" width="17" height="17"><path d="M896 896H96a32 32 0 0 1-32-32V224a32 32 0 0 1 64 0v608h768a32 32 0 1 1 0 64z" p-id="8407" fill="#8a8a8a"></path><path d="M247.008 640a32 32 0 0 1-20.992-56.192l200.992-174.24a32 32 0 0 1 42.272 0.288l172.128 153.44 229.088-246.304a32 32 0 0 1 46.88 43.616l-250.432 269.216a31.936 31.936 0 0 1-44.704 2.08l-174.56-155.52-179.744 155.84a31.872 31.872 0 0 1-20.928 7.776z" p-id="8408" fill="#8a8a8a"></path></svg>
-                <template #title>折线图</template>
+                <template #title>{{ i18n.t("authorHome.line") }}</template>
               </el-menu-item>
 
               <el-menu-item index="3" @click="this.switchChart(3)">
                 <svg t="1703259951260" class="icon" viewBox="0 0 1044 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" 
                 p-id="11314" width="17" height="17"><path d="M103.434343 108.606061h853.333334v175.838383H103.434343zM103.434343 418.909091h636.121213v175.838384H103.434343zM103.434343 713.69697h449.939394v175.838384H103.434343z" fill="#8a8a8a" p-id="11315"></path></svg>
-                <template #title>条形图</template>
+                <template #title>{{ i18n.t("authorHome.bar") }}</template>
               </el-menu-item>
 
               <!-- <el-menu-item index="4" @click="this.switchChart(4)">
@@ -70,7 +70,9 @@
     
   </template>
   
-
+<script setup>
+import i18n from '../../locales';
+</script>
 
 <script>
 
@@ -86,6 +88,7 @@ import { nextTick } from 'vue';
 
 import { ref } from 'vue';
 import get from '../../functions/Get';
+import i18n from '../../locales';
 
 
 
@@ -267,11 +270,13 @@ rosePlot.render();
   const loadData = async () =>{
     const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_counts_by_year',
+            url: '/author/get_counts_by_year',
             params:{
                     author_id:props.scholarId,
             },
             //addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("column data:",result.data)

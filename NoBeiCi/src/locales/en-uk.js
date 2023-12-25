@@ -212,5 +212,17 @@ export default {
   },
   journalDisplay: {
     paperCount: "Papers",
+  },
+  authorHome:{
+    paperList:"Paper List",
+    paperIn7yr: "Papers in 7 years",
+    follow: "Follow",
+    followed:"Followed",
+    claim: "Claim",
+    claimed: "Claimed",
+    share: "Share",
+    column: "Column",
+    line:"Line",
+    bar: "Bar",
   }
 }

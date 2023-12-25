@@ -206,5 +206,17 @@ export default {
   },
   journalDisplay: {
     paperCount: "论文数",
+  },
+  authorHome:{
+    paperList:"论文列表",
+    paperIn7yr: "近七年论文数",
+    follow: "关注",
+    followed:"已关注",
+    claim: "认领",
+    claimed: "已认领",
+    share: "分享",
+    column: "柱状图",
+    line:"折线图",
+    bar: "条形图",
   }
 }

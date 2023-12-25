@@ -78,12 +78,12 @@
           
         </div>
         <div class="actions">
-          <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>关注</el-button>
-          <el-button type="primary" color="#626aef" v-else @click="unfollow" ><el-icon><Star /></el-icon>已关注</el-button>
+          <el-button type="primary" color="#626aef" v-if="!isfollowed" @click="follow" plain><el-icon><Star /></el-icon>{{ i18n.t("authorHome.follow") }}</el-button>
+          <el-button type="primary" color="#626aef" v-else @click="unfollow" ><el-icon><Star /></el-icon>{{ i18n.t("authorHome.followed") }}</el-button>
 
-          <el-button type="primary" color="#626aef" @click="showDialog()" v-if="!this.isAuthorBinded" plain><el-icon><Avatar /></el-icon>认领</el-button>
-          <el-button type="primary" color="#626aef" v-else >已认领</el-button>
-          <el-button type="primary" color="#626aef" plain><el-icon><Share /></el-icon>分享</el-button>
+          <el-button type="primary" color="#626aef" @click="showDialog()" v-if="!this.isAuthorBinded" plain><el-icon><Avatar /></el-icon>{{ i18n.t("authorHome.claim") }}</el-button>
+          <el-button type="primary" color="#626aef" v-else >{{ i18n.t("authorHome.claimed") }}</el-button>
+          <el-button type="primary" color="#626aef" @click="share()" plain><el-icon><Share /></el-icon>{{ i18n.t("authorHome.share") }}</el-button>
 
           <el-dialog title="认证学者" v-model="dialogVisible" :close-on-click-modal="false">
       <el-form :model="form" :rules="rules" ref="form" label-width="80px">
@@ -116,11 +116,18 @@
       </div>
     </div>
   </template>
+
+
+<script setup>
+import i18n from "../../locales";
+</script>
   
   <script>
 import get from "../../functions/Get.js";
 import request from "../../functions/Request.js"
 import { ElMessage } from 'element-plus'
+import router from "../../routes";
+
 
 
   export default {
@@ -161,6 +168,31 @@ import { ElMessage } from 'element-plus'
     },
 
     methods:{
+
+      async share(){
+      
+        const part = this.scholar.scholar_id.split("/");
+        const id = part[part.length-1]
+      // const url = 'buaa-q9k.xyz/authorhome/A5069285356';
+      const url = 'buaa-q9k.xyz/authorhome/'+id;
+    try {
+    await navigator.clipboard.writeText(url);
+    ElMessage({
+      message: '学者链接已复制成功',
+      type: 'success',
+    });
+    } catch (err) {
+    console.error('复制失败：', err);
+    ElMessage({
+      message: '复制失败，请手动复制链接',
+      type: 'error',
+    });
+    }
+      
+   
+      },
+
+
       showDialog(){
         if(this.isUserBinded){
           ElMessage("您已绑定学者")
@@ -179,13 +211,15 @@ import { ElMessage } from 'element-plus'
         console.log("remark:",this.form.remark)
         const result = await request(
         {
-            url: 'http://100.103.70.173:8000/user/apply_for_certification/',
+            url: '/user/apply_for_certification/',
             params:{
               idcard_img: this.file,
               author_id: this.scholar_id,
               remark: this.form.remark,
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log(result)
@@ -244,9 +278,10 @@ import { ElMessage } from 'element-plus'
       // if (homepageUrl) {
       //   window.open(homepageUrl, '_blank');
       // }
-
-      console.log("goto: ",'/authorhome/'+scholar.scholar_id)
-      router.push(`/authorhome/${scholar.scholar_id}`);
+      const part = this.scholar.scholar_id.split("/");
+        const id = part[part.length-1]
+      console.log("goto: ",'/authorhome/'+id)
+      router.push(`/authorhome/${id}`);
     },
     goToEmail() {
       // const emailUrl = this.links.find(link => link.id === 2)?.url;
@@ -281,11 +316,13 @@ import { ElMessage } from 'element-plus'
         console.log("follow:",this.scholar_id)
         const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/follow_scholar/',
+            url: '/user/follow_scholar/',
             params:{
               scholar_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -305,11 +342,13 @@ import { ElMessage } from 'element-plus'
     async unfollow(){
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/unfollow_scholar/',
+            url: '/user/unfollow_scholar/',
             params:{
               scholar_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){
@@ -327,11 +366,13 @@ import { ElMessage } from 'element-plus'
     async isAuthorFollowed(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/check_author_follow/',
+            url: '/user/check_author_follow/',
             params:{
               author_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         
@@ -343,11 +384,13 @@ import { ElMessage } from 'element-plus'
     async getIsUserBinded(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_certification_status/',
+            url: '/user/get_certification_status/',
             params:{
               // author_id: this.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         
@@ -361,11 +404,13 @@ import { ElMessage } from 'element-plus'
     async getIsAuthorBinded(){
       const result = await get(
         {
-            url: 'http://100.103.70.173:8000/user/check_author_authentication/',
+            url: '/user/check_author_authentication/',
             params:{
               author_id: this.scholar_id
             },
             //addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         

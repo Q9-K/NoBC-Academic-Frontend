@@ -272,22 +272,22 @@
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Cellphone /></el-icon>
                             <span class="bind-form-font">手机</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Message /></el-icon>
                             <span class="bind-form-font">邮箱</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Lock /></el-icon>
                             <span class="bind-form-font">密码</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: brown;">未绑定</span>
-                            <el-button  @click="bindPhone" style="float: right;">绑定</el-button>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                     </div>
@@ -464,13 +464,15 @@ export default {
     async loadArticles(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_works/',
+            url: '/author/get_works/',
             params:{
                     author_id:this.author_id,
                     page_num:1,
                     page_size:10,
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("get works:",result.data)
@@ -494,11 +496,13 @@ export default {
       // 在这里执行解绑逻辑，可以调用后端接口等
       const result = await request(
         {
-            url: 'http://100.103.70.173:8000/user/relieve_certification/',
+            url: '/user/relieve_certification/',
             params:{
                 
             },
             addToken:true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         if(result){
@@ -539,10 +543,12 @@ export default {
 
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_metrics/',
+            url: '/author/get_scholar_metrics/',
             params:{
                 author_id: this.author_id
             },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log(result.data)
@@ -555,10 +561,12 @@ export default {
 
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_author_by_id',
+            url: '/author/get_author_by_id',
             params:{
                 author_id: this.author_id
             },
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log(result.data)
@@ -572,11 +580,13 @@ export default {
     async loadUserInfo(){
         const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_user_info/',
+            url: '/user/get_user_info/',
             params:{
 
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         console.log("UserInfo",result.data)
@@ -593,11 +603,13 @@ export default {
     async loadUserAvatar(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/user/get_user_avatar/',
+            url: '/user/get_user_avatar/',
             params:{
                 
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         console.log("UserAvatar:",result.data)
@@ -638,7 +650,7 @@ export default {
       console.log(this.person);
       const result = await request(
         {
-            url: 'http://100.103.70.173:8000/user/change_user_info/',
+            url: '/user/change_user_info/',
             params:{
                 name: this.person.nickName,
                 real_name: this.person.realName,
@@ -648,6 +660,8 @@ export default {
                 gender: this.person.gender
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         if(result){

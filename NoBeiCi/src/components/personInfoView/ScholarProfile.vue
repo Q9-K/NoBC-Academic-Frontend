@@ -276,7 +276,7 @@ import { ElMessage } from 'element-plus';
     //   this.scholar = { ...this.editedProfile };
         const result = await request(
           {
-              url: 'http://100.103.70.173:8000/author/post_scholar_basic_information/',
+              url: '/author/post_scholar_basic_information/',
               params:{
                 author_id: this.scholarId,
                 
@@ -299,6 +299,8 @@ import { ElMessage } from 'element-plus';
                 language: this.scholarProfile.language
               },
               addToken: true,
+              useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
           }
           );
           if(result){
@@ -318,11 +320,13 @@ import { ElMessage } from 'element-plus';
     async loadscholarProfile(){
       const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_author_by_id',
+            url: '/author/get_author_by_id',
             params:{
               author_id: this.scholarId
             },
             // addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         

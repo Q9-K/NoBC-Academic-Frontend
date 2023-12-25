@@ -75,11 +75,13 @@ const goToWebsite = (author) =>{
 const collectArticle = async () => {
     const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/add_favorite/',
+            url: '/user/add_favorite/',
             params:{
                     work_id: work_id ,
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
 
@@ -98,11 +100,13 @@ const collectArticle = async () => {
 const uncollectArticle = async () => {
     const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/remove_favorite/',
+            url: '/user/remove_favorite/',
             params:{
                     work_id: work_id ,
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         if(result){

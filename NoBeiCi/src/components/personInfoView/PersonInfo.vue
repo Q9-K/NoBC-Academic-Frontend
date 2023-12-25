@@ -142,7 +142,7 @@ import i18n from "../../locales/index.js";
         //后端。。。。。
         const result = await request(
         {
-            url: 'http://100.103.70.173:8000/author/post_scholar_intro_information/',
+            url: '/author/post_scholar_intro_information/',
             params:{
               author_id: this.scholarId,
               workExperience: this.profile.workExperience,
@@ -150,6 +150,8 @@ import i18n from "../../locales/index.js";
               personalSummary: this.profile.personalSummary,
             },
             addToken:true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         if(result){
@@ -169,11 +171,13 @@ import i18n from "../../locales/index.js";
       async loadprofile(){
         const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_scholar_intro_information',
+            url: '/author/get_scholar_intro_information',
             params:{
               author_id: this.scholarId
             },
             // addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         

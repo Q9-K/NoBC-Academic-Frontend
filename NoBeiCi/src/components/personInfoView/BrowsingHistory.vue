@@ -158,11 +158,13 @@ export default {
       
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/add_favorite/',
+            url: '/user/add_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
        
@@ -180,11 +182,13 @@ export default {
     async unCollect(paper){
       const result = await request(
         {
-            url: 'http://100.117.229.168:8000/user/remove_favorite/',
+            url: '/user/remove_favorite/',
             params:{
               work_id: paper.id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
 
@@ -214,11 +218,13 @@ export default {
     async loadPaper(){
       const result = await get(
         {
-            url: 'http://100.117.229.168:8000/user/get_histories/',
+            url: '/user/get_histories/',
             params:{
               // author_id: this.scholar.scholar_id
             },
             addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.117.229.168:8000',
         }
         );
         

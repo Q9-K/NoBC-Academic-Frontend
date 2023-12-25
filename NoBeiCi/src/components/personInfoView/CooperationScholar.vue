@@ -107,11 +107,13 @@
       async loadCollaborators(){
       const result = await get(
         {
-            url: 'http://100.103.70.173:8000/author/get_co_author_list',
+            url: '/author/get_co_author_list',
             params:{
               author_id: this.scholarId
             },
             // addToken: true,
+            useTestEnv:false,
+            testEnv: 'http://100.103.70.173:8000',
         }
         );
         
