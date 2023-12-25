@@ -10,7 +10,7 @@
             </el-aside>
             <el-container style="margin-top: 0;">
                 <el-main>
-                    <el-row style="margin-bottom: 2vh; margin-top: -2vh;"> 
+                    <el-row style="margin-bottom: 2vh; margin-top: -2vh;">
                         <el-button style="border: 0;">{{ i18n.t('conf.confInitial') }}:</el-button>
                         <el-button class="letter" v-for="letter in letters" :key="letter"  @click="getJournalsByInitial(letter)" :style="{ marginTop: '0' }">{{ letter }}</el-button>
                     </el-row>
@@ -66,14 +66,14 @@ const pageNum = ref(1);
 const subject = ref("");
 // 在组件加载完成后发起请求,默认是A
 onMounted(() => {
-    getJournalsByInitial('A'); 
+    getJournalsByInitial('A');
 });
 const getJournalsByInitial = debounce((initial) => {
     tempLetter.value = initial;
-    axios.get('http://100.96.145.140:8000/source/get_source_list/', {
+    axios.get('http://api.buaa-q9k.xyz/source/get_source_list/', {
         params: {
             initial: initial,
-            page_num: pageNum,
+            page_num: pageNum.value,
             page_size: 10,
         }
         })
