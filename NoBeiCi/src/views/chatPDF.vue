@@ -3,20 +3,20 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import NavigateBar from '../components/NavigateBar.vue';
 import Search from '../components/SearchBar.vue';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+// import { ChatOpenAI } from 'langchain/chat_models/openai';
+// import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 // import {HuggingFaceEmbeddings} from 'langchain/embeddings'
-import { Chroma } from 'langchain/vectorstores/chroma'
-import { CharacterTextSplitter } from 'langchain/text_splitter'
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
-import { TextLoader } from "langchain/document_loaders/fs/text"
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
-import { RetrievalQAChain } from 'langchain/chains'
+// import { Chroma } from 'langchain/vectorstores/chroma'
+// import { CharacterTextSplitter } from 'langchain/text_splitter'
+// import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
+// import { TextLoader } from "langchain/document_loaders/fs/text"
+// import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+// import { RetrievalQAChain } from 'langchain/chains'
 
 // 根据文件类型来定义一个 loader，不同的 loader 能够解析不同的文件内容，最终都会解析为一个大文本
 const file_path= ref("./GSLB.pdf")
 localStorage.setItem('OPENAI_API_KEY', 'sess-EGczvLEBxQvH5pRd0wPAct69DECgizG6kxrxwI6x');
-const loader =  new PDFLoader(file_path) 
+const loader =  new PDFLoader(file_path)
 // 定义文本分块的规则，这里用了一个很简单的规则，按照默认的分隔符来切割文本，使得每一段不超过 1000 个字符
 const splitter = new CharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 0 });
 const chunks = loader.loadAndSplit(splitter);
@@ -45,7 +45,7 @@ onMounted(() =>{
     <Search class="search" :info="inform" @formDataChange="handleChildEvent"></Search>
   </div>
 </template>
-<style scoped> 
+<style scoped>
 .main {
    width: 100%;
    height: auto;

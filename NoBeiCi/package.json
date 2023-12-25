@@ -24,7 +24,6 @@
     "darkreader": "^4.9.73",
     "echarts": "^5.4.3",
     "element-plus": "^2.4.4",
-    "langchain": "^0.0.203",
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
