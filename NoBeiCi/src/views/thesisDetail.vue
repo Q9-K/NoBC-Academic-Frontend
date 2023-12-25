@@ -96,19 +96,19 @@ function jumpToField(field){
     router.push('/fieldDetail/' + field.id.substring(field.id.indexOf("C")))
 }
 // 收藏论文
-async function collection() {
+async function collection(id) {
     const result = await request(
         {
             url: "http://api.buaa-q9k.xyz/user/add_favorite/",
             params: {
-                work_id: "W2900586920"
+                work_id: id
             },
             addToken: true
         }
     )
     if (result) {
         ElMessage({
-            message: "关注成功",
+            message: "收藏成功",
             type: 'success',
         })
     }
@@ -439,7 +439,7 @@ onMounted(async () => {
                             </el-icon>
                             <span>引用</span>
                         </div>
-                        <div class="mark" @click="collection()">
+                        <div class="mark" @click="collection(work_id)">
                             <el-icon>
                                 <StarFilled />
                             </el-icon>
