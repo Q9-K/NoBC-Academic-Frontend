@@ -7,9 +7,9 @@ import request from "../../functions/Request.js";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const api = {
-  getcomplaints: "http://100.117.229.168:8000/manager/get_complaints_all/",
-  getcomplaintDetail: "http://100.117.229.168:8000/manager/get_complaint_detail/",
-  reviewcomplaint:"http://100.117.229.168:8000/manager/check_complaint/",
+  getcomplaints: "/manager/get_complaints_all/",
+  getcomplaintDetail: "/manager/get_complaint_detail/",
+  reviewcomplaint:"/manager/check_complaint/",
 }
 const showInfoList = ref(true);
 const detail = ref({
@@ -48,7 +48,8 @@ const getcomplaints = async()=>{
   const result = await get({
       url: api.getcomplaints,
       params:{},
-      addManagerToken: true
+      addManagerToken: true,
+    useTestEnv:false,
   });
   complaints.value = result.data;
   console.log(result.data);
@@ -62,7 +63,8 @@ const getDetail = async(id)=>{
      const result  = await get({
       url: api.getcomplaintDetail,
       params:{complaint_id:id},
-      addManagerToken: true
+      addManagerToken: true,
+       useTestEnv:false,
      });
      detail.value = result.data;
      let avater;
@@ -82,7 +84,7 @@ const getDetail = async(id)=>{
 }
 
 const review = async(pass)=>{
-  
+
   const result = await request({
     url: api.reviewcomplaint,
     params: {
@@ -90,7 +92,8 @@ const review = async(pass)=>{
       status: pass,
       opinion: opinion.value
     },
-    addManagerToken: true
+    addManagerToken: true,
+    useTestEnv:false,
   });
   getcomplaints();
   setTimeout(backToList(),500);
@@ -219,18 +222,18 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
               <div class="info-schName" >{{item.author_name}}</div>
               <div class="info-time">{{item.date_time}}</div>
               <div class="info-status">
-                {{item.status == "passed" ? (language=="cn" ? "已通过": "Passed") : 
+                {{item.status == "passed" ? (language=="cn" ? "已通过": "Passed") :
                   ( item.status == "pending" ? (language=="cn" ? "待审核": "ToBeReviewd") :
                     (language=="cn" ? "已拒绝": "Rejected")
-                  ) 
+                  )
                 }}
-              
+
             </div>
             </div>
           </div>
           <div class="detail-button">
             <el-button type="primary"
-             @click="checkDetail(item.id)" 
+             @click="checkDetail(item.id)"
              style="width: 100px"
              color="#2353a4"
              >
@@ -244,7 +247,7 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
   <Transition>
     <div class="detail" id="detail" v-if="!showInfoList">
       <ImageViewer
-        ref="imageViewerRef" 
+        ref="imageViewerRef"
         :imageList="previewImgList"
       ></ImageViewer>
       <div @click="backToList()" class="back-to-list"><el-icon><DArrowLeft /></el-icon>{{i18n.t('admin.backToList')}}</div>
@@ -284,30 +287,30 @@ watch(()=>{ return i18n.getLocale()}, (newValue, oldValue) =>{
         </div>
         <el-divider direction="vertical" style="margin: 0; height: 800px !important;"></el-divider>
         <div class="submit-panel">
-          <el-button 
-            type="success" 
-            style="margin-top: 20px; !important" 
+          <el-button
+            type="success"
+            style="margin-top: 20px; !important"
             @click="review(1)"
             v-if ="detail.status == 'pending'"
           >{{ i18n.t('admin.accept') }}</el-button>
-          <el-button 
-            type="danger" 
-            style="margin-top: 20px; !important" 
+          <el-button
+            type="danger"
+            style="margin-top: 20px; !important"
             @click="review(2)"
             v-if ="detail.status == 'pending'"
           >{{ i18n.t('admin.decline') }}</el-button>
           <div class="opinion-label">{{ i18n.t('admin.opinion') }}</div>
-          <el-input 
-            type="textarea" 
-            v-model="opinion" 
-            :rows="10" 
+          <el-input
+            type="textarea"
+            v-model="opinion"
+            :rows="10"
             :placeholder='language == "cn" ? "请输入审核意见" : "Please enter a review comment" '
             v-if ="detail.status == 'pending'"
           ></el-input>
-          <el-input 
-            type="textarea" 
-            v-model="detail.result_msg" 
-            :rows="10" 
+          <el-input
+            type="textarea"
+            v-model="detail.result_msg"
+            :rows="10"
             :placeholder='language == "cn" ? "管理员没有意见" : "No comment" '
             v-if ="detail.status != 'pending'"
             disabled

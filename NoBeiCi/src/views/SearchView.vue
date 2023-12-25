@@ -11,6 +11,7 @@
     import Institution from '../components/search/Institution.vue'
     import SelectJournal from '../components/search/SelectJournal.vue'
     //import Subject from '../components/search/Subject.vue'
+    import { ElLoading } from 'element-plus'
     const AsyncSubject = defineAsyncComponent(() => import('../components/search/Subject.vue'));
     import i18n from '../locales'
     import axios from 'axios'
@@ -55,6 +56,12 @@
     };
     const search = debounce( async () => {
         try {
+            let loading;
+            loading = ElLoading.service({
+              lock: true,
+              text: "加载中......",
+              background: 'rgba(0,0,0,0.7)'
+            })
             if(input.value != '') {
               const response = await axios.get('http://api.buaa-q9k.xyz/work/advanced_search/', {
               params: {
@@ -82,12 +89,16 @@
                   institutions.value = response.data.data.statistics.top_institutions;
                   totalPage.value = response.data.data.count / 10;
                   key.value = Date.now();
+                  loading.close();
               } else{
                   showAriticle.value = false;
+                  loading.close();
                   window.alert("无结果");
               }
+
           }
         } catch (error) {
+            loading.close();
             console.error('Error fetching data:', error);
         }
     }, "300ms");
@@ -173,7 +184,7 @@
       search();
     }
 
-    onMounted(async () => {
+    onMounted( () => {
       input.value = store.getContent;
 
       if (input.value !== '') {
