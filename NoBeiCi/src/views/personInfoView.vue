@@ -338,13 +338,13 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="followIndex == 2">  
-                                nmsl
+                                开发中
                             </div>
                             </transition>
 
                             <transition name="el-fade-in-linear">
                             <div v-if="followIndex == 3">  
-                                nmsl
+                                开发中
                             </div>
                             </transition>
 
