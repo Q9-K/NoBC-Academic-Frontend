@@ -58,8 +58,11 @@ const isInViewPort = (element) => {
 
 onMounted(() => {
   setInterval(() => {
-    const isSearchInputVisible = isInViewPort(document.querySelector(".search-area-input"))
-    isTopSearchInputVisible.value = !isSearchInputVisible;
+    const element = document.querySelector(".search-area-input")
+    if (element) {
+      const isSearchInputVisible = isInViewPort(element)
+      isTopSearchInputVisible.value = !isSearchInputVisible;
+    }
   }, 500)
 })
 
