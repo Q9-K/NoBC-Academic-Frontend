@@ -28,6 +28,7 @@ import {
 const isTopSearchInputVisible = ref(false)
 const recommendPaper = ref([])
 const recommendScholar = ref([])
+const searchValue = ref('')
 
 const isInViewPort = (element) => {
   const viewWidth = window.innerWidth || document.documentElement.clientWidth;

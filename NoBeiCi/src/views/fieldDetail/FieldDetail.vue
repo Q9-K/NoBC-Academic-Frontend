@@ -6,7 +6,7 @@ import {onMounted, ref, watch} from "vue";
 import axios from "axios";
 import {handleResponse} from "../../functions/handleResponse.js";
 import i18n from "../../locales/index.js";
-import {Star, StarFilled} from "@element-plus/icons-vue";
+import {StarFilled} from "@element-plus/icons-vue";
 import {LineChartOutlined, ApartmentOutlined, FileTextOutlined, TeamOutlined} from "@ant-design/icons-vue";
 import TrendTab from "./TrendTab.vue";
 import RelationTab from "./RelationTab.vue";
@@ -21,7 +21,6 @@ console.log(params)
 const {fieldId} = params
 const fFullId = 'https://openalex.org/' + fieldId
 const showSummary = false
-const showTwoYears = true
 
 const fImageUrl = ref('https://upload.wikimedia.org/wikipedia/commons/c/cf/Philbar_3.png')
 const fDescription = ref('study of the truths and principles of being, knowledge, or conduct')

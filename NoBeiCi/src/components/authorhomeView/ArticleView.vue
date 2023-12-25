@@ -142,7 +142,7 @@ onBeforeMount(() => {
 <template>
     <el-card class="box-card">
         <div class="title">
-            <router-link to="/thesisDetail/{{ work_id }}"><p class="title-content" href="toPaperPage" >{{ title}}</p></router-link>
+            <router-link :to="'/thesisDetail/'+ work_id" ><p class="title-content" href="toPaperPage" >{{ title}}</p></router-link>
         </div>
         <div class="author">
             <span style="display: flex;flex-wrap: wrap;">

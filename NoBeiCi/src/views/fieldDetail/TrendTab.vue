@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, toRefs, watch} from "vue";
+import {watch} from "vue";
 import {Line} from "@antv/g2plot";
 import i18n from "../../locales/index.js";
 
