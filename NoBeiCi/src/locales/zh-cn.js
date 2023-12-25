@@ -18,7 +18,12 @@ export default {
     hotPoint: "研究热点",
     journal: "期刊会议",
     popularPaper: "热门文章",
-    scholar: "权威学者"
+    scholar: "权威学者",
+    scholarCount: "学者",
+    journalCount: "期刊",
+    institutionCount: "机构",
+    workCount: "论文",
+    fieldCount: "领域"
   },
   admin:{
     reviewScholarCertification:"审核学者认证",
