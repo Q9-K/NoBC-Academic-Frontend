@@ -14,7 +14,7 @@
       
       <div class="upper-part">
           <div class="info">
-            <div class="title"><el-image src="https://t9.baidu.com/it/u=3917977667,2615684315&fm=193" style="width: 30px; height: 30px" fit="cover"/>{{ paper.title }}</div>
+            <router-link to="/thesisDetail/{{ paper.id }}"><div class="title"><el-image src="https://t9.baidu.com/it/u=3917977667,2615684315&fm=193" style="width: 30px; height: 30px" fit="cover"/>{{ paper.title }}</div></router-link>
             <div class="author">
               <span v-for="(author, authorIndex) in paper.authors" :key="authorIndex">
                 <!-- <a :href="author.homepage" @click="goToHomepage(author)"  style="color: #067C08;">{{ author.name }}</a>
