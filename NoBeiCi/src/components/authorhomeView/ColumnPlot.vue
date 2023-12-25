@@ -135,7 +135,7 @@ export default {
   let columnPlot = null;
 
   const switchChart = (index) => {
-
+        console.log("1111111")
         let tmp  = viewMode.value;
         viewMode.value = index;
         console.log("viewMode:",viewMode)
