@@ -126,6 +126,7 @@ export default {
   ];
 
   watch(props, (newVal, oldVal) => {
+      console.log("data changed for collumn")
       loadData().then(()=>{
       buildColumn();
     })
@@ -284,7 +285,8 @@ rosePlot.render();
   }
 
   onMounted(() => {
-    
+    console.log("11111111")
+    console.log("enter column page,author_id:",props.scholarId)
     // loadData().then(()=>{
     //   buildColumn();
     // })
