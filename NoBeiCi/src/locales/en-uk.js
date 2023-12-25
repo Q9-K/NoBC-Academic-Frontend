@@ -120,7 +120,14 @@ export default {
     introduce: "Sorry, The paper does not have a PDF",
     input: "Message ChatPDF",
     send: "send",
-    abstract: "abstract"
+    abstract: "abstract",
+    get: "claim",
+    code: "code",
+    data: "data",
+    share: "share",
+    link: "quote",
+    look: "view",
+    relavantField: "相关领域"
   },
   scholarDisplay:{
     mainPage:"Home",

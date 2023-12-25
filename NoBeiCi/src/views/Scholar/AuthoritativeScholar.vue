@@ -104,7 +104,7 @@
             <div class="leftNavigate">
                 <!-- <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys1" style="width: 213px"
                     mode="inline" :items="h_index" @click="handleClick1"></a-menu> -->
-                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 11.5vw"
+                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 12.3vw"
                     mode="inline" :items="institution" @click="handleClick2" @hover="handleHover()"></a-menu>
             </div>
             <div class="detail">
@@ -542,6 +542,7 @@ async function searchScholar() {
         layers = [{ name: 'h指数:', options: options, highlight: -1 }]
         fullscreenLoading.value = false
         currentPage.value = 1
+        openKeys.value[0] = 'sub2'
     } catch (error) {
         console.log(error)
     }
@@ -728,8 +729,8 @@ h2 {
 }
 
 .filter {
-    width: 70vw;
-    margin-left: 15vw;
+    width: 74vw;
+    margin-left: 13vw;
     margin-top: 5px;
     height: auto;
     background-color: #fff;
@@ -781,8 +782,8 @@ h2 {
     justify-content: flex-start;
     display: flex;
     text-align: space-around;
-    width: 70vw;
-    margin-left: 15vw;
+    width: 74vw;
+    margin-left: 13vw;
     background-color: #fff;
 }
 

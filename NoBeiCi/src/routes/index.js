@@ -22,11 +22,11 @@ const router = createRouter({
       name: 'thesisDetail',
       component: () => import('../views/thesisDetail.vue')
     },
-    {
-      path: '/chat',
-      name: 'chatPDF',
-      component: () => import('../views/chatPDF.vue')
-    },
+    // {
+    //   path: '/chat',
+    //   name: 'chatPDF',
+    //   component: () => import('../views/chatPDF.vue')
+    // },
     {
       path: '/scholar',
       name: 'scholar',

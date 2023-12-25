@@ -101,7 +101,8 @@ async function followScholar(id){
 </template>
 <style scoped lang="scss">
 .author_block {
-    width: 95%;
+    width: 98%;
+    margin: auto;
     display: flex;
     flex-direction: row;
     border: solid #f2f4f7;

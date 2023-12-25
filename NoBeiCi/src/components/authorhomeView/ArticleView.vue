@@ -170,6 +170,7 @@ onBeforeMount(() => {
 <style scoped>
 .box-card {
     background-color: rgb(246, 250, 250);
+    min-width: 100%;
 }
 
 .title {

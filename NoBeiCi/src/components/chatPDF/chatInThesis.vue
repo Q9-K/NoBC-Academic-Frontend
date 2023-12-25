@@ -131,7 +131,7 @@ onMounted(async () => {
     await getIntroduction();
 })
 </script>
-<style scoped>
+<style scoped lang="scss">
 .box {
     position: relative;
     background-color: #fff;
@@ -280,4 +280,9 @@ onMounted(async () => {
 h2 {
     font-weight: 1000;
 }
+
+::v-deep .el-textarea__inner{
+    height: 10vh;
+}
+  
 </style>

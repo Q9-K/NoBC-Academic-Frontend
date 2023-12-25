@@ -532,11 +532,12 @@ export default {
 
     goToAuthorSearchpage() {
       // const homepageUrl = this.links.find(link => link.id === 1)?.url;
-      const pageUrl = ''
-      console.log("goto:",pageUrl)
-      if (pageUrl) {
-        window.open(pageUrl, '_blank');
-      }
+    //   const pageUrl = ''
+    //   console.log("goto:",pageUrl)
+    //   if (pageUrl) {
+    //     window.open(pageUrl, '_blank');
+    //   }
+    router.push(`/scholar`);
     },
 
     async loadscholarMetrics(){

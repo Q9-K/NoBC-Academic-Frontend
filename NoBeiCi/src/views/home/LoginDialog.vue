@@ -4,6 +4,7 @@ import {ref} from "vue";
 import {REGISTER, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 import request from '../../functions/Request.js'
 import {ElMessage} from "element-plus";
+import router from "../../routes/index.js";
 
 const email = ref('')
 const password = ref('')
@@ -119,6 +120,7 @@ const handleManagerLogin = () => {
           message: "Ok!"
         })
         stateOfPriorDialog.closeDialog()
+        router.push('/admin')
       }
     })
 
