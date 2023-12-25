@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="subject">学科</button>
+    <el-button @click="toggleDrawer" :class="{ active: showDrawer }" class="subject">学科</el-button>
     <div v-if="showDrawer" class="drawer">
       <ul style="list-style-type: none;" class="subject-list">
         <li v-for="(subject, index) in displayedSubjects" :key="subject.id" style="display: flex;"> 
@@ -62,16 +62,14 @@ const selectSubject = (subject) => {
   
   <style scoped>
   .subject {
-    border: 0;
-    border-top: 3px solid #f4081c;
-    background-color: #ffcc40;
+    background-color: #b5bef4;
     width: 16vw;
     height: 5vh;
   }
 
   button.active {
-   background-color: rgb(223, 35, 13);
-   color: #fff;
+   background-color: #fafafa;
+   color: b5bef4;
   }
 
   .drawer {

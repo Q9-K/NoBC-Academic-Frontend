@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleDrawer" :class="{ active: showDrawer }" class="journal">期刊</button>
+    <el-button @click="toggleDrawer" :class="{ active: showDrawer }" class="journal">期刊</el-button>
     <div v-if="showDrawer" class="drawer">
       <ul style="list-style-type: none;" class="journal-list">
         <li v-for="(journal, index) in displayedjournals" :key="journal.id">
@@ -60,9 +60,7 @@ const selectJournal = (journal) => {
   
   <style scoped>
   .journal {
-    border: 0;
-    border-top: 3px solid #f4081c;
-    background-color: #ff8640;
+    background-color: #b5bef4;
     width: 16vw;
     height: 5vh;
   }
@@ -73,8 +71,8 @@ const selectJournal = (journal) => {
   }
   
   button.active {
-    background-color: rgb(206, 67, 28);
-    color: #fff;
+    background-color: #fafafa;
+    border: #fff;
   }
   
   .drawer {

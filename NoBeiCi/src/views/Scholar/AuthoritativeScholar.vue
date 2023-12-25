@@ -104,7 +104,7 @@
             <div class="leftNavigate">
                 <!-- <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys1" style="width: 213px"
                     mode="inline" :items="h_index" @click="handleClick1"></a-menu> -->
-                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 213px"
+                <a-menu id="dddddd" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys2" style="width: 11.5vw"
                     mode="inline" :items="institution" @click="handleClick2" @hover="handleHover()"></a-menu>
             </div>
             <div class="detail">

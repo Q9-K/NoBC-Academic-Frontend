@@ -42,7 +42,8 @@ async function followScholar(id){
 <template>
     <div v-for="scholar,index in props.scholars" class="author_block" :class="{grey: index%2==1}">
         <div class="avatar">
-            <img style="padding: 20px;width:100px;height:100px;" :src=scholar.avatar>
+            <!-- <img style="padding: 20px;width:100px;height:100px;" :src=scholar.avatar> -->
+            <el-avatar :size="50" style="margin-top: 20px;" :src=scholar.avatar />
         </div>
         <div class="info">
             <div class="scholar_head">
@@ -109,6 +110,9 @@ async function followScholar(id){
 .avatar {
     align-self: flex-start;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .info {
