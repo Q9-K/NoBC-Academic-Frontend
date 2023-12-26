@@ -176,7 +176,7 @@ const toShowAuthor = () => {
 const getAllInfo = async () => {
     try {
             const instance = getCurrentInstance();
-            const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
+            const ident = 'http://openalex.org/'+instance.proxy.$route.params.id;
             let loading;
             loading = ElLoading.service({
               lock: true,
@@ -236,7 +236,6 @@ const getAllInfo = async () => {
             loading.close();
         } catch (error) {
             console.error('Error fetching data:', error);
-            loading.close();
         }
 };
 
