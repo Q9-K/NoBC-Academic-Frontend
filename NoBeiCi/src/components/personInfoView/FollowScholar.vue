@@ -1,5 +1,5 @@
 <template>
-    <div class="scholars-list" v-if="this.hasScholars" >
+    <div class="scholars-list" v-if="hasScholars" >
       <div v-for="(scholar, index) in scholars" :key="index" class="scholar-item" >
         <div class="avatar">
           <img :src="scholar.avatar" alt="avatar" />
