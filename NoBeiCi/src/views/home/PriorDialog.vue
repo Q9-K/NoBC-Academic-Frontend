@@ -32,8 +32,8 @@ const handleLanguageChange = (value) => {
     width="50%"
     :show-close="false"
     v-model="stateOfPriorDialog.getVisible"
-    :close-on-click-modal="true"
-    :close-on-press-escape="true"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
   >
     <template #header >
       <div class="prior-steps-and-language-outer">
