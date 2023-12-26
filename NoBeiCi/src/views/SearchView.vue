@@ -271,7 +271,7 @@
             </el-main>
             <el-aside v-if="showAriticle">
                 <SearchResultStatics :data="statics" :key="key" />
-                <p style="text-align: center;" v-if="showAriticle">前500条结果统计图</p>
+                <p style="text-align: center;" v-if="showAriticle">搜索结果时间分布统计图</p>
                 <AuthorDisplay :data="authors" :key="key" />
                 <p style="text-align: center;" v-if="showAriticle"><br/>发表数量最多的作者</p>
             </el-aside>
