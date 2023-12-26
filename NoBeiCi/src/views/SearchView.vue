@@ -37,6 +37,7 @@
     const showPagination = ref(false);
     const totalPage = ref(1);
     const pageSize3 = ref(10);
+    const totalData = ref(0)
     const searchLatest = () => {
         activeButton.value = 'searchLatest';
         orderWay.value = 'time';
@@ -88,6 +89,8 @@
                   institutions.value = response.data.data.statistics.top_institutions;
                   totalPage.value = response.data.data.count / 10;
                   key.value = Date.now();
+                  totalData.value = response.data.data.count
+        
                   loading.close();
               } else{
                   showAriticle.value = false;
@@ -248,10 +251,12 @@
         <el-container class="main-content">
             <el-main>
                 <el-row gutter="10" style="margin-bottom: 7px; border: outset 0.5px; height: 5vh;">
-                    <el-col :span="3"><el-button :class="{'active-button': activeButton === 'searchLatest'}" style="border:none; font-size: large;" @click="searchLatest">{{ i18n.t('search.searchLatest') }}</el-button></el-col>
-                    <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchSynthesis' }" style="border:none; font-size: large;" @click="searchSynthesis">{{ i18n.t('search.searchSynthesis') }}</el-button></el-col>
-                    <el-col :span="3"><el-button :class="{ 'active-button': activeButton === 'searchCitations' }" style="border:none; font-size: large;" @click="searchCitations">{{ i18n.t('search.searchCitations') }}</el-button></el-col>
-                </el-row>
+                    <el-col :span="3" style="display: flex;flex-direction:row;align-items:center"><el-button :class="{'active-button': activeButton === 'searchLatest'}" style="border:none; font-size: large;" @click="searchLatest">{{ i18n.t('search.searchLatest') }}</el-button></el-col>
+                    <el-col :span="3" style="display: flex;flex-direction:row;align-items:center"><el-button :class="{ 'active-button': activeButton === 'searchSynthesis' }" style="border:none; font-size: large;" @click="searchSynthesis">{{ i18n.t('search.searchSynthesis') }}</el-button></el-col>
+                    <el-col :span="3" style="display: flex;flex-direction:row;align-items:center"><el-button :class="{ 'active-button': activeButton === 'searchCitations' }" style="border:none; font-size: large;" @click="searchCitations">{{ i18n.t('search.searchCitations') }}</el-button></el-col>
+                    <el-col :span="10"></el-col>
+                    <el-col :span="5" style="display: flex;flex-direction:row;align-items:center">检索到:{{ totalData }}条结果</el-col>
+                  </el-row>
                 <div>
                 <el-row v-for="data in articleData" v-if="showAriticle" >
                     <ArticleDispaly :data="data" type="highlight" :key="key"/>
