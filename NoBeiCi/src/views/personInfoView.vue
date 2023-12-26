@@ -77,7 +77,7 @@
             <div v-if="chosenIndex == 1" >
                 
                 <!-- up -->
-                <div class="upper-message" v-if="this.is_author_binded">
+                <div class="upper-message" v-if="is_author_binded">
                         <p>{{ i18n.t("personInfo.intro1") }}<el-link type="primary" @click="goToHomepage()">{{ scholarProfile.name }}</el-link>
                             {{ i18n.t("personInfo.intro2") }}
                             <el-link  style="color:#4d66f6" @click="showUnbindDialog">{{ i18n.t("personInfo.unbind") }}</el-link>
@@ -106,10 +106,10 @@
                 </div>
 
                 <!-- below -->
-                <div style="display: flex;" v-if="this.is_author_binded"> 
+                <div style="display: flex;" v-if="is_author_binded"> 
 
                     <div style="width: 70%;">
-                        <ScholarProfile :scholar-id=this.author_id />
+                        <ScholarProfile :scholar-id=author_id />
 
                         <div style="margin-top: 2vh;">
                             <el-menu
@@ -128,14 +128,14 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="informIndex == 1">  
-                                <PersonalInfo :scholar-id="this.author_id" :key="this.key"></PersonalInfo>
+                                <PersonalInfo :scholar-id="author_id" :key="key"></PersonalInfo>
                             </div>
                             </transition>
 
                             <transition name="el-fade-in-linear">
                             <div v-if="informIndex == 2">  
-                                <el-row v-for="data in this.articleData" :key="data.id">
-                                    <ArticleView :data="data" :key="this.key"></ArticleView>
+                                <el-row v-for="data in articleData" :key="data.id">
+                                    <ArticleView :data="data" :key="key"></ArticleView>
                                 </el-row>
                             </div>
                             </transition>
@@ -166,13 +166,13 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="cooperationIndex == 1">  
-                                <CooperationInfo :scholar-id="this.author_id"></CooperationInfo>
+                                <CooperationInfo :scholar-id="author_id"></CooperationInfo>
                             </div>
                             </transition>
 
                             <transition name="el-fade-in-linear">
                             <div v-if="cooperationIndex == 2">  
-                                <CooperationAgency :scholar-id="this.author_id"></CooperationAgency>
+                                <CooperationAgency :scholar-id="author_id"></CooperationAgency>
                             </div>
                             </transition>
 
@@ -181,7 +181,7 @@
                 </div>
                 
                 <!-- 未绑定学者时 -->
-                <div style="display: flex; " v-if="!this.is_author_binded">
+                <div style="display: flex; " v-if="!is_author_binded">
                     <div style="width: 100%;min-height: 14vh;background-color: #fff; text-align: left;">
                         <div class="label">
                             <p style="float: left;">{{ i18n.t("personInfo.bindScholarHomePage") }}</p>
