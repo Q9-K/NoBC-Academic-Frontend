@@ -18,10 +18,10 @@
         <div class="follow-btn">
           
           <el-button type="primary" size="mini" @click="unFollow(scholar)" color="#626aef" v-if="scholar.followed">
-            已关注
+            {{ i18n.t("authorHome.followed") }}
           </el-button>
           <el-button type="primary" size="mini" @click="follow(scholar)" color="#626aef" v-else plain>
-            <el-icon><CirclePlus /></el-icon>关注
+            <el-icon><CirclePlus /></el-icon>{{ i18n.t("authorHome.follow") }}
           </el-button>
         
         </div>
@@ -31,6 +31,10 @@
         <p class="label1">您还未关注学者</p>
     </div>
   </template>
+
+<script setup>
+import i18n from '../../locales';
+</script>
   
   <script>
   import { ref } from 'vue';
