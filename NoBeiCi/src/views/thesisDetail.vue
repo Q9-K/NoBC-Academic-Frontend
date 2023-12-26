@@ -7,10 +7,11 @@ import { computed } from 'vue'
 import i18n from "../locales/index.js";
 import chatInThesis from "../components/chatPDF/chatInThesis.vue"
 import request from "../functions/Request"
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import router from "../routes/index.js";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
 import { nextTick } from 'vue';
+import Clipboard from 'clipboard';
 //
 var isParentReady = ref(false)
 // title和abstract
@@ -19,7 +20,7 @@ var abstract = ref('')
 //const translate = ref('尽管音频生成在不同类型的音频(如语音、音乐和音效)之间存在共性,但为每种类型设计模型需要仔细考虑特定目标和偏差,这些目标和偏差可能与其他类型的目标和偏差有显著差异。为了使我们更接近统一的音频生成观点,本文提出了一个利用相同的学习方法进行语音、音乐和音效生成的框架。我们引入了一种音频的一般表示,称为音频语言(LOA)。任何音频都可以基于音频多模态自监督预训练表示学习模型(AudioMAE)将其转换为 LOA。在生成过程中,我们使用 GPT-2 模型将任何模态转换为 LOA,然后使用基于 LOA 的条件潜在扩散模型进行自监督音频生成学习。所提出的框架自然带来了诸如上下文学习能力以及可重复使用的自监督预训练 AudioMAE 和潜在扩散模型等优势。在文本到音频、文本到音乐和文本到语音的主要基准测试中，实验证明了之前方法的新的最先进或竞争性能。我们的演示和代码可在 https://audioldm.github.io/audioldm2 上获得。')
 const ifShowMoreButton = ref(true)
 const authorShips = ref([])
-
+const citeMessage = ref('')
 // 当前论文id
 var currentId = ref('')
 // 是否打开链接
@@ -91,7 +92,7 @@ function openPDF(url) {
 function NavigateToScholar(id) {
     router.push('/authorhome/' + id)
 }
-function jumpToField(field){
+function jumpToField(field) {
     console.log(1)
     router.push('/fieldDetail/' + field.id.substring(field.id.indexOf("C")))
 }
@@ -124,6 +125,32 @@ async function LookThesis(id) {
     // 在 router.push 的回调函数中执行 router.go(0) 刷新页面
     router.go(0);
 }
+const copyText = () => {
+    console.log(1)
+    const clipboard = new Clipboard(document.body, {
+        text: () => citeMessage.value
+    });
+    clipboard.on('success', () => {
+        open();
+        clipboard.destroy();
+    });
+    clipboard.on('error', () => {
+        console.error('Failed to copy to clipboard');
+        clipboard.destroy();
+    });
+};
+
+const open = () => {
+    ElMessageBox.alert(`${citeMessage.value}`, `${i18n.t('articleDisplay.articleDisplayCite')}`, {
+        confirmButtonText: '复制',
+        callback: (action) => {
+            ElMessage({
+                type: 'info',
+                message: `已复制到剪贴板`,
+            })
+        },
+    })
+}
 //获取数据
 async function getThesis() {
     try {
@@ -155,6 +182,7 @@ async function getThesis() {
         data.value.id = res.data.data.id
         work_id.value = res.data.data.id
         fields.value = res.data.data.concepts
+        citeMessage.value = res.data.data.citation
         //原文链接列表初值
         for (let i = 0; i < res.data.data.locations.length; i++) {
             links.value.push(res.data.data.locations[i].landing_page_url)
@@ -388,7 +416,9 @@ onMounted(async () => {
                     </div>
                     <div class="fields">
                         <div v-for="field in fields" class="field" @click="jumpToField(field)">
-                            <el-icon style="margin-right: 5px;font-size:20px"><Grid /></el-icon>
+                            <el-icon style="margin-right: 5px;font-size:20px">
+                                <Grid />
+                            </el-icon>
                             {{ field.display_name }}
                         </div>
                     </div>
@@ -416,7 +446,7 @@ onMounted(async () => {
                                 <el-icon>
                                     <Promotion />
                                 </el-icon>
-                                <span> {{ i18n.t("thesisDetail.Link") }} </span>
+                                <div > {{ i18n.t("thesisDetail.Link") }} </div>
                                 <el-icon>
                                     <ArrowDown />
                                 </el-icon>
@@ -437,7 +467,7 @@ onMounted(async () => {
                             <el-icon>
                                 <Paperclip />
                             </el-icon>
-                            <span>{{ i18n.t("thesisDetail.quote") }}</span>
+                            <span @click="copyText">{{ i18n.t("thesisDetail.quote") }}</span>
                         </div>
                         <div class="mark" @click="collection(work_id)">
                             <el-icon>
@@ -995,12 +1025,14 @@ onMounted(async () => {
                 font-weight: 500;
                 color: #222;
             }
-            .fields{
+
+            .fields {
                 display: flex;
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 10px;
-                .field{
+
+                .field {
                     margin-right: 20px;
                     font-size: 14px;
                     color: #6b6b6b;
@@ -1010,7 +1042,8 @@ onMounted(async () => {
                     align-items: center;
                     cursor: pointer;
                 }
-                .field:hover{
+
+                .field:hover {
                     color: burlywood;
                 }
             }
