@@ -5,7 +5,7 @@
                 <!-- 左侧 -->
                 <div class="left-part">
                     <ScholarCardView :scholar="scholar"></ScholarCardView>
-                    <PersonalInfo :scholar-id="this.author_id"></PersonalInfo>
+                    <PersonalInfo :scholar-id="author_id"></PersonalInfo>
                 </div>
 
                 <!-- 中间 -->
@@ -16,9 +16,9 @@
 
                     <div class="middle-down">
                         <p class="inherited-styles-for-exported-element">{{ i18n.t("authorHome.paperList") }}</p>
-                        <div v-loading="this.isLoading" style="min-height: 20vh;">
-                            <el-row v-for="data in this.articleData" :key="data.id" >
-                            <ArticleView :data="data" :key="this.key"></ArticleView>
+                        <div v-loading="isLoading" style="min-height: 20vh;">
+                            <el-row v-for="data in articleData" :key="data.id" >
+                            <ArticleView :data="data" :key="key"></ArticleView>
                             <!-- <ArticleDisplay :data="data"></ArticleDisplay> -->
                         </el-row>
                         </div>
@@ -48,13 +48,13 @@
 
                         <transition name="el-fade-in-linear">
                         <div v-if="cooperationIndex == 1">  
-                            <CooperationInfo :scholar-id="this.author_id"></CooperationInfo>
+                            <CooperationInfo :scholar-id="author_id"></CooperationInfo>
                         </div>
                         </transition>
 
                         <transition name="el-fade-in-linear">
                         <div v-if="cooperationIndex == 2">  
-                            <CooperationAgencyVue :scholar-id="this.author_id"></CooperationAgencyVue>
+                            <CooperationAgencyVue :scholar-id="author_id"></CooperationAgencyVue>
                         </div>
                         </transition>
                     
