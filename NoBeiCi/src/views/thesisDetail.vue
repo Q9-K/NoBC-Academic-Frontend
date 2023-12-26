@@ -77,8 +77,8 @@ function setRelavant() {
 }
 //打开当前论文的pdf
 function navigateToExternalURL() {
-    console.log(pdf_url.value)
-    if (pdf_url.value != null) {
+    //console.log(pdf_url.value)
+    if (pdf_url != null) {
         window.open(pdf_url, '_blank')
     }
 }
@@ -140,9 +140,9 @@ async function getThesis() {
         authorShips.value = res.data.data.authorships
         if (res.data.data.pdf_url == null) {
             hasPDF.value = false
-            pdf_url.value = null
+            pdf_url = null
         } else {
-            pdf_url = toRaw(res.data.data.pdf_url)
+            pdf_url = res.data.data.pdf_url
         }
         date.value = res.data.data.publication_date
         instituion = toRaw(res.data.data.locations[0].source.display_name)
