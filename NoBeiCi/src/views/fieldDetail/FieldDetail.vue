@@ -139,7 +139,7 @@ function adjustFontSize() {
   const text = document.getElementById('field-title')
 
   // 初始字号
-  let fontSize = 16;
+  let fontSize = 30;
   text.style.fontSize = fontSize + 'px';
 
   // 不断尝试增大字号，直到文字超出容器范围
@@ -389,7 +389,7 @@ const handleSwitchIndexRange = (newShow) => {
       <div class="field-title-and-description-outer">
         <div class="field-title-and-star-outer">
           <div id="field-title-outer" class="field-title-outer">
-            <p id="field-title" style="white-space: nowrap; font-size: 28px">
+            <p id="field-title" style="white-space: nowrap; font-size: 30px">
               {{ fName }}
             </p>
           </div>
