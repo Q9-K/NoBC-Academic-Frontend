@@ -150,6 +150,8 @@ const handleRegister = () => {
           token: data.token,
         }))
 
+        console.log(JSON.parse(localStorage.getItem('userInformation')))
+
         stateOfPriorDialog.setView(SELECT_FIELD)
         stateOfPriorDialog.setStep(1)
       }

@@ -61,6 +61,9 @@ onMounted(() => {
 const refreshRecommendWork = () => {
   const fetchRecommendWork = async () => {
     try {
+
+      console.log(JSON.parse(localStorage.getItem('userInformation')))
+
       const apiUrl = '/concept/get_works_by_focused_concept/'
 
       const response = await get({
@@ -101,6 +104,9 @@ const refreshRecommendWork = () => {
 
 const refreshRecommendScholar = () => {
   const fetchRecommendScholar = async () => {
+
+    console.log(JSON.parse(localStorage.getItem('userInformation')))
+
     try {
       const apiUrl = '/author/get_recommend_author'
 
