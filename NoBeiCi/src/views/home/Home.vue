@@ -303,7 +303,7 @@ onMounted(() => {
   position: absolute;
   left: 0;
   top: 10vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   .search-area-outer {
     width: 100%;
