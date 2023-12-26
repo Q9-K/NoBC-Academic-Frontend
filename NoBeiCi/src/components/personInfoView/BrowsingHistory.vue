@@ -2,7 +2,7 @@
     <div>
         <div class="favorite-uppart">
                 <div class="label">
-                    <p style="float: left;">浏览历史</p>
+                    <p style="float: left;">{{ i18n.t("personInfo.browsingHistory") }}</p>
                 </div>
                 <div class="label1">
                     <p style="float: left;">当前浏览记录共{{paperCount}}条</p>
@@ -33,7 +33,7 @@
                 color="#626aef"
                 v-if="paper.collected"
               >
-                已收藏
+              {{ i18n.t("articleDisplay.articleDisplayCollected") }}
               </el-button>
 
               <el-button
@@ -44,13 +44,13 @@
                 v-else
                 plain
               >
-                <el-icon><CirclePlus /></el-icon>收藏
+                <el-icon><CirclePlus /></el-icon>{{ i18n.t("articleDisplay.articleDisplayCollect") }}
               </el-button>
 
             </div>
             <div class="lower-button">
               <el-button size="mini" color="#d9dde6" @click="viewCitation(paper)" >
-              引用
+                {{ i18n.t("articleDisplay.articleDisplayCitations") }}
             </el-button>
             </div>
 
@@ -81,7 +81,9 @@
     </div>
     
 </template>
-
+<script setup>
+import i18n from '../../locales';
+</script>
 <script>
 import get from '../../functions/Get';
 import router from '../../routes';

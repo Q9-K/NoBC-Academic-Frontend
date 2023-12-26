@@ -1,7 +1,7 @@
 <template>
   <div class="follow_topics_content">
         <div class="label">
-            <span style="float: left;">我关注的领域</span>
+            <span style="float: left;">{{ i18n.t("personInfo.followedField") }}</span>
         </div>
 
         <div class="tag">
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-
+    import i18n from '../../locales';
     import { onMounted } from 'vue'
     import { nextTick, ref } from 'vue'
     import { ElInput } from 'element-plus'
