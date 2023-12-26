@@ -2,7 +2,6 @@
     import { ref, watch, defineAsyncComponent, onMounted } from 'vue'
     import NavBar from '../components/NavigateBar.vue'
     import 'element-plus/dist/index.css'
-    import { Search } from '@element-plus/icons-vue'
     import { ElContainer, ElHeader, ElAside, ElMain, ElRow, ElCol, ElFooter, ElPagination } from 'element-plus'
     import ArticleDispaly from '../components/search/ArticleDisplay.vue'
     import SearchResultStatics from '../components/search/SearchResultStatistics.vue'
@@ -10,7 +9,6 @@
     import TimeRange from '../components/search/TimeRange.vue'
     import Institution from '../components/search/Institution.vue'
     import SelectJournal from '../components/search/SelectJournal.vue'
-    //import Subject from '../components/search/Subject.vue'
     import { ElLoading } from 'element-plus'
     const AsyncSubject = defineAsyncComponent(() => import('../components/search/Subject.vue'));
     import i18n from '../locales'

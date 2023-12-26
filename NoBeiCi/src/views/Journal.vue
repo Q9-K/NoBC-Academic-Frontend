@@ -6,7 +6,7 @@
         <el-container >
            <el-header class="head">
                 <div style="margin-top: 3vh;">
-                    <h1  class="title">ACM Computing Surveys</h1>
+                    <h1  class="title">{{display_name}}</h1>
                 </div>
                 <el-row type="flex" justify="center">
                     <el-col :span="12">
@@ -98,8 +98,8 @@
                         </div>
                         <div v-if="showInstitution">
                             <el-table :key="key" :data="instituteData" :default-sort="{prop: 'data', order: 'descending'}" style="width: 100%">
-                                <el-table-column prop="Institution" label="Institution" sortable width="450" />
-                                <el-table-column prop="thesisnumber" label="ThesisNumber"  sortable width="450" />
+                                <el-table-column prop="display_name" label="Institution" sortable width="450" />
+                                <el-table-column prop="doc_count" label="ThesisNumber"  sortable width="450" />
                                 <el-table-column prop="citenumber" label="CiteNumber" sortable width="450" />
                             </el-table>
                         </div>
@@ -121,6 +121,7 @@ import { onMounted, ref, getCurrentInstance, watch } from 'vue';
 import i18n from '../locales/index.js'
 import axios from 'axios';
 import { defineAsyncComponent } from 'vue';
+import { ElLoading } from 'element-plus'
 const AsyncJournalWord = defineAsyncComponent(() => import('../components/conf/JournalWord.vue'));
 const AsyncJournalCite = defineAsyncComponent(() => import('../components/conf/JournalCite.vue'));
 const AsyncJournalCountry = defineAsyncComponent(() => import('../components/conf/Country.vue'));
@@ -143,6 +144,7 @@ let key1 = 0;
 const country = ref([]);
 const word = ref([]);
 const cite = ref([]);
+const institute = ref([]);
 const instituteData = ref([]);
 
 const thesisData =ref([]);
@@ -175,28 +177,33 @@ const getAllInfo = async () => {
     try {   
             const instance = getCurrentInstance();
             const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
-            //const ident = instance.proxy.$route.params.id;
-            const response1 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_source_by_id', {
+            let loading;
+            loading = ElLoading.service({
+              lock: true,
+              text: "加载中......",
+              background: 'rgba(0,0,0,0.7)'
+            })
+            const response1 = await axios.get('http://api.buaa-q9k.xyz/source/get_source_by_id', {
                 params: {
                 source_id: ident,
                 },
             });
-            const response2 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_authors_distribution', {
+            const response2 = await axios.get('http://api.buaa-q9k.xyz/source/get_authors_distribution', {
                 params: {
                     source_id: ident,
                 },
             });
-            const response3 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_authors_by_cited/', {
+            const response3 = await axios.get('http://api.buaa-q9k.xyz/source/get_authors_by_cited', {
                 params: {
                     source_id: ident,
                 }
             });
-            const response4 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_works_by_cited',{
+            const response4 = await axios.get('http://api.buaa-q9k.xyz/source/get_works_by_cited',{
                 params: {
                     source_id: ident,
                 }
             });
-            const response5 = await axios.get('http://http://api.buaa-q9k.xyz/source/get_institutions_by_cited/', {
+            const response5 = await axios.get('http://api.buaa-q9k.xyz/source/get_institutions_by_cited', {
                 params: {
                     source_id: ident,
                 }
@@ -212,7 +219,7 @@ const getAllInfo = async () => {
             works2_count.value = data.value.data.summary_stats['2yr_works_count'];
             h2_index.value = data.value.data.summary_stats['2yr_h_index'];
             mean_citedness.value = data.value.data.summary_stats['2yr_mean_citedness'];
-            created_year.value = data.value.data.summary_stats['created_date'];
+            created_year.value = data.value.data.created_date;
             authorData.value =response3.data.data.map(item => ({
                 author: item.key.display_name,
                 thesisnumber: item.doc_count,
@@ -226,8 +233,10 @@ const getAllInfo = async () => {
             }));
             key = 1;
             key1 = 1;
+            loading.close();
         } catch (error) {
             console.error('Error fetching data:', error);
+            loading.close();
         }
 };
 
