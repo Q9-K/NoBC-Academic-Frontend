@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox" >
     <div class="searchMain">
-      <h2>NOBC帮你理解科学</h2>
+      <h2>{{ i18n.t("scholar.title") }}</h2>
       <a-select
         v-model:value="value"
         show-search size='large'
@@ -25,7 +25,7 @@
             89,520,174
           </div>
           <div class="name">
-            学者
+            {{ i18n.t("scholar.scholar") }}
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
             240,000,000
           </div>
           <div class="name">
-            论文
+            {{ i18n.t("scholar.thesis") }}
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
             65,073
           </div>
           <div class="name">
-            领域
+            {{ i18n.t("scholar.field") }}
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
             107,246
           </div>
           <div class="name">
-            机构
+            {{ i18n.t("scholar.institution") }}
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@ import { toRefs, defineProps, onMounted } from 'vue'
 import { ref } from 'vue';
 import {debounce} from "vue-debounce";
 import {useUpperSearchBarStore} from "../stores/upperSearchBar.js";
-
+import i18n from "../locales/index.js";
 const props = defineProps({
   info: String,
   searchFunction: {
