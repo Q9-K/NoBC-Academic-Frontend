@@ -389,7 +389,7 @@ const handleSwitchIndexRange = (newShow) => {
       <div class="field-title-and-description-outer">
         <div class="field-title-and-star-outer">
           <div id="field-title-outer" class="field-title-outer">
-            <p id="field-title" style="white-space: nowrap">
+            <p id="field-title" style="white-space: nowrap; font-size: 28px">
               {{ fName }}
             </p>
           </div>
