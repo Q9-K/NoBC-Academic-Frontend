@@ -140,6 +140,7 @@ export default {
     title: "NOBC HELP RESEARCH",
     include: "The Results include",
     thesises: "thesis",
+    scholars: "scholars",
     result: "result",
     synthesis: "synthesis",
     h: "h-index",

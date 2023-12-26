@@ -83,7 +83,7 @@
             <p style="font-size: 30px;color:blue; font-size: 800"> {{ final_name }} </p>
             <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }}</p>
             <p v-if="scholar_num == 10000">+</p>
-            <p>){{ i18n.t("scholar.thesises") }}</p>
+            <p>){{ i18n.t("scholar.scholars") }}</p>
             <div style="margin-left: 30px;font-size: 12px;width:auto;display:flex;flex-direction:row;text-align: left;">
                 <p>{{ i18n.t("scholar.result") }}</p>
                 <p style="color: blue;font-weight: 800;"> {{ time }} </p> ms
