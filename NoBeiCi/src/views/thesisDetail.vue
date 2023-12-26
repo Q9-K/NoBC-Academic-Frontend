@@ -1200,9 +1200,9 @@ onMounted(async () => {
         left: 68vw;
 
         .rightBar {
-            flex: 0 0 370px;
-            max-width: 370px;
-            min-width: 370px;
+            flex: 0 0 19.84vw;
+            max-width: 19.84vw;
+            min-width: 19.84vw;
             height: 70vh;
         }
     }
