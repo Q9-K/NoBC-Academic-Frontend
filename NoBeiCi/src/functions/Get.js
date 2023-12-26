@@ -8,7 +8,7 @@ const contentTypeJson = "application/json"
 
 const instance = axios.create({
     //
-    baseURL: "http://api.buaa-q9k.xyz",
+    baseURL: "https://api.buaa-q9k.xyz",
     timeout: 10 * 1000,
 })
 //请求前过滤器

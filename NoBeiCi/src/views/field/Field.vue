@@ -409,7 +409,7 @@ const handleSearchField = (value) => {
     codeOfLanguage = 1
   }
 
-  return axios.get('http://api.buaa-q9k.xyz' + '/concept/search_concept/', {
+  return axios.get('https://api.buaa-q9k.xyz' + '/concept/search_concept/', {
   // return axios.get('http://100.92.185.118:8000' + '/concept/search_concept/', {
     params: {
       keyword: value,

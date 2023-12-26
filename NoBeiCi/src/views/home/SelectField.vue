@@ -23,7 +23,7 @@ const enFieldsData = []
 const idFieldMap = new Map()
 let rectangleTree
 onMounted(() => {
-  const getLevel0 = axios.get('http://api.buaa-q9k.xyz' + '/concept/get_level_0/').then((response) => {
+  const getLevel0 = axios.get('https://api.buaa-q9k.xyz' + '/concept/get_level_0/').then((response) => {
   // const getLevel0 = axios.get('http://100.92.185.118:8000' + '/concept/get_level_0/').then((response) => {
     handleResponse(response, false, (data) => {
 
@@ -57,7 +57,7 @@ onMounted(() => {
     .then(() => {
       for (let {id} of cnFieldsData) {
         let parentId = id
-        getLevel1 = axios.get('http://api.buaa-q9k.xyz' + '/concept/get_subdomains/', {
+        getLevel1 = axios.get('https://api.buaa-q9k.xyz' + '/concept/get_subdomains/', {
           params: {
             id: id
           }

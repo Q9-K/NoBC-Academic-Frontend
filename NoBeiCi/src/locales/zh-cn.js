@@ -173,6 +173,7 @@ export default {
     title: "NOBC帮你理解科学",
     include: "搜索结果包含",
     thesises: "论文数",
+    scholars: "学者数",
     result: "结果",
     synthesis: "综合",
     h: "h指数",

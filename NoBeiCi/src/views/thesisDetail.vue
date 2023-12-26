@@ -11,7 +11,7 @@ import { ElMessage } from 'element-plus';
 import router from "../routes/index.js";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
 import { nextTick } from 'vue';
-// 
+//
 var isParentReady = ref(false)
 // title和abstract
 var title = ref('')
@@ -99,7 +99,7 @@ function jumpToField(field){
 async function collection(id) {
     const result = await request(
         {
-            url: "http://api.buaa-q9k.xyz/user/add_favorite/",
+            url: "https://api.buaa-q9k.xyz/user/add_favorite/",
             params: {
                 work_id: id
             },
@@ -128,7 +128,7 @@ async function LookThesis(id) {
 async function getThesis() {
     try {
         fullscreenLoading.value = true
-        const { data: res } = await axios.get("http://api.buaa-q9k.xyz/work/get_work/", {
+        const { data: res } = await axios.get("https://api.buaa-q9k.xyz/work/get_work/", {
             params: {
                 id: currentId.value,
                 user_id: "1592295057@qq.com"
@@ -237,7 +237,7 @@ onMounted(async () => {
     treemapOfBigField.setOption(options)
     treemapOfBigField.on('click', async function (params) {
         if (params.data.children == null && params.treeAncestors.length <= 4) {
-            const { data: res } = await axios.get("http://api.buaa-q9k.xyz/work/get_work/", {
+            const { data: res } = await axios.get("https://api.buaa-q9k.xyz/work/get_work/", {
                 params: {
                     id: params.data.id,
                     user_id: "1592295057@qq.com"

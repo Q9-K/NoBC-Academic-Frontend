@@ -83,7 +83,7 @@
             <p style="font-size: 30px;color:blue; font-size: 800"> {{ final_name }} </p>
             <p>'&nbsp;&nbsp;&nbsp;({{ scholar_num }}</p>
             <p v-if="scholar_num == 10000">+</p>
-            <p>){{ i18n.t("scholar.thesises") }}</p>
+            <p>){{ i18n.t("scholar.scholars") }}</p>
             <div style="margin-left: 30px;font-size: 12px;width:auto;display:flex;flex-direction:row;text-align: left;">
                 <p>{{ i18n.t("scholar.result") }}</p>
                 <p style="color: blue;font-weight: 800;"> {{ time }} </p> ms
@@ -157,7 +157,7 @@ const final_name = ref()
 const handleSearch = debounce(async (value) => {
     if (isNonEmptyString(value)) {
         scholar_name.value = value
-        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: value,
                 page_num: "1",
@@ -194,7 +194,7 @@ async function select1() {
     isHighlighted4.value = false
     // 按default排序
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -216,7 +216,7 @@ async function select2() {
     isHighlighted4.value = false
     // 按h_index排序
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -241,7 +241,7 @@ async function select3() {
     isHighlighted3.value = true
     isHighlighted4.value = false
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -262,7 +262,7 @@ async function select4() {
     isHighlighted3.value = false
     isHighlighted4.value = true
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: "1",
@@ -280,7 +280,7 @@ async function select4() {
 }
 async function changePage(val) {
     fullscreenLoading.value = true
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: final_name.value,
             page_num: val,
@@ -346,7 +346,7 @@ const handleClick2 = async e => {
         const name = e.item.originItemValue.label.split("(")[0].trim()
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -387,7 +387,7 @@ const handleClick2 = async e => {
         const name = e.item.originItemValue.label.split("(")[0].trim()
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -438,7 +438,7 @@ async function chooseFilter(layerIndex, index) {
         layers[layerIndex].highlight = -1
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -465,7 +465,7 @@ async function chooseFilter(layerIndex, index) {
         const startTime = performance.now();
         let res = {};
         if (index < 5) {
-            const { data: result } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+            const { data: result } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
                 params: {
                     author_name: final_name.value,
                     page_num: "1",
@@ -479,7 +479,7 @@ async function chooseFilter(layerIndex, index) {
             h_index_down.value = index * 10
             res = result
         } else {
-            const { data: result } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+            const { data: result } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
                 params: {
                     author_name: final_name.value,
                     page_num: "1",
@@ -512,7 +512,7 @@ async function searchScholar() {
         final_name.value = scholar_name.value
         fullscreenLoading.value = true
         const startTime = performance.now();
-        const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
             params: {
                 author_name: final_name.value,
                 page_num: "1",
@@ -551,7 +551,7 @@ const handleOptionSelect = async (value) => {
     final_name.value = value
     fullscreenLoading.value = true
     const startTime = performance.now();
-    const { data: res } = await axios.get('http://api.buaa-q9k.xyz/author/get_author_by_name/', {
+    const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
         params: {
             author_name: value,
             page_num: "1",
