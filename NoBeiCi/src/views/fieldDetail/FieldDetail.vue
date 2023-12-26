@@ -43,7 +43,7 @@ let enDescription = ''
 let cnDescription = ''
 
 onMounted(() => {
-  axios.get('http://api.buaa-q9k.xyz' + '/concept/get_concept_by_id/', {
+  axios.get('https://api.buaa-q9k.xyz' + '/concept/get_concept_by_id/', {
   // axios.get('http://100.92.185.118:8000' + '/concept/get_concept_by_id/', {
     params: {
       id: fFullId

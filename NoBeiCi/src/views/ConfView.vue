@@ -122,7 +122,7 @@ onMounted(() => {
 });
 const getJournalsByInitial = debounce((initial) => {
     tempLetter.value = initial;
-    axios.get('http://api.buaa-q9k.xyz/source/get_source_list/', {
+    axios.get('https://api.buaa-q9k.xyz/source/get_source_list/', {
         params: {
             initial: initial,
             page_num: pageNum.value,
@@ -142,7 +142,7 @@ const getJournalsByInitial = debounce((initial) => {
 
 
 const getLatestJournal = debounce(() => {
-    axios.get('http://api.buaa-q9k.xyz/source/get_latest_sources/', {
+    axios.get('https://api.buaa-q9k.xyz/source/get_latest_sources/', {
         params: {
             page_num: pageNum.value,
             page_size: 10,
@@ -163,7 +163,7 @@ const handleSearchJournal = (value) => {
     if (checkIsChinese(value)) {
         codeOfLanguage = 1
     }
-    return axios.get('http://api.buaa-q9k.xyz/' + '/source/search_sources/', {
+    return axios.get('https://api.buaa-q9k.xyz/' + '/source/search_sources/', {
         params: {
             journal_name: value,
         }

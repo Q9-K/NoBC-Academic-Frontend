@@ -13,7 +13,7 @@ import {useUpperSearchBarStore} from "../../stores/upperSearchBar.js";
 const router = useRouter();
 const api = {
   getInstitutions: '/institution/getInstitutionList/',
-  getInstitutionByKeyword: 'http://api.buaa-q9k.xyz/institution/getInstitutionByKeyword/',
+  getInstitutionByKeyword: 'https://api.buaa-q9k.xyz/institution/getInstitutionByKeyword/',
 }
 
 const language = ref("cn")

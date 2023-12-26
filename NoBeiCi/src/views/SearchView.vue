@@ -61,7 +61,7 @@
               background: 'rgba(0,0,0,0.7)'
             })
             if(input.value != '') {
-              const response = await axios.get('http://api.buaa-q9k.xyz/work/advanced_search/', {
+              const response = await axios.get('https://api.buaa-q9k.xyz/work/advanced_search/', {
               params: {
                   content: input.value,
                   start_time: startTime.value || undefined,
@@ -126,7 +126,7 @@
     let showDropdown = ref(false);
 
     const fetchData = async (value) => {
-      const response = await axios.get('http://api.buaa-q9k.xyz/work/get_suggestion', {
+      const response = await axios.get('https://api.buaa-q9k.xyz/work/get_suggestion', {
         params: {
           content: value,
         },
