@@ -5,7 +5,9 @@
                 <h2>Chat Paper</h2>
             </div>
             <div class="introduction">
-                <el-icon style="font-size: 30px;"><ChromeFilled /></el-icon>
+                <el-icon style="font-size: 30px;">
+                    <ChromeFilled />
+                </el-icon>
                 <p> {{ i18n.t("thesisDetail.summary") }} </p>
             </div>
         </div>
@@ -16,7 +18,8 @@
                 <div v-for="(message, index) in messages" :key="index">
                     <div v-if="index % 2 === 0" class="left">
                         <div class="topHead">
-                            <img src="../../assets/vouzenus/openai-chatgpt-logo-icon-free-png.webp" style="width:25px;height:25px;margin-right: 2%">
+                            <img src="../../assets/vouzenus/openai-chatgpt-logo-icon-free-png.webp"
+                                style="width:25px;height:25px;margin-right: 2%">
                             <div class="name">vouzenus</div>
                         </div>
                         <div class="message">{{ message }}</div>
@@ -33,8 +36,8 @@
                 </div>
             </div>
         </div>
-        <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search" @keyup.enter="getMessage"
-            clearable></el-input>
+        <el-input class="input" v-model="textarea" rows="4" type="textarea" :placeholder=content :suffix-icon="Search"
+            @keyup.enter="getMessage" clearable></el-input>
         <div class="sendButton">
             <form @click="getMessage" class="button" @keyup.enter="getMessage">{{ i18n.t("thesisDetail.send") }}</form>
         </div>
@@ -48,6 +51,7 @@ import { Search } from "@element-plus/icons-vue";
 import request from "../../functions/Request";
 import { nextTick } from 'vue';
 import i18n from "../../locales/index.js";
+import { ElMessage } from 'element-plus';
 //对这篇文章的介绍
 const introduce = ref('')
 //第一条消息
@@ -96,8 +100,16 @@ async function getIntroduction() {
                 }
             );
             loading.value = false
-            introduce.value = res.data.reply.result
-            messages.value.push(introduce.value)
+            if (res.error == true) {
+                ElMessage({
+                    message: "chatPDF的pdf解析失败",
+                    type: 'error',
+                })
+            }
+            else {
+                introduce.value = res.data.reply.result
+                messages.value.push(introduce.value)
+            }
         }
         else {
             messages.value.push(i18n.t("thesisDetail.introduce"))
@@ -220,7 +232,8 @@ onMounted(async () => {
     font-size: 15px;
     font-weight: 450;
 }
-.button:hover{
+
+.button:hover {
     color: #87CEEB;
 }
 
@@ -282,8 +295,7 @@ h2 {
     font-weight: 1000;
 }
 
-::v-deep .el-textarea__inner{
+::v-deep .el-textarea__inner {
     height: 10vh;
 }
-
 </style>
