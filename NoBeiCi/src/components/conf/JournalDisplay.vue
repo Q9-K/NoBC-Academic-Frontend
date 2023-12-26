@@ -51,10 +51,11 @@ const navigateToJournal = () => {
 }
 
 .hae-border {
-    border: solid 1px;
+    border: dashed 1px #d69999;
     margin: 5px;
     margin-top: 10px;
     font-size: smaller;
+    border-radius: 5px;
 }
 
 .area {
@@ -62,10 +63,11 @@ const navigateToJournal = () => {
 }
 
 .have-border {
-    border: solid 1px;
+    border: dashed 1px #f0ae4b;
     margin: 5px;
     margin-top: 10px;
     font-size: smaller;
+    border-radius: 5px;
 }
 
 </style>
