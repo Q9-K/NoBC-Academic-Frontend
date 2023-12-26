@@ -225,7 +225,7 @@
 
                 <el-card shadow="hover" style="width: 100%;">
                 <div style="display: flex; align-items: center;margin-left: 40%;">
-                  <el-avatar :size="80" :round="true" :src="this.user_avatar" ></el-avatar>
+                  <el-avatar :size="80" :round="true" :src="user_avatar" ></el-avatar>
                   
                 </div>
                 </el-card>
