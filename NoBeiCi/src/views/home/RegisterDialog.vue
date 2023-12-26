@@ -147,7 +147,7 @@ const handleRegister = () => {
         localStorage.setItem('userInformation', JSON.stringify({
           username: userName.value,
           email: email.value,
-          token: data,
+          token: data.token,
         }))
 
         stateOfPriorDialog.setView(SELECT_FIELD)
