@@ -608,6 +608,7 @@ watch(
     height: 30vh;
     display: flex;
     background: linear-gradient(#0000CD, #000000);
+    background-image: url(https://img.zcool.cn/community/0136cf57c68a000000012e7ead255d.jpg@2o.jpg);
 }
 
 .searchMain {
