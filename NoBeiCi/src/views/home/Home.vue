@@ -253,7 +253,7 @@ onMounted(() => {
                 </div>
               </template>
             </el-statistic>
-            <el-statistic :value="240000000" class="statistic-card">
+            <el-statistic :value="246328942" class="statistic-card">
               <template #title>
                 {{ i18n.t('homePage.workCount') }}
               </template>
