@@ -77,8 +77,8 @@ function setRelavant() {
 }
 //打开当前论文的pdf
 function navigateToExternalURL() {
-    console.log(pdf_url)
-    if (pdf_url != null) {
+    console.log(pdf_url.value)
+    if (pdf_url.value != null) {
         window.open(pdf_url, '_blank')
     }
 }
