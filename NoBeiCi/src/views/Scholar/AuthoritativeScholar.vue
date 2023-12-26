@@ -1,6 +1,6 @@
 <template>
     <NavigateBar></NavigateBar>
-    <div class="searchBox" >
+    <div class="searchBox">
         <div class="searchMain">
             <h2>{{ i18n.t("scholar.title") }}</h2>
             <div class="searchIcon">
@@ -109,10 +109,14 @@
             </div>
             <div class="detail">
                 <div class="search">
-                    <div class="all" @click="select1" :class="{ highlighted: isHighlighted1 }">{{ i18n.t("scholar.synthesis") }}</div>
-                    <div class="hNum" @click="select2" :class="{ highlighted: isHighlighted2 }">{{ i18n.t("scholar.h") }}</div>
-                    <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">{{ i18n.t("scholar.thesises") }}</div>
-                    <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">{{ i18n.t("scholar.quotes") }}</div>
+                    <div class="all" @click="select1" :class="{ highlighted: isHighlighted1 }">{{
+                        i18n.t("scholar.synthesis") }}</div>
+                    <div class="hNum" @click="select2" :class="{ highlighted: isHighlighted2 }">{{ i18n.t("scholar.h") }}
+                    </div>
+                    <div class="thesisNum" @click="select3" :class="{ highlighted: isHighlighted3 }">{{
+                        i18n.t("scholar.thesises") }}</div>
+                    <div class="usedNum" @click="select4" :class="{ highlighted: isHighlighted4 }">{{
+                        i18n.t("scholar.quotes") }}</div>
                 </div>
                 <ScholarDisplay :scholars="scholars" />
                 <div class="page">
@@ -471,7 +475,7 @@ async function chooseFilter(layerIndex, index) {
                     page_num: "1",
                     page_size: "20",
                     institution: selectedInstitution.value,
-                    h_index_up: (index + 1) * 10-1,
+                    h_index_up: (index + 1) * 10 - 1,
                     h_index_down: index * 10
                 }
             })
@@ -509,40 +513,42 @@ async function chooseFilter(layerIndex, index) {
 //搜索学者
 async function searchScholar() {
     try {
-        final_name.value = scholar_name.value
-        fullscreenLoading.value = true
-        const startTime = performance.now();
-        const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
-            params: {
-                author_name: final_name.value,
-                page_num: "1",
-                page_size: "20"
+        if (final_name.value != null) {
+            final_name.value = scholar_name.value
+            fullscreenLoading.value = true
+            const startTime = performance.now();
+            const { data: res } = await axios.get('https://api.buaa-q9k.xyz/author/get_author_by_name/', {
+                params: {
+                    author_name: final_name.value,
+                    page_num: "1",
+                    page_size: "20"
+                }
+            })
+            const endTime = performance.now();
+            const elapsedTime = endTime - startTime;
+            // 输出时间
+            time.value = elapsedTime
+            isHighlighted1.value = true
+            isHighlighted2.value = false
+            isHighlighted3.value = false
+            isHighlighted4.value = false
+            showResult.value = true
+            scholar_num.value = res.data.total
+            scholars.value = res.data.authors
+            const children = []
+            const options = []
+            for (let i = 0; i < res.data.institutions.length; i++) {
+                children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
             }
-        })
-        const endTime = performance.now();
-        const elapsedTime = endTime - startTime;
-        // 输出时间
-        time.value = elapsedTime
-        isHighlighted1.value = true
-        isHighlighted2.value = false
-        isHighlighted3.value = false
-        isHighlighted4.value = false
-        showResult.value = true
-        scholar_num.value = res.data.total
-        scholars.value = res.data.authors
-        const children = []
-        const options = []
-        for (let i = 0; i < res.data.institutions.length; i++) {
-            children.push(getItem(res.data.institutions[i].institution + '(' + res.data.institutions[i].count + ')', i + 1))
+            institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
+            for (let i = 0; i < res.data.h_index.length; i++) {
+                options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
+            }
+            layers = [{ name: 'h指数:', options: options, highlight: -1 }]
+            fullscreenLoading.value = false
+            currentPage.value = 1
+            openKeys.value[0] = 'sub2'
         }
-        institution = [getItem(i18n.t("scholar.institution") + '(' + res.data.institutions.length + ')', 'sub2', () => h(AppstoreOutlined), children)]
-        for (let i = 0; i < res.data.h_index.length; i++) {
-            options.push(res.data.h_index[i].h_index + '(' + res.data.h_index[i].count + ')')
-        }
-        layers = [{ name: 'h指数:', options: options, highlight: -1 }]
-        fullscreenLoading.value = false
-        currentPage.value = 1
-        openKeys.value[0] = 'sub2'
     } catch (error) {
         console.log(error)
     }
@@ -587,17 +593,17 @@ const isLight = ref(false)
 //     isLight.value = localStorage.getItem('theme') === 'light'
 // })
 watch(
-  () => localStorage.getItem('theme'),
-  (newValue) => {
-    if (newValue == 'light') {
-      isLight.value = true
-      console.log(1)
+    () => localStorage.getItem('theme'),
+    (newValue) => {
+        if (newValue == 'light') {
+            isLight.value = true
+            console.log(1)
+        }
+        else {
+            isLight.value = false
+            console.log(2)
+        }
     }
-    else {
-      isLight.value = false
-      console.log(2)
-    }
-  }
 )
 </script>
 <style scoped lang="scss">
@@ -868,8 +874,8 @@ h2 {
     background-color: #fafafa;
     border-bottom: hidden;
 }
-.light{
+
+.light {
     height: 30vh;
     background: linear-gradient(#333, #444);
-}
-</style>
+}</style>
