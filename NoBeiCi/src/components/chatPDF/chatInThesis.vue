@@ -87,6 +87,7 @@ watch(() => props.parentProp, (newVal) => {
 //初始加载介绍
 async function getIntroduction() {
     try {
+        console.log(props.pdf_url)
         if (props.pdf_url != null) {
             loading.value = true
             const { data: res } = await axios.get("http://api.buaa-q9k.xyz/work/get_reply/",
