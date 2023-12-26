@@ -14,10 +14,10 @@ function NavigateToScholar(id) {
     router.push('/authorhome/' + id.substring(id.indexOf("A")))
 }
 async function followScholar(id){
-    const scholar_id = id.substring(id.indexOf("A"))   
+    const scholar_id = id.substring(id.indexOf("A"))
     const result = await request(
         {
-            url: "http://api.buaa-q9k.xyz/user/follow_scholar/",
+            url: "https://api.buaa-q9k.xyz/user/follow_scholar/",
             params: {
                 scholar_id: id
             },
@@ -28,7 +28,7 @@ async function followScholar(id){
         ElMessage({
             message: "关注成功",
             type: 'success',
-        })        
+        })
     }
     else{
         ElMessage({

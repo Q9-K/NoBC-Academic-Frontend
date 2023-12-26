@@ -48,7 +48,7 @@
                                     <AsyncJournalWord :data="word" :key="key"/>
                                 </div>
                             </el-col>
-                            <el-col :span="12">   
+                            <el-col :span="12">
                                 <div class="card">
                                     <h3>{{i18n.t('journal.journalArea')}}</h3>
                                     <AsyncJournalCountry :data="country" :key="key1"/>
@@ -174,7 +174,7 @@ const toShowAuthor = () => {
 }
 
 const getAllInfo = async () => {
-    try {   
+    try {
             const instance = getCurrentInstance();
             const ident = 'https://openalex.org/'+instance.proxy.$route.params.id;
             let loading;
@@ -183,27 +183,27 @@ const getAllInfo = async () => {
               text: "加载中......",
               background: 'rgba(0,0,0,0.7)'
             })
-            const response1 = await axios.get('http://api.buaa-q9k.xyz/source/get_source_by_id', {
+            const response1 = await axios.get('https://api.buaa-q9k.xyz/source/get_source_by_id', {
                 params: {
                 source_id: ident,
                 },
             });
-            const response2 = await axios.get('http://api.buaa-q9k.xyz/source/get_authors_distribution', {
+            const response2 = await axios.get('https://api.buaa-q9k.xyz/source/get_authors_distribution', {
                 params: {
                     source_id: ident,
                 },
             });
-            const response3 = await axios.get('http://api.buaa-q9k.xyz/source/get_authors_by_cited', {
+            const response3 = await axios.get('https://api.buaa-q9k.xyz/source/get_authors_by_cited', {
                 params: {
                     source_id: ident,
                 }
             });
-            const response4 = await axios.get('http://api.buaa-q9k.xyz/source/get_works_by_cited',{
+            const response4 = await axios.get('https://api.buaa-q9k.xyz/source/get_works_by_cited',{
                 params: {
                     source_id: ident,
                 }
             });
-            const response5 = await axios.get('http://api.buaa-q9k.xyz/source/get_institutions_by_cited', {
+            const response5 = await axios.get('https://api.buaa-q9k.xyz/source/get_institutions_by_cited', {
                 params: {
                     source_id: ident,
                 }
@@ -261,8 +261,8 @@ onMounted(() =>{
 
 .title {
     font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
-    text-align: center; 
-    font-weight: bold; 
+    text-align: center;
+    font-weight: bold;
     font-size: 40px;
     margin-bottom: 8px;
 }
