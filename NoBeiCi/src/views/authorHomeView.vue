@@ -16,7 +16,7 @@
 
                     <div class="middle-down">
                         <p class="inherited-styles-for-exported-element">{{ i18n.t("authorHome.paperList") }}</p>
-                        <div v-loading="this.isLoading" style="min-height: 20vh;">
+                        <div v-loading="isLoading" style="min-height: 20vh;">
                             <el-row v-for="data in articleData" :key="data.id" >
                             <ArticleView :data="data" :key="key"></ArticleView>
                             <!-- <ArticleDisplay :data="data"></ArticleDisplay> -->
