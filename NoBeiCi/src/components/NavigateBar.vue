@@ -182,14 +182,18 @@ const handleOpenMailDrawer = () => {
 }
 
 watch(
-  () => localStorage.getItem('userInformation'),
+  () => {
+    const stateOfPriorDialog = useStateOfPriorDialog()
+    return stateOfPriorDialog.getVisible
+  },
   (newValue) => {
-    if (newValue === null) {
+    if (newValue === true) {
       return
     }
     const email = JSON.parse(localStorage.getItem('userInformation')).email
     const idEmail = email.split('@')[0]
-    const mailWebSocket = new WebSocket('ws://100.117.229.168:8000/' + idEmail + '/message')
+    console.log(idEmail)
+    const mailWebSocket = new WebSocket('ws://api.buaa-q9k.xyz/ws/' + idEmail + '/message')
     mailWebSocket.onmessage = (event) => {
       whetherShowDot.value = 1
     }

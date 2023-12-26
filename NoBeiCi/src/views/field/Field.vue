@@ -47,6 +47,7 @@ const updateLevel0Treemap = () => {
           // 如果需要，请处理错误回调
           console.error('发生错误：', errorData);
         },
+        showError: false,
         useTestEnv: false,
         testEnv: 'http://100.92.185.118:8000'
       })

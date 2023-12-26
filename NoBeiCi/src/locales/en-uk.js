@@ -65,6 +65,7 @@ export default {
       inputEmail: "Email",
       inputCaptcha: "Verification Code",
       registerButton: "Register",
+      backToLogin: 'Back to Login'
     },
     selectFieldMode: {
       select: "Select your Interests",
@@ -242,6 +243,20 @@ export default {
     intro3:"You have not yet completed the binding of the scholar. Please complete the binding on the corresponding scholar's homepage.",
     bindNotice: "Scholar Authentication Process:<br />1.Enter the Popular Scholars Page<br />2.Perform a search for the scholar.<br />3.Enter the corresponding scholar's homepage<br />4.Click the 'Claim' button to bind the scholar.<br /><br />",
     popularScholarPage: "popular Scholar page",
+
+    bindAccount:"Bind Account",
+    phone:"Phone",
+    email:"Email",
+    password:"Password",
+    binded:"binded",
+
+    followedField: "Followed Field",
+    addField:"Add keywords of interest fields",
+    myConcern: "My Concern",
+    followedScholar:"Followed Scholars",
+    followedJournals:"Followed Journals",
+    followedInstitution: "Followed Institution",
+    myCollection:"My Collection",
   },
   journalDisplay: {
     paperCount: "Papers",

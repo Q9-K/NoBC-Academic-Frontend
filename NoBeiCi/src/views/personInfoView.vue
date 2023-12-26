@@ -233,7 +233,7 @@
                 <div style="display: flex;" >
                     <div class="inform-card" style="width: 45%;">
 
-                    <p class="inherited-styles-for-exported-element" >基本信息</p>
+                    <p class="inherited-styles-for-exported-element" >{{ i18n.t("personInfo.basicInformation") }}</p>
 
                     <el-form :model="person" label-width="80px">
                     <el-form-item label="名字">
@@ -268,25 +268,25 @@
                     </div>
 
                     <div class="inform-card" style="margin-left: 3vw; width: 45%; ">
-                        <p class="inherited-styles-for-exported-element" >账号绑定</p>
+                        <p class="inherited-styles-for-exported-element" >{{ i18n.t("personInfo.bindAccount") }}</p>
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Cellphone /></el-icon>
-                            <span class="bind-form-font">手机</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <span class="bind-form-font">{{ i18n.t("personInfo.phone") }}</span>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">{{ i18n.t("personInfo.binded") }}</span>
                             <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Message /></el-icon>
-                            <span class="bind-form-font">邮箱</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <span class="bind-form-font">{{ i18n.t("personInfo.email") }}</span>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">{{ i18n.t("personInfo.binded") }}</span>
                             <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
                         <div class="bind-form" >
                             <el-icon :size="30" style="margin-left: 3vh;"><Lock /></el-icon>
-                            <span class="bind-form-font">密码</span>
-                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">已绑定</span>
+                            <span class="bind-form-font">{{ i18n.t("personInfo.password") }}</span>
+                            <span class="bind-form-font"  style="margin-left: 2vh; color: rgb(42, 165, 42);">{{ i18n.t("personInfo.binded") }}</span>
                             <!-- <el-button  @click="bindPhone" style="float: right;">绑定</el-button> -->
                         </div>
 
@@ -309,7 +309,7 @@
             <div class="follow-list">
 
                 <div class="label">
-                    <p style="float: left;">我的关注</p>
+                    <p style="float: left;">{{ i18n.t("personInfo.myConcern") }}</p>
                 </div>
                 <div style="margin-top: 2vh;">
                             <el-menu
@@ -321,11 +321,11 @@
                             active-text-color="#6e83f7"
                         >   
                             <!--  -->
-                            <el-menu-item index="1" @click="changeFollowContent(1)" >关注的学者</el-menu-item>
+                            <el-menu-item index="1" @click="changeFollowContent(1)" >{{ i18n.t("personInfo.followedScholar") }}</el-menu-item>
                             <!---->
-                            <el-menu-item index="2" @click="changeFollowContent(2)">关注的期刊会议</el-menu-item>
+                            <el-menu-item index="2" @click="changeFollowContent(2)">{{ i18n.t("personInfo.followedJournals") }}</el-menu-item>
 
-                            <el-menu-item index="3" @click="changeFollowContent(3)">关注的机构</el-menu-item>
+                            <el-menu-item index="3" @click="changeFollowContent(3)">{{ i18n.t("personInfo.followedInstitution") }}</el-menu-item>
                             </el-menu>
 
                             

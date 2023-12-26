@@ -78,6 +78,21 @@ export default {
     intro3:"当前您还未完成学者的绑定,请您在对应学者主页完成绑定",
     bindNotice: "学者认证过程 <br />1.进入热门学者页面<br />2.进行学者的搜索<br />3.进入对应学者主页<br />4.点击'认领'按钮,进行学者的绑定<br /><br />",
     popularScholarPage: "热门学者页面",
+
+    bindAccount:"账号绑定",
+    phone:"手机",
+    email:"邮箱",
+    password:"密码",
+    binded:"已绑定",
+
+    followedField: "关注的领域",
+    addField:"添加感兴趣领域关键词",
+    myConcern: "我的关注",
+    followedScholar:"关注的学者",
+    followedJournals:"关注的期刊会议",
+    followedInstitution: "关注的机构",
+    myCollection:"我的收藏",
+    
   },
   priorDialog: {
     enter: "登录注册",
@@ -98,6 +113,7 @@ export default {
       inputEmail: "邮箱",
       inputCaptcha: "验证码",
       registerButton: "注册",
+      backToLogin: "返回登录"
     },
     selectFieldMode: {
       select: "选择您的关注领域",

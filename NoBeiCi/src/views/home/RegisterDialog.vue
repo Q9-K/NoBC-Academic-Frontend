@@ -1,7 +1,7 @@
 <script setup>
 import i18n from "../../locales/index.js";
 import {ref} from "vue";
-import {REGISTER, SELECT_FIELD, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
+import {LOGIN, REGISTER, SELECT_FIELD, useStateOfPriorDialog} from "../../stores/stateOfPriorDialog.js";
 import axios from "axios";
 import qs from "qs";
 import {handleResponse} from "../../functions/handleResponse.js";
@@ -157,6 +157,10 @@ const handleRegister = () => {
       }
     })
 }
+
+const backToLogin = () => {
+  stateOfPriorDialog.setView(LOGIN)
+}
 </script>
 
 <template>
@@ -182,8 +186,11 @@ const handleRegister = () => {
         <el-input v-model="inputCaptcha" />
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleRegister" style="position: relative; left: 260px" type="primary">
+        <el-button @click="handleRegister" style="position: relative" type="primary">
           {{ i18n.t('priorDialog.registerMode.registerButton') }}
+        </el-button>
+        <el-button @click="backToLogin" style="position: relative">
+          {{ i18n.t('priorDialog.registerMode.backToLogin') }}
         </el-button>
       </el-form-item>
     </el-form>
