@@ -73,6 +73,7 @@ const tempLetter = ref('');
 const journalsData = ref([]);
 const pageNum = ref(1);
 const selectvalue = ref([]);
+const test = "math";
 const selectSubject = [
         {
                 value: 'Computer Science',
@@ -121,16 +122,16 @@ onMounted(() => {
 });
 const getJournalsByInitial = debounce((initial) => {
     tempLetter.value = initial;
-    console.log(selectSubject.value)
-    axios.get('http://http://api.buaa-q9k.xyz/source/get_source_list/', {
+    axios.get('http://api.buaa-q9k.xyz/source/get_source_list/', {
         params: {
             initial: initial,
             page_num: pageNum.value,
             page_size: 10,
-            subject: selectvalue.value,
+            subject: JSON.stringify(selectvalue.value),
         }
         })
         .then(response => {
+          console.log(JSON.stringify(selectvalue.value));
           journalsData.value = response.data.data;
           type.value = 0;
         })
@@ -162,7 +163,7 @@ const handleSearchJournal = (value) => {
     if (checkIsChinese(value)) {
         codeOfLanguage = 1
     }
-    return axios.get('http://api.buaa-q9k.xyz' + '/source/search_sources/', {
+    return axios.get('http://api.buaa-q9k.xyz/' + '/source/search_sources/', {
         params: {
             journal_name: value,
         }
@@ -201,14 +202,12 @@ const handleCurrentChange = (number) => {
 }
 
 const searchJournal =debounce( () => {
-    if(type == 0) {
+    if(type.value == 0) {
         getJournalsByInitial(tempLetter.value);
     }
 }, "300ms");
 
 const handleChange = () => {
-    console.log(1);
-    console.log(selectvalue.value);
     searchJournal();
 }
 
