@@ -193,7 +193,7 @@ watch(
     const email = JSON.parse(localStorage.getItem('userInformation')).email
     const idEmail = email.split('@')[0]
     console.log(idEmail)
-    const mailWebSocket = new WebSocket('ws://api.buaa-q9k.xyz/ws/' + idEmail + '/message')
+    const mailWebSocket = new WebSocket('wss://api.buaa-q9k.xyz/ws/' + idEmail + '/message')
     mailWebSocket.onmessage = (event) => {
       whetherShowDot.value = 1
     }
