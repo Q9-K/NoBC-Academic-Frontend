@@ -35,7 +35,7 @@
         </div>
         <div class="data">
           <div class="num">
-            240,000,000
+            246,328,942
           </div>
           <div class="name">
             {{ i18n.t("scholar.thesis") }}
