@@ -98,6 +98,7 @@ export default {
       inputEmail: "邮箱",
       inputCaptcha: "验证码",
       registerButton: "注册",
+      backToLogin: "返回登录"
     },
     selectFieldMode: {
       select: "选择您的关注领域",
