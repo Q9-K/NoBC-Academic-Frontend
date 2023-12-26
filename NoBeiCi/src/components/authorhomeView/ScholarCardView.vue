@@ -278,7 +278,7 @@ import router from "../../routes";
       // if (homepageUrl) {
       //   window.open(homepageUrl, '_blank');
       // }
-      const part = this.scholar.scholar_id.split("/");
+      const part = this.scholar_id.split("/");
         const id = part[part.length-1]
       console.log("goto: ",'/authorhome/'+id)
       router.push(`/authorhome/${id}`);
@@ -290,21 +290,21 @@ import router from "../../routes";
       // }
     },
     goToTwitter() {
-      const twitterUrl = scholar.twitter;
+      const twitterUrl = this.scholar.twitter;
       if (twitterUrl) {
         window.open(twitterUrl, '_blank');
       }
     },
 
     goToGoogle() {
-      const Url = scholar.google;
+      const Url = this.scholar.google;
       if (Url) {
         window.open(Url, '_blank');
       }
     },
 
-    goToGoogle() {
-      const Url = scholar.facebook;
+    goToFaceBook() {
+      const Url = this.scholar.facebook;
       if (Url) {
         window.open(Url, '_blank');
       }

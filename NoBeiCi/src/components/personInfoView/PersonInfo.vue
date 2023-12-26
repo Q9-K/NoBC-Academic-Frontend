@@ -4,12 +4,14 @@
         <div class="header">
           <!--工作经历  -->
           <span class="title">·{{ i18n.t("personInfo.workExperience") }}</span>
+          <div v-if="editable">
           <el-button v-if="!editing.workExperience"  @click="editItem('workExperience')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
             <el-button v-else  @click="cancelEdit('workExperience')" circle>
                 <el-icon><Close /></el-icon>
             </el-button>
+          </div>
         </div>
         
         <div class="content" v-if="!editing.workExperience">{{ profile.workExperience }}</div>
@@ -27,14 +29,14 @@
       <div class="item">
         <div class="header">
           <span class="title">·{{ i18n.t("personInfo.educationBackground") }}</span>
-          
+          <div v-if="editable">
             <el-button v-if="!editing.educationBackground"  @click="editItem('educationBackground')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
             <el-button v-else  @click="cancelEdit('educationBackground')" circle>
                 <el-icon><Close /></el-icon>
             </el-button>
-            
+          </div>  
         </div>
         <div class="content" v-if="!editing.educationBackground">{{ profile.educationBackground }}</div>
         <div class="edit-content" v-else>
@@ -52,13 +54,14 @@
       <div class="item" style="margin-bottom: 2vh;">
         <div class="header">
           <span class="title">·{{ i18n.t("personInfo.personProfile") }}</span>
+          <div v-if="editable">
             <el-button v-if="!editing.personalSummary" @click="editItem('personalSummary')" circle>
             <el-icon><EditPen /></el-icon>
             </el-button>
             <el-button v-else  @click="cancelEdit('personalSummary')" circle>
                 <el-icon><Close /></el-icon>
             </el-button>
-
+          </div>
         </div>
         
         <div class="content" v-if="!editing.personalSummary">{{ profile.personalSummary }}</div>
@@ -91,7 +94,11 @@ import i18n from "../../locales/index.js";
       scholarId: {
       type: Number,
       required: true
-    }
+      },
+      editable:{
+        type: Boolean,
+        required: true
+      }
     },
 
     watch: {

@@ -128,7 +128,7 @@
 
                             <transition name="el-fade-in-linear">
                             <div v-if="informIndex == 1">  
-                                <PersonalInfo :scholar-id="author_id" :key="key"></PersonalInfo>
+                                <PersonalInfo :scholar-id="author_id" :editable="true" :key="key"></PersonalInfo>
                             </div>
                             </transition>
 

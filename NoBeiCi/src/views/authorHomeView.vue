@@ -5,7 +5,7 @@
                 <!-- 左侧 -->
                 <div class="left-part">
                     <ScholarCardView :scholar="scholar"></ScholarCardView>
-                    <PersonalInfo :scholar-id="author_id"></PersonalInfo>
+                    <PersonalInfo :scholar-id="author_id" :editable="false"></PersonalInfo>
                 </div>
 
                 <!-- 中间 -->
