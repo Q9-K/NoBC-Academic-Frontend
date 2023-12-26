@@ -70,6 +70,7 @@
                   concept: selectedSubject.value || undefined,
                   institution: selectedInstitution.value || undefined,
                   order_by: orderWay.value,
+                  order_term: "desc",
                   page_number: pageNum.value || undefined,
               },
               });
