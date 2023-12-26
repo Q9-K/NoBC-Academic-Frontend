@@ -65,6 +65,7 @@ export default {
       inputEmail: "Email",
       inputCaptcha: "Verification Code",
       registerButton: "Register",
+      backToLogin: 'Back to Login'
     },
     selectFieldMode: {
       select: "Select your Interests",
