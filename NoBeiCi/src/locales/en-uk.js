@@ -127,7 +127,7 @@ export default {
     share: "share",
     link: "quote",
     look: "view",
-    relavantField: "相关领域"
+    relavantField: "relavant field"
   },
   scholarDisplay:{
     mainPage:"Home",
